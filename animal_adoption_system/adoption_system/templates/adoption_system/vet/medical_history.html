@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Medical History</title>
+
+<style>
+
+:root {
+    --primary: #8b1e3f;
+    --primary-light: #f3e6ea;
+    --bg-main: #f6f6f8;
+    --card-bg: #ffffff;
+    --text-main: #2c2c2c;
+    --text-light: #777;
+}
+
+/* ===== BODY ===== */
+body {
+    margin: 0;
+    font-family: "Inter", "Poppins", Arial, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* ===== TOP NAVBAR ===== */
+.topbar {
+    height: 60px;
+    background: white;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+}
+
+.logo {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.page-title {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.topbar-right {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.nav-link {
+    text-decoration: none;
+    font-size: 13px;
+    color: #555;
+}
+
+.nav-link:hover {
+    color: var(--primary);
+}
+
+.logout-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+    width: 95%;
+    margin: auto;
+    padding: 25px 0;
+}
+
+/* ===== HEADER ===== */
+.page-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.page-header p {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+/* ===== TABLE ===== */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+th {
+    background: var(--primary);
+    color: white;
+    padding: 12px;
+    font-size: 13px;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    font-size: 13px;
+}
+
+tr:hover {
+    background: #fafafa;
+}
+
+.no-data {
+    color: #999;
+    font-style: italic;
+}
+
+.btn {
+    padding: 6px 14px;
+    background: var(--primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.btn:hover {
+    background: #701732;
+}
+
+:root {
+    --primary: #a11a3c;
+    --primary-dark: #7f102d;
+    --secondary: #1f2937;
+    --text-muted: #6b7280;
+    --bg-main: #f4f6fa;
+    --bg-card: #ffffff;
+    --border-soft: #e5e7eb;
+}
+
+/* ================= GLOBAL ================= */
+
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: var(--bg-main);
+    color: var(--secondary);
+}
+
+a {
+    text-decoration: none;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar {
+    background: white;
+    padding: 18px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+/* ================= LOGO ================= */
+
+.logo {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+/* ================= NAV RIGHT ================= */
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+/* ================= NAV LINKS ================= */
+
+.nav-link {
+    color: var(--secondary);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.nav-link:hover {
+    color: var(--primary);
+}
+
+/* ================= NOTIFICATION ================= */
+
+.notification {
+    position: relative;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--secondary);
+}
+
+.notification:hover {
+    color: var(--primary);
+}
+
+/* ================= BADGE ================= */
+
+.badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 50px;
+}
+
+/* ================= LOGOUT ================= */
+
+.logout-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.logout-btn:hover {
+    opacity: 0.9;
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="logo">
+        🩺 Vet Panel
+    </div>
+
+    <div class="nav-right">
+
+        <!-- Dashboard -->
+        <a href="{% url 'vet_dashboard' %}" class="nav-link">
+            <i class="fa-solid fa-chart-line"></i> Dashboard
+        </a>
+
+        <!-- All Pets -->
+        <a href="{% url 'all_shelter_pets' %}" class="nav-link">
+            <i class="fa-solid fa-paw"></i> Pets
+        </a>
+
+        <!-- Notifications -->
+        <div class="notification">
+            <i class="fa-solid fa-bell"></i>
+            <span class="badge">{{ notification_count|default:"0" }}</span>
+        </div>
+
+        <!-- Logout -->
+        <a href="{% url 'panel_logout' %}" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+
+    </div>
+
+</header>
+
+<div class="container">
+
+    <div class="page-header">
+        <h2>Medical History</h2>
+        <p>Select a pet to view its medical history</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Pet Name</th>
+                <th>Type</th>
+                <th>Current Health Status</th>
+                <th>Last Checkup</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for animal in animals %}
+        <tr>
+            <td>{{ animal.name }}</td>
+            <td>{{ animal.pet_type }}</td>
+            <td>{{ animal.health_status }}</td>
+
+            <td>
+                {% if animal.checkup_history.last %}
+                    {{ animal.checkup_history.last.checkup_date|date:"Y-m-d" }}
+                {% else %}
+                    <span class="no-data">No checkup yet</span>
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="{% url 'pet_medical_history' animal.id %}" class="btn">
+                    View History
+                </a>
+            </td>
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="5" class="no-data">
+                No animals available.
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,373 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Schedule Visit | Animal Shelter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Base Styles -->
+    <style>
+        /* ================= ROOT COLORS ================= */
+:root {
+    --primary: #a11a3c;          /* Wine Rose */
+    --primary-dark: #7f102f;     /* Deep Wine */
+    --secondary: #111827;        /* Deep Charcoal */
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #374151;
+    --text-muted: #6b7280;
+    --border-soft: #e5e7eb;
+    --light: #fff7ed;
+}
+
+/* ================= GLOBAL ================= */
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* SUBTLE PAW BACKGROUND */
+body::before{
+    content:"🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾";
+    position:fixed;
+    font-size:120px;
+    opacity:0.08;
+    top:20%;
+    left:5%;
+    transform:rotate(-20deg);
+    z-index:-1;
+}
+
+/* ================= TOP BAR ================= */
+.top-bar {
+    background: var(--secondary);
+    color: white;
+    padding: 10px 8%;
+    font-size: 0.9rem;
+}
+
+.top-bar i {
+    margin-right: 5px;
+}
+
+/* ================= NAVBAR ================= */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 8%;
+    background: var(--bg-card);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.nav-right {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-link {
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--secondary);
+    transition: 0.3s;
+}
+
+.nav-link:hover {
+    color: var(--primary);
+}
+
+.logout-btn {
+    background: var(--primary);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background: var(--primary-dark);
+}
+
+/* ================= HERO ================= */
+.visit-hero {
+    padding: 100px 20px 90px;
+    text-align: center;
+    background:
+        linear-gradient(rgba(161,26,60,.85), rgba(127,16,47,.85)),
+        url("https://images.unsplash.com/photo-1601758123927-196f9a0d93f0")
+        center/cover no-repeat;
+    color: white;
+}
+
+.visit-hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.visit-hero p {
+    opacity: 0.9;
+    max-width: 600px;
+    margin: auto;
+}
+
+/* ================= VISIT CARD ================= */
+.visit-section {
+    padding: 0 20px 80px;
+}
+
+.visit-card {
+    background: var(--bg-card);
+    padding: 55px;
+    border-radius: 28px;
+    max-width: 900px;
+    margin: -60px auto 0;
+    box-shadow: 0 20px 45px rgba(0,0,0,.08);
+}
+
+.visit-card h2 {
+    margin-bottom: 25px;
+    color: var(--primary-dark);
+}
+
+/* ================= FORM ================= */
+.visit-card form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px 35px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 13px 15px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border-soft);
+    font-size: 0.95rem;
+    transition: 0.3s;
+    background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(161,26,60,.12);
+}
+
+.form-group input[readonly] {
+    background: #f6f6f6;
+    cursor: not-allowed;
+}
+
+/* ================= BUTTON ================= */
+.submit-btn {
+    grid-column: 1 / -1;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    background: var(--primary);
+    color: white;
+    transition: 0.3s;
+    font-size: 1rem;
+}
+
+.submit-btn:hover {
+    background: var(--primary-dark);
+}
+
+/* ================= NOTE ================= */
+.note {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width: 768px) {
+    .visit-card form {
+        grid-template-columns: 1fr;
+    }
+
+    .visit-card {
+        padding: 35px;
+    }
+
+    .visit-hero {
+        padding: 80px 20px;
+    }
+}
+    </style>
+</head>
+
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<div class="top-bar">
+    <p>
+        <i class="fa-solid fa-user"></i>
+        Welcome, <strong>{{ request.profile.username }}</strong>
+        |
+        <i class="fa-solid fa-envelope"></i>
+        {{ request.profile.email }}
+    </p>
+</div>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+    <div class="logo">🐾 Animal Shelter</div>
+
+   <div class="nav-right">
+
+    <!-- Dashboard -->
+    <a href="{% url 'userhome' %}" class="nav-link">
+        <i class="fa-solid fa-house"></i> Dashboard
+    </a>
+
+    <!-- Notification -->
+    <a href="" class="notification-icon">
+        <i class="fa-solid fa-bell"></i>
+
+        {% if unread_count > 0 %}
+            <span class="notification-badge">
+                {{ unread_count }}
+            </span>
+        {% endif %}
+    </a>
+
+    <!-- Logout -->
+    <a href="{% url 'logout' %}" class="logout-btn">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
+
+</div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="visit-hero">
+    <h1>📅 Schedule a Visit</h1>
+    <p>
+        Book a visit to meet the pet before adoption and interact with the shelter team.
+    </p>
+</section>
+
+<!-- ================= VISIT FORM ================= -->
+<section class="visit-section">
+    <div class="visit-card">
+
+        <h2>Visit Details</h2>
+
+        <!-- IMPORTANT: METHOD + CSRF -->
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- PET INFO -->
+            <div class="form-group full">
+                <label>Pet Selected</label>
+                <input type="text"
+                       value="{{ pet_name }} ({{ pet_type }})"
+                       readonly>
+            </div>
+
+            <!-- USER INFO -->
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text"
+                       value="{{ request.profile.username }}"
+                       readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email"
+                       value="{{ request.profile.email }}"
+                       readonly>
+            </div>
+
+            <!-- PURPOSE -->
+            <div class="form-group">
+                <label>Purpose of Visit</label>
+                <select name="purpose" required>
+                    <option value="">Select purpose</option>
+                    <option>Adoption Discussion</option>
+                    <option>Meet & Interaction</option>
+                    <option>General Visit</option>
+                </select>
+            </div>
+
+            <!-- DATE -->
+            <div class="form-group">
+                <label>Preferred Date</label>
+                <input type="date" name="visit_date" required>
+            </div>
+
+            <!-- TIME -->
+            <div class="form-group">
+                <label>Preferred Time</label>
+                <select name="visit_time" required>
+                    <option value="">Select time</option>
+                    <option>10:00 AM</option>
+                    <option>11:00 AM</option>
+                    <option>12:00 PM</option>
+                    <option>2:00 PM</option>
+                    <option>3:00 PM</option>
+                </select>
+            </div>
+
+            <!-- MESSAGE -->
+            <div class="form-group full">
+                <label>Additional Notes</label>
+                <textarea name="message"
+                          rows="3"
+                          placeholder="Any special request or information"></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <i class="fa-solid fa-calendar-check"></i>
+                Schedule Visit
+            </button>
+
+        </form>
+
+        <p class="note">
+            📌 Visit requests require admin approval before confirmation.
+        </p>
+
+    </div>
+</section>
+
+</body>
+</html>

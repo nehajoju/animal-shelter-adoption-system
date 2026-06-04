@@ -1,0 +1,351 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Staff Adoption Review</title>
+
+<link rel="stylesheet" href="{% static 'css/adminpanel/admin.css' %}">
+<link rel="stylesheet" href="{% static 'css/adminpanel/adoption_review.css' %}">
+
+<style>
+
+/* ===== Same CSS as your page (kept unchanged) ===== */
+
+:root{
+--primary:#a11a3c;
+--primary-dark:#7f102d;
+--secondary:#1f2937;
+--text-muted:#6b7280;
+--bg-main:#f4f6fa;
+--bg-card:#ffffff;
+--border-soft:#e5e7eb;
+}
+
+body{
+margin:0;
+font-family:"Poppins",sans-serif;
+background:var(--bg-main);
+color:var(--secondary);
+}
+
+.top-bar{
+background:var(--secondary);
+color:white;
+padding:10px 8%;
+font-size:13px;
+}
+
+.navbar{
+background:white;
+padding:18px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid var(--border-soft);
+}
+
+.logo{
+font-size:18px;
+font-weight:800;
+color:var(--primary);
+}
+
+.nav-right{
+display:flex;
+gap:25px;
+}
+
+.nav-link{
+color:var(--secondary);
+font-weight:600;
+font-size:14px;
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.logout-btn{
+background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+padding:8px 16px;
+border-radius:8px;
+color:white;
+font-size:13px;
+}
+
+.hero{
+text-align:center;
+padding:40px 8%;
+}
+
+.hero h1{
+font-size:28px;
+font-weight:800;
+}
+
+.admin-page{
+padding:30px 8% 60px;
+}
+
+/* FILTER */
+
+.filter-bar{
+background:var(--bg-card);
+padding:16px;
+border-radius:14px;
+border:1px solid var(--border-soft);
+display:flex;
+gap:14px;
+margin-bottom:30px;
+}
+
+.filter-bar input,
+.filter-bar select{
+padding:10px 12px;
+border-radius:10px;
+border:1px solid var(--border-soft);
+}
+
+/* GRID */
+
+.application-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+gap:22px;
+}
+
+/* CARD */
+
+.application-card{
+background:white;
+padding:20px;
+border-radius:18px;
+border:1px solid var(--border-soft);
+box-shadow:0 10px 22px rgba(0,0,0,0.06);
+}
+
+.application-card h3{
+font-size:17px;
+font-weight:700;
+}
+
+.small-text{
+font-size:13px;
+color:var(--text-muted);
+margin-bottom:10px;
+}
+
+.status{
+display:inline-block;
+padding:6px 14px;
+border-radius:20px;
+font-size:12px;
+font-weight:700;
+margin-bottom:10px;
+}
+
+.status.pending{
+background:#fff7ed;
+color:#9a3412;
+}
+
+.status.approved{
+background:#ecfdf5;
+color:#065f46;
+}
+
+.status.rejected{
+background:#fee2e2;
+color:#7f1d1d;
+}
+
+.btn{
+padding:9px 12px;
+border-radius:10px;
+font-size:13px;
+font-weight:600;
+border:none;
+margin-top:8px;
+width:100%;
+cursor:pointer;
+}
+
+.btn-view{
+background:var(--primary);
+color:white;
+}
+
+.btn-animal{
+background:linear-gradient(135deg,#e0f2fe,#bae6fd);
+color:#075985;
+}
+
+/* MODAL */
+
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.35);
+align-items:center;
+justify-content:center;
+}
+
+.modal-content{
+background:white;
+width:520px;
+padding:30px;
+border-radius:18px;
+}
+
+.close{
+position:absolute;
+right:20px;
+font-size:24px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+<i class="fa-solid fa-paw"></i> Shelter Staff Panel
+</div>
+
+<!-- NAVBAR -->
+<header class="navbar">
+
+<div class="logo">
+🐾 Animal Shelter
+</div>
+
+<div class="nav-right">
+
+<a href="{% url 'staff_dashboard' %}" class="nav-link">
+Dashboard
+</a>
+
+<a href="{% url 'staff_adoption_review' %}" class="nav-link">
+Adoption Review
+</a>
+
+<a href="{% url 'panel_logout' %}" class="logout-btn">
+Logout
+</a>
+
+</div>
+
+</header>
+
+<!-- HERO -->
+
+<section class="hero">
+
+<h1>Adoption Applications</h1>
+<p>Staff can view adoption applications</p>
+
+</section>
+
+<!-- CONTENT -->
+
+<section class="admin-page">
+
+<!-- FILTER -->
+
+<form method="GET" class="filter-bar">
+
+<input type="text" id="searchInput" placeholder="Search user or animal...">
+
+<select name="status">
+
+<option value="">All Status</option>
+
+<option value="Pending">Pending</option>
+<option value="Approved">Approved</option>
+<option value="Rejected">Rejected</option>
+
+</select>
+
+<button type="submit">Filter</button>
+
+</form>
+
+<!-- APPLICATION GRID -->
+
+<div class="application-grid">
+
+{% for app in applications %}
+
+<div class="application-card"
+data-user="{{ app.user.username|lower }}"
+data-animal="{{ app.animal.name|lower }}">
+
+<h3>{{ app.user.username }}</h3>
+
+<p class="small-text">
+Animal: <strong>{{ app.animal.name }}</strong>
+</p>
+
+<span class="status {{ app.status|lower }}">
+{{ app.status }}
+</span>
+
+<button class="btn btn-view"
+onclick="openApplicationModal('{{ app.full_name }}','{{ app.email }}','{{ app.phone }}')">
+
+View Application
+
+</button>
+
+<button class="btn btn-animal"
+onclick="openAnimalModal('{{ app.animal.name }}','{{ app.animal.pet_type }}','{{ app.animal.age }}')">
+
+View Animal
+
+</button>
+
+</div>
+
+{% empty %}
+
+<p>No adoption applications found.</p>
+
+{% endfor %}
+
+</div>
+
+</section>
+
+<script>
+
+const searchInput=document.getElementById("searchInput");
+
+const cards=document.querySelectorAll(".application-card");
+
+searchInput.addEventListener("keyup",function(){
+
+let value=this.value.toLowerCase();
+
+cards.forEach(card=>{
+
+let user=card.dataset.user;
+let animal=card.dataset.animal;
+
+if(user.includes(value)||animal.includes(value)){
+card.style.display="block";
+}else{
+card.style.display="none";
+}
+
+});
+
+});
+
+</script>
+
+</body>
+</html>

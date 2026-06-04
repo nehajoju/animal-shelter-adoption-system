@@ -1,0 +1,401 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Vet Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+/* ================= ROOT COLORS ================= */
+
+:root{
+--primary:#a11a3c;
+--secondary:#111827;
+--bg-main:#f4f6f9;
+--bg-card:#ffffff;
+--text-main:#374151;
+--text-muted:#6b7280;
+--border-soft:#e5e7eb;
+}
+
+/* ================= RESET ================= */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Poppins',sans-serif;
+background:var(--bg-main);
+color:var(--text-main);
+}
+
+/* ================= TOPBAR ================= */
+
+.vet-topbar{
+margin-left:260px;
+height:65px;
+background:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 30px;
+border-bottom:1px solid var(--border-soft);
+position:sticky;
+top:0;
+z-index:999;
+}
+
+.profile-area{
+display:flex;
+align-items:center;
+gap:10px;
+cursor:pointer;
+}
+
+.profile-img{
+width:35px;
+height:35px;
+border-radius:50%;
+}
+
+.profile-dropdown{
+position:absolute;
+right:20px;
+top:60px;
+background:white;
+border-radius:10px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+display:none;
+min-width:140px;
+}
+
+.profile-dropdown a{
+display:block;
+padding:10px 14px;
+text-decoration:none;
+color:var(--text-main);
+}
+
+.profile-dropdown a:hover{
+background:#f3f4f6;
+}
+
+/* ================= SIDEBAR ================= */
+
+.vet-sidebar{
+width:260px;
+height:100vh;
+position:fixed;
+top:0;
+left:0;
+background:var(--secondary);
+padding:24px;
+overflow-y:auto;
+}
+
+.sidebar-title{
+color:#fff;
+font-size:20px;
+margin-bottom:25px;
+}
+
+.sidebar-menu{
+list-style:none;
+}
+
+.sidebar-menu a{
+display:block;
+padding:10px 14px;
+border-radius:10px;
+color:#cbd5e1;
+text-decoration:none;
+font-size:14px;
+margin-bottom:6px;
+}
+
+.sidebar-menu a:hover{
+background:var(--primary);
+color:white;
+}
+
+.menu-section{
+margin:18px 0 6px;
+font-size:11px;
+color:#9ca3af;
+text-transform:uppercase;
+}
+
+/* ================= MAIN PAGE ================= */
+
+.vet-page{
+margin-left:260px;
+padding:32px;
+}
+
+/* ================= HEADER ================= */
+
+.dashboard-header h1{
+font-size:26px;
+color:#111827;
+}
+
+.dashboard-header p{
+font-size:14px;
+color:var(--text-muted);
+}
+
+/* ================= STATS ================= */
+
+.stats-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-top:25px;
+}
+
+.stat-card{
+background:white;
+padding:20px;
+border-radius:14px;
+border:1px solid var(--border-soft);
+text-decoration:none;
+color:var(--text-main);
+transition:.3s;
+}
+
+.stat-card:hover{
+transform:translateY(-4px);
+box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+
+.stat-card h3{
+font-size:26px;
+margin-bottom:6px;
+}
+
+.stat-card p{
+font-size:13px;
+color:var(--text-muted);
+}
+
+/* ================= TASK SECTION ================= */
+
+.task-section{
+margin-top:40px;
+}
+
+.task-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+margin-top:20px;
+}
+
+.task-card{
+background:white;
+border-radius:14px;
+padding:22px;
+text-decoration:none;
+color:#1f2937;
+box-shadow:0 6px 18px rgba(0,0,0,0.05);
+border:1px solid #f1f1f1;
+transition:.3s;
+}
+
+.task-card:hover{
+transform:translateY(-4px);
+box-shadow:0 12px 25px rgba(0,0,0,0.1);
+}
+
+.task-card .icon{
+font-size:26px;
+margin-bottom:10px;
+}
+
+.task-card h3{
+font-size:16px;
+margin-bottom:6px;
+}
+
+.task-card p{
+font-size:13px;
+color:#6b7280;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= TOPBAR ================= -->
+
+<div class="vet-topbar">
+
+<div>
+<h2>🩺 Shelter Vet</h2>
+</div>
+
+<div class="profile-area" onclick="toggleProfile()">
+<img src="{% static 'images/profile.png' %}" class="profile-img">
+<span>Vet</span>
+</div>
+
+<div class="profile-dropdown" id="profileDropdown">
+<a href="{% url 'vet_profile' %}">Profile</a>
+<a href="{% url 'panel_logout' %}">Logout</a>
+</div>
+
+</div>
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<div class="vet-sidebar">
+
+<h2 class="sidebar-title">Vet Panel</h2>
+
+<ul class="sidebar-menu">
+
+<li><a href="{% url 'vet_dashboard' %}">Dashboard</a></li>
+
+<li class="menu-section">Animal Health</li>
+
+<li><a href="{% url 'assigned_pets' %}">Assigned Pets</a></li>
+<li><a href="{% url 'all_shelter_pets' %}">All Shelter Pets</a></li>
+<li><a href="{% url 'treatment_cases' %}">Treatment Cases</a></li>
+
+<li class="menu-section">Medical</li>
+
+<li><a href="{% url 'medical_history' %}">Medical History</a></li>
+<li><a href="{% url 'vaccination_due' %}">Vaccination Due</a></li>
+<li><a href="{% url 'add_vaccine_name' %}">Add Vaccine</a></li>
+<li><a href="{% url 'quarantine_animals' %}">Quarantine</a></li>
+
+<li class="menu-section">Account</li>
+
+<li><a href="{% url 'vet_profile' %}">My Profile</a></li>
+<li><a href="{% url 'panel_logout' %}">Logout</a></li>
+
+</ul>
+
+</div>
+
+
+<!-- ================= MAIN PAGE ================= -->
+
+<div class="vet-page">
+
+<div class="dashboard-header">
+<h1>Vet Dashboard</h1>
+<p>Medical monitoring and animal health management</p>
+</div>
+
+
+<!-- ================= OVERVIEW ================= -->
+
+<div class="stats-grid">
+
+<a href="{% url 'all_shelter_pets' %}" class="stat-card">
+<h3>{{ total_animals }}</h3>
+<p>Total Animals</p>
+</a>
+
+<a href="{% url 'treatment_cases' %}" class="stat-card">
+<h3>{{ treatment_count }}</h3>
+<p>Under Treatment</p>
+</a>
+
+<a href="{% url 'medical_history' %}" class="stat-card">
+<h3>{{ healthy_count }}</h3>
+<p>Healthy Pets</p>
+</a>
+
+<a href="{% url 'vaccination_due' %}" class="stat-card">
+<h3>{{ vaccination_due_count }}</h3>
+<p>Vaccination Due</p>
+</a>
+
+<a href="{% url 'quarantine_animals' %}" class="stat-card">
+<h3>{{ quarantine_count }}</h3>
+<p>Quarantine</p>
+</a>
+
+<a href="{% url 'treatment_cases' %}" class="stat-card">
+<h3>{{ risk_count }}</h3>
+<p>Health Risk</p>
+</a>
+
+</div>
+
+
+<!-- ================= TASKS ================= -->
+
+<div class="task-section">
+
+<h2>Vet Tasks</h2>
+
+<div class="task-grid">
+
+<a href="{% url 'assigned_pets' %}" class="task-card">
+<span class="icon">🐾</span>
+<h3>Assigned Pets</h3>
+<p>Animals assigned for medical check</p>
+</a>
+
+<a href="{% url 'treatment_cases' %}" class="task-card">
+<span class="icon">🩺</span>
+<h3>Treatment Cases</h3>
+<p>Handle animals under treatment</p>
+</a>
+
+<a href="{% url 'vaccination_due' %}" class="task-card">
+<span class="icon">💉</span>
+<h3>Vaccination Due</h3>
+<p>Manage vaccination schedule</p>
+</a>
+
+<a href="{% url 'medical_history' %}" class="task-card">
+<span class="icon">📋</span>
+<h3>Medical History</h3>
+<p>View medical records of animals</p>
+</a>
+
+<a href="{% url 'quarantine_animals' %}" class="task-card">
+<span class="icon">🦠</span>
+<h3>Quarantine Animals</h3>
+<p>Animals under health observation</p>
+</a>
+<!-- 
+<a href="{% url 'add_vaccine_name' %}" class="task-card">
+<span class="icon">💊</span>
+<h3>Add Vaccine</h3>
+<p>Add new vaccine names</p>
+</a> -->
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+function toggleProfile(){
+const dropdown=document.getElementById("profileDropdown");
+
+dropdown.style.display=
+dropdown.style.display==="block"?"none":"block";
+}
+
+</script>
+
+</body>
+</html>

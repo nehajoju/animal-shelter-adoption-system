@@ -1,0 +1,328 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Visit Requests | Animal Shelter</title>
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+/* ================= ROOT COLORS ================= */
+:root {
+    --primary: #a11a3c;
+    --primary-dark: #7f102f;
+    --secondary: #111827;
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #374151;
+    --text-muted: #6b7280;
+    --border-soft: #e5e7eb;
+}
+
+/* ================= GLOBAL ================= */
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* SUBTLE PAW BACKGROUND */
+body::before{
+    content:"🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾";
+    position:fixed;
+    font-size:120px;
+    opacity:0.08;
+    top:20%;
+    left:5%;
+    transform:rotate(-20deg);
+    z-index:-1;
+}
+
+/* ================= TOP BAR ================= */
+.top-bar {
+    background: var(--secondary);
+    color: white;
+    padding: 12px 8%;
+    font-size: 0.95rem;
+}
+
+/* ================= NAVBAR ================= */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 8%;
+    background: var(--bg-card);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* ================= NAVBAR ================= */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    background:var(--bg-card);
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:20px;
+    font-weight:700;
+    color:var(--primary);
+}
+
+.nav-links{
+    display:flex;
+    gap:25px;
+    align-items:center;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:var(--secondary);
+    font-weight:600;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:var(--primary);
+}
+
+/* ================= NOTIFICATION ================= */
+.notification-icon {
+    position: relative;
+    font-size: 18px;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: var(--primary);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 6px;
+    border-radius: 50%;
+    min-width: 18px;
+    text-align: center;
+}
+/* ================= PAGE HEADER ================= */
+.page-header {
+    padding: 100px 20px 80px;
+    text-align: center;
+    background:
+        linear-gradient(rgba(161,26,60,.85), rgba(127,16,47,.85)),
+        url("https://images.unsplash.com/photo-1583511655826-05700442b31b")
+        center/cover no-repeat;
+    color: white;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.page-header p {
+    opacity: 0.9;
+}
+
+/* ================= CONTAINER ================= */
+.container {
+    max-width: 1000px;
+    margin: -60px auto 80px;
+    padding: 0 20px;
+}
+
+/* ================= VISIT CARD ================= */
+.visit-card {
+    background: var(--bg-card);
+    padding: 25px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+    transition: 0.3s;
+    border: 1px solid var(--border-soft);
+}
+
+.visit-card:hover {
+    transform: translateY(-5px);
+}
+
+.visit-card h3 {
+    margin-bottom: 8px;
+}
+
+/* ================= STATUS BADGES ================= */
+.status {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.approved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* ================= VISIT INFO GRID ================= */
+.visit-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 20px;
+    margin-top: 10px;
+}
+
+.visit-info p {
+    margin: 4px 0;
+    font-size: 0.95rem;
+}
+
+.visit-info strong {
+    color: var(--primary-dark);
+}
+
+/* ================= EMPTY STATE ================= */
+.empty {
+    text-align: center;
+    color: var(--text-muted);
+    margin-top: 40px;
+    font-size: 1rem;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width: 768px) {
+    .visit-info {
+        grid-template-columns: 1fr;
+    }
+
+    .page-header {
+        padding: 80px 20px;
+    }
+
+    .container {
+        margin-top: -40px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-bar">
+    🐾 My Visit Requests
+</div>
+
+<header class="navbar">
+    <div class="logo">🐾 Animal Shelter</div>
+
+    <div class="nav-links">
+        <a href="{% url 'userhome' %}">
+            <i class="fa fa-home"></i> Dashboard
+        </a>
+
+        <a href="" class="notification-icon">
+            <i class="fa fa-bell"></i>
+            {% if unread_count > 0 %}
+                <span class="notification-badge">
+                    {{ unread_count }}
+                </span>
+            {% endif %}
+        </a>
+
+        <a href="{% url 'logout' %}">
+            <i class="fa fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</header>
+
+<div class="page-header">
+    <h1>📅 My Visit Requests</h1>
+    <p>Track your scheduled shelter visits</p>
+</div>
+
+<div class="container">
+
+{% for visit in visits %}
+<div class="visit-card">
+
+    <h3>
+        {% if visit.animal %}
+            {{ visit.animal.name }}
+        {% else %}
+            {{ visit.rehome_pet.pet_name }}
+        {% endif %}
+    </h3>
+
+    <span class="status {{ visit.status|lower }}">
+        {{ visit.status }}
+    </span>
+
+    <div class="visit-info">
+
+        <p>
+            <strong>Pet Type:</strong>
+            {% if visit.animal %}
+                {{ visit.animal.pet_type.name }}
+            {% else %}
+                {{ visit.rehome_pet.pet_type }}
+            {% endif %}
+        </p>
+
+        <p><strong>Date:</strong> {{ visit.visit_date }}</p>
+        <p><strong>Time:</strong> {{ visit.visit_time }}</p>
+
+        <p>
+            <strong>Requested On:</strong>
+            {{ visit.created_at|date:"d M Y" }}
+        </p>
+
+    </div>
+
+    {% if visit.message %}
+    <p style="margin-top:10px;">
+        <strong>Message:</strong><br>
+        {{ visit.message }}
+    </p>
+    {% endif %}
+
+</div>
+
+{% empty %}
+<p class="empty">You have not scheduled any visits yet.</p>
+{% endfor %}
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,270 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Medical Attention | Staff</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* ================= ROOT VARIABLES ================= */
+
+:root{
+--primary:#a11a3c;
+--primary-dark:#7f102d;
+--secondary:#1f2937;
+--text-muted:#6b7280;
+--bg-main:#f4f6fa;
+--bg-card:#ffffff;
+--border-soft:#e5e7eb;
+}
+
+/* ================= GLOBAL ================= */
+
+body{
+margin:0;
+font-family:"Poppins",sans-serif;
+background:var(--bg-main);
+color:var(--secondary);
+}
+
+a{
+text-decoration:none;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+background:white;
+padding:18px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid var(--border-soft);
+}
+
+.logo{
+font-size:18px;
+font-weight:800;
+color:var(--primary);
+}
+
+.nav-right{
+display:flex;
+align-items:center;
+gap:25px;
+}
+
+.nav-link{
+color:var(--secondary);
+font-weight:600;
+font-size:14px;
+}
+
+.nav-link:hover{
+color:var(--primary);
+}
+
+.logout-btn{
+background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+padding:8px 16px;
+border-radius:8px;
+color:white;
+font-weight:600;
+font-size:13px;
+}
+
+.logout-btn:hover{
+opacity:0.9;
+}
+
+/* ================= PAGE CONTAINER ================= */
+
+.container{
+padding:50px 8%;
+}
+
+/* ================= PAGE HEADER ================= */
+
+.page-header{
+margin-bottom:25px;
+}
+
+.page-header h1{
+font-size:26px;
+font-weight:800;
+}
+
+.page-header p{
+color:var(--text-muted);
+margin-top:5px;
+}
+
+/* ================= TABLE CARD ================= */
+
+.table-card{
+background:white;
+border-radius:16px;
+border:1px solid var(--border-soft);
+box-shadow:0 10px 22px rgba(0,0,0,0.05);
+overflow:hidden;
+}
+
+/* ================= TABLE ================= */
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+color:white;
+padding:14px;
+font-size:14px;
+}
+
+td{
+padding:14px;
+border-bottom:1px solid var(--border-soft);
+font-size:14px;
+color:var(--text-muted);
+text-align:center;
+}
+
+tr:hover{
+background:#f9fafb;
+}
+
+/* ================= BUTTON ================= */
+
+.btn{
+padding:8px 14px;
+border-radius:8px;
+font-size:13px;
+font-weight:600;
+background:linear-gradient(135deg,#fff7ed,#fed7aa);
+color:#9a3412;
+display:inline-block;
+}
+
+.btn:hover{
+transform:translateY(-2px);
+box-shadow:0 6px 14px rgba(0,0,0,0.1);
+}
+
+/* ================= STATUS ================= */
+
+.assigned{
+color:#16a34a;
+font-weight:700;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+<div class="logo">
+🐾 Animal Shelter
+</div>
+
+<div class="nav-right">
+
+<a href="{% url 'staff_dashboard' %}" class="nav-link">
+<i class="fa-solid fa-chart-line"></i> Dashboard
+</a>
+
+
+<a href="{% url 'staff_medical_attention_list' %}" class="nav-link">
+<i class="fa-solid fa-heart-pulse"></i> Medical
+</a>
+
+<a href="{% url 'panel_logout' %}" class="logout-btn">
+<i class="fa-solid fa-right-from-bracket"></i> Logout
+</a>
+
+</div>
+
+</header>
+
+<!-- ================= PAGE ================= -->
+
+<section class="container">
+
+<div class="page-header">
+<h1>Medical Attention</h1>
+<p>Assign animals that require medical treatment</p>
+</div>
+
+<div class="table-card">
+
+<table>
+
+<tr>
+<th>Pet Name</th>
+<th>Type</th>
+<th>Age</th>
+<th>Health Status</th>
+<th>Medical Attention</th>
+</tr>
+
+{% for animal in animals %}
+
+<tr>
+
+<td>{{ animal.name }}</td>
+<td>{{ animal.pet_type }}</td>
+<td>{{ animal.age }}</td>
+<td>{{ animal.health_status }}</td>
+
+<td>
+
+{% if animal.treatment_status == "pending" %}
+
+<span class="assigned">
+<i class="fa-solid fa-check"></i> Assigned
+</span>
+
+{% elif animal.treatment_status == "completed" %}
+
+<a href="{% url 'staff_add_symptoms' animal.id %}" class="btn">
+Mark Again
+</a>
+
+{% else %}
+
+<a href="{% url 'staff_add_symptoms' animal.id %}" class="btn">
+Mark Treatment
+</a>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="5">No animals available</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</section>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | Adoption</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        body {
+            background: #f4f6fa;
+            font-family: "Poppins", sans-serif;
+            margin: 0; padding: 20px;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 550px;
+            margin: 40px auto;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .payment-card {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+        }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header i { font-size: 40px; color: #a11a3c; margin-bottom: 15px; }
+        .header h2 { margin: 0; font-size: 24px; font-weight: 700; }
+        .header p { color: #6b7280; font-size: 14px; margin-top: 5px; }
+
+        .form-group { margin-bottom: 25px; }
+        label { font-weight: 600; display: block; margin-bottom: 8px; font-size: 14px; color: #374151; }
+
+        input[type="text"], input[type="number"] {
+            width: 100%; padding: 15px; border-radius: 12px;
+            border: 2px solid #e5e7eb; background: #f9fafb;
+            font-size: 15px; font-family: "Poppins", sans-serif;
+            transition: 0.3s; box-sizing: border-box;
+        }
+        input:focus { border-color: #a11a3c; background: white; outline: none; box-shadow: 0 0 0 4px rgba(161,26,60,0.1); }
+
+        /* Custom Payment Method Cards */
+        .payment-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .method-card {
+            border: 2px solid #e5e7eb; border-radius: 14px; padding: 15px;
+            cursor: pointer; transition: 0.3s; position: relative;
+            display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
+        }
+        .method-card i { font-size: 24px; color: #6b7280; transition: 0.3s; }
+        .method-card span { font-size: 14px; font-weight: 600; color: #4b5563; }
+        
+        .method-card input[type="radio"] { display: none; }
+        .method-card input[type="radio"]:checked + .card-content { border-color: #a11a3c; }
+        
+        /* The magic logic for styling the selected card */
+        .method-card:has(input:checked) {
+            border-color: #a11a3c; background: #fff0f2;
+        }
+        .method-card:has(input:checked) i, .method-card:has(input:checked) span { color: #a11a3c; }
+
+        .pay-btn {
+            width: 100%; padding: 16px; border: none; border-radius: 14px;
+            background: linear-gradient(135deg, #a11a3c, #7f102d); color: white;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 8px 20px rgba(161,26,60,0.25); margin-top: 10px;
+        }
+        .pay-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(161,26,60,0.35); }
+
+        .note-box {
+            background: #f3f4f6; padding: 15px; border-radius: 12px;
+            font-size: 13px; color: #4b5563; display: flex; gap: 10px;
+            align-items: flex-start; margin-top: 25px; line-height: 1.5;
+        }
+        .note-box i { color: #f59e0b; font-size: 16px; margin-top: 2px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="payment-card">
+        <div class="header">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h2>Secure Checkout</h2>
+            <p>Complete your payment to finalize the adoption.</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Adoption Fee</label>
+                <input type="text" value="₹ {{ adoption_fee }}" readonly style="color: #a11a3c; font-weight: 700;">
+            </div>
+
+            <div class="form-group">
+                <label>Optional Donation (₹) ❤️</label>
+                <input type="number" name="donation_amount" min="0" placeholder="e.g. 500 (Helps shelter animals)">
+            </div>
+
+            <div class="form-group">
+                <label>Select Payment Method</label>
+                <div class="payment-methods">
+                    <label class="method-card">
+                        <input type="radio" name="payment_method" value="Online" required checked>
+                        <i class="fa-solid fa-credit-card"></i>
+                        <span>Pay Online</span>
+                    </label>
+
+                    <label class="method-card">
+                        <input type="radio" name="payment_method" value="Offline" required>
+                        <i class="fa-solid fa-building-columns"></i>
+                        <span>Pay at Shelter</span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="pay-btn">Proceed to Verification <i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+
+        <div class="note-box">
+            <i class="fa-solid fa-circle-info"></i>
+            <div><strong>Note:</strong> Online payments are processed instantly and secure your pet immediately. Offline payments require shelter verification.</div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,264 @@
+{% load static %}
+{% load custom_tags %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Found Pet Reports | Admin</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* FILTER BUTTONS */
+        .filter-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-buttons a {
+            text-decoration: none;
+            padding: 7px 16px;
+            margin: 0 5px;
+            border-radius: 20px;
+            background: #ddd;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .filter-buttons a.active {
+            background: #2c3e50;
+            color: white;
+        }
+
+        /* Card */
+        .pet-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .pet-image img {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .pet-details {
+            flex: 1;
+        }
+
+        .pet-details h3 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .pet-details p {
+            margin: 4px 0;
+            color: #555;
+        }
+
+        /* Status */
+        .status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 6px;
+        }
+
+        .status.Found {
+            background: #e6ffe9;
+            color: #27ae60;
+        }
+
+        .status.Returned {
+            background: #e6f0ff;
+            color: #2c3e50;
+        }
+
+        /* Button */
+        .return-btn {
+            margin-top: 10px;
+            padding: 6px 12px;
+            border: none;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .return-btn:hover {
+            background-color: #1a242f;
+        }
+
+        /* Match box */
+        .match-box {
+            margin-top: 12px;
+            padding: 10px;
+            background: #f0f7ff;
+            border-left: 4px solid #2c3e50;
+            border-radius: 6px;
+        }
+
+        .match-box h4 {
+            margin: 0 0 8px 0;
+            color: #2c3e50;
+        }
+
+        .map-box {
+            margin-top: 10px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .match-badge {
+            background: #27ae60;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            display: inline-block;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .empty-message {
+            text-align: center;
+            margin-top: 40px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Found Pet Reports</h2>
+
+<!-- FILTER BUTTONS -->
+<div class="filter-buttons">
+    <a href="{% url 'found_pets' %}"
+       class="{% if not status_filter %}active{% endif %}">
+        All
+    </a>
+
+    <a href="?status=Found"
+       class="{% if status_filter == 'Found' %}active{% endif %}">
+        Found
+    </a>
+
+    <a href="?status=Returned"
+       class="{% if status_filter == 'Returned' %}active{% endif %}">
+        Returned
+    </a>
+</div>
+
+{% if found_pets %}
+
+{% for pet in found_pets %}
+<div class="pet-card">
+
+    <div class="pet-image">
+        {% if pet.pet_photo %}
+            <img src="{{ pet.pet_photo.url }}">
+        {% endif %}
+    </div>
+
+    <div class="pet-details">
+
+        <h3>{{ pet.pet_type }}</h3>
+
+        <!-- MATCH BADGE -->
+        {% with strong_matches|get_item:pet.id as strong %}
+            {% if strong %}
+                <div class="match-badge">✅ Match Found</div>
+            {% endif %}
+        {% endwith %}
+
+        <p><b>Reported By:</b> {{ pet.user.username }}</p>
+        <p><b>Contact Email:</b> {{ pet.user.email }}</p>
+        <p><b>Phone:</b> {{ pet.user.phone_number }}</p>
+
+        <p><b>Location Found:</b> {{ pet.found_location }}</p>
+        <p><b>Date Found:</b> {{ pet.date_found }}</p>
+        <p><b>Condition:</b> {{ pet.condition }}</p>
+        <p><b>Description:</b> {{ pet.description }}</p>
+        <p><b>Reported On:</b> {{ pet.reported_date }}</p>
+
+        {% if pet.found_location %}
+        <div class="map-box">
+            <iframe width="100%" height="200" frameborder="0"
+                style="border:0" loading="lazy" allowfullscreen
+                src="https://www.google.com/maps?q={{ pet.found_location }}&output=embed">
+            </iframe>
+        </div>
+        {% endif %}
+
+        <span class="status {{ pet.status }}">
+            {{ pet.status }}
+        </span>
+
+        {% if pet.status == "Found" %}
+        <form method="POST" action="{% url 'admin_mark_pet_returned' pet.id %}">
+            {% csrf_token %}
+            <button class="return-btn">Mark as Returned</button>
+        </form>
+        {% endif %}
+
+        <!-- MATCHING LOST PETS -->
+        {% with matches|get_item:pet.id as matched_pets %}
+        {% if matched_pets %}
+        <div class="match-box">
+            <h4>Possible Matching Lost Pets</h4>
+
+            {% for lost in matched_pets %}
+                <p>
+                    <b>{{ lost.pet_name }}</b> —
+                    {{ lost.last_seen_location }}
+                    (Owner: {{ lost.user.username }})
+                </p>
+
+                {% if lost.last_seen_location %}
+                <div class="map-box">
+                    <iframe width="100%" height="150" frameborder="0"
+                        style="border:0" loading="lazy" allowfullscreen
+                        src="https://www.google.com/maps?q={{ lost.last_seen_location }}&output=embed">
+                    </iframe>
+                </div>
+                {% endif %}
+
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+    </div>
+
+</div>
+{% endfor %}
+
+{% else %}
+<p class="empty-message">
+    No found pet reports available.
+</p>
+{% endif %}
+
+</body>
+</html>

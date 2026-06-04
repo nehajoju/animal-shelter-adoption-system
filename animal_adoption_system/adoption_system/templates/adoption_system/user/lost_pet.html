@@ -1,0 +1,281 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Lost My Pet | Animal Shelter</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* ================= ROOT COLORS ================= */
+:root {
+    --primary: #a11a3c;
+    --primary-dark: #7f102f;
+    --secondary: #111827;
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #374151;
+    --text-muted: #6b7280;
+    --border-soft: #e5e7eb;
+}
+
+/* ================= GLOBAL ================= */
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* SUBTLE PAW BACKGROUND */
+body::before{
+    content:"🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾";
+    position:fixed;
+    font-size:120px;
+    opacity:0.08;
+    top:20%;
+    left:5%;
+    transform:rotate(-20deg);
+    z-index:-1;
+}
+
+/* ================= NAVBAR ================= */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    background:var(--bg-card);
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:20px;
+    font-weight:700;
+    color:var(--primary);
+}
+
+.nav-links{
+    display:flex;
+    gap:25px;
+    align-items:center;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:var(--secondary);
+    font-weight:600;
+}
+
+.nav-links a:hover{
+    color:var(--primary);
+}
+
+.notification-icon {
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: var(--primary);
+    color: white;
+    font-size: 10px;
+    padding: 3px 6px;
+    border-radius: 50%;
+}
+
+/* ================= HERO (FULL WIDTH LIKE REHOME) ================= */
+.lost-hero {
+    padding: 110px 20px 90px;
+    text-align: center;
+    background:
+        linear-gradient(rgba(161,26,60,.85), rgba(127,16,47,.85)),
+        url("https://images.unsplash.com/photo-1558944351-cb6a2f7f5b30")
+        center/cover no-repeat;
+    color: white;
+}
+
+.lost-hero h1 {
+    font-size: 2.6rem;
+    margin-bottom: 10px;
+}
+
+.lost-hero p {
+    opacity: 0.9;
+}
+
+/* ================= FORM SECTION ================= */
+.form-container {
+    max-width:900px;
+    margin: -60px auto 80px;
+    padding:0 20px;
+}
+
+.form-card {
+    background: var(--bg-card);
+    padding: 50px;
+    border-radius: 28px;
+    box-shadow: 0 20px 45px rgba(0,0,0,.08);
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px 35px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-weight:600;
+    font-size:0.9rem;
+    margin-bottom:6px;
+    display:block;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width:100%;
+    padding:13px 15px;
+    border-radius:10px;
+    border:1.5px solid var(--border-soft);
+    font-size:0.95rem;
+    transition:0.3s;
+}
+
+.form-group textarea {
+    min-height:100px;
+    resize:vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline:none;
+    border-color:var(--primary);
+    box-shadow:0 0 0 4px rgba(161,26,60,.12);
+}
+
+.submit-btn {
+    grid-column: 1 / -1;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:var(--primary);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.submit-btn:hover {
+    background:var(--primary-dark);
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+    .form-card {
+        grid-template-columns:1fr;
+        padding:30px;
+    }
+
+    .lost-hero {
+        padding:80px 20px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="logo">🐾 Animal Shelter</div>
+    <div class="nav-links">
+        <a href="{% url 'userhome' %}">
+            <i class="fa fa-home"></i> Dashboard
+        </a>
+
+        <a href="" class="notification-icon">
+            <i class="fa fa-bell"></i>
+            {% if unread_count > 0 %}
+                <span class="notification-badge">{{ unread_count }}</span>
+            {% endif %}
+        </a>
+
+        <a href="{% url 'logout' %}">
+            <i class="fa fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="lost-hero">
+    <h1>🔍 Lost My Pet</h1>
+    <p>Report your missing pet so we can help you find them.</p>
+</section>
+
+<!-- FORM -->
+<section class="form-container">
+<form class="form-card" method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+
+<div class="form-group">
+    <label>Pet Name</label>
+    <input type="text" name="pet_name" required>
+</div>
+
+<div class="form-group">
+    <label>Type of Pet</label>
+    <select name="pet_type" required>
+        <option value="">Select Pet Type</option>
+        {% for type in pet_types %}
+            <option value="{{ type.id }}">{{ type.name }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="form-group">
+    <label>Breed</label>
+    <input type="text" name="breed">
+</div>
+
+<div class="form-group">
+    <label>Last Seen Location</label>
+    <input type="text" name="last_seen_location" required>
+</div>
+
+<div class="form-group">
+    <label>Date Lost</label>
+    <input type="date" name="date_lost" required>
+</div>
+
+<div class="form-group full">
+    <label>Identification Details</label>
+    <textarea name="identification_details" required></textarea>
+</div>
+
+<div class="form-group full">
+    <label>Upload Pet Photo</label>
+    <input type="file" name="pet_photo">
+</div>
+
+<button type="submit" class="submit-btn">
+    Submit Lost Report
+</button>
+
+</form>
+</section>
+
+</body>
+</html>

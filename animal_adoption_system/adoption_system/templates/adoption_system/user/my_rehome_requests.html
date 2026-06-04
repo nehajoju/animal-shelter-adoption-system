@@ -1,0 +1,290 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Rehome Requests | Animal Shelter</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* ================= ROOT COLORS ================= */
+:root {
+    --primary: #a11a3c;
+    --primary-dark: #7f102f;
+    --secondary: #111827;
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #374151;
+    --text-muted: #6b7280;
+    --border-soft: #e5e7eb;
+}
+
+/* ================= GLOBAL ================= */
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* Paw background */
+body::before{
+    content:"🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾";
+    position:fixed;
+    font-size:120px;
+    opacity:0.06;
+    top:20%;
+    left:5%;
+    transform:rotate(-20deg);
+    z-index:-1;
+}
+
+/* ================= NAVBAR ================= */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    background:var(--bg-card);
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:20px;
+    font-weight:700;
+    color:var(--primary);
+}
+
+.nav-links{
+    display:flex;
+    gap:25px;
+    align-items:center;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:var(--secondary);
+    font-weight:600;
+}
+
+.nav-links a:hover{
+    color:var(--primary);
+}
+
+.notification-icon {
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: var(--primary);
+    color: white;
+    font-size: 10px;
+    padding: 3px 6px;
+    border-radius: 50%;
+}
+
+/* ================= HERO ================= */
+.page-header {
+    padding: 80px 20px;
+    text-align: center;
+    background:
+        linear-gradient(rgba(161,26,60,.85), rgba(127,16,47,.85)),
+        url("https://images.unsplash.com/photo-1518717758536-85ae29035b6d")
+        center/cover no-repeat;
+    color: white;
+}
+
+.page-header h2 {
+    font-size: 2.4rem;
+    margin-bottom: 10px;
+}
+
+/* ================= CONTAINER ================= */
+.container {
+    max-width: 1000px;
+    margin: -60px auto 80px;
+    padding: 0 20px;
+}
+
+/* ================= CARD ================= */
+.card {
+    background: var(--bg-card);
+    padding: 25px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,.08);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+.card h3 {
+    margin-top: 0;
+    font-size: 20px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* ================= STATUS BADGES ================= */
+.status {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.approved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.rehomed {
+    background: #e0f2fe;
+    color: #075985;
+}
+
+/* ================= NOTES ================= */
+.notes {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f3f4f6;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+/* ================= EMPTY MESSAGE ================= */
+.empty-message {
+    text-align: center;
+    margin-top: 50px;
+    color: var(--text-muted);
+}
+
+/* ================= BUTTON ================= */
+.back-btn {
+    display: inline-block;
+    margin-bottom: 25px;
+    padding: 8px 14px;
+    background: var(--primary);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    background: var(--primary-dark);
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+    .row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="logo">🐾 Animal Shelter</div>
+
+    <div class="nav-links">
+        <a href="{% url 'userhome' %}">
+            <i class="fa fa-home"></i> Dashboard
+        </a>
+
+        <a href="" class="notification-icon">
+            <i class="fa fa-bell"></i>
+            {% if unread_count > 0 %}
+                <span class="notification-badge">
+                    {{ unread_count }}
+                </span>
+            {% endif %}
+        </a>
+
+        <a href="{% url 'logout' %}">
+            <i class="fa fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="page-header">
+    <h2>🏠 My Rehome Requests</h2>
+    <p>Track the progress of your submitted rehoming applications</p>
+</section>
+
+<div class="container">
+
+<a href="{% url 'rehome_pet' %}" class="back-btn">
+    ← Go to Rehome Page
+</a>
+
+{% for pet in pets %}
+<div class="card">
+
+    <div class="row">
+        <h3>{{ pet.pet_name }}</h3>
+
+        <span class="status {{ pet.status|lower }}">
+            {{ pet.status }}
+        </span>
+    </div>
+
+    <p><b>Type:</b> {{ pet.pet_type }}</p>
+    <p><b>Breed:</b> {{ pet.breed }}</p>
+    <p><b>Age:</b> {{ pet.age }}</p>
+    <p><b>City:</b> {{ pet.city }}</p>
+    <p><b>Submitted On:</b> {{ pet.created_at }}</p>
+
+    {% if pet.admin_notes %}
+    <div class="notes">
+        <b>Admin Notes:</b><br>
+        {{ pet.admin_notes }}
+    </div>
+    {% endif %}
+
+</div>
+{% empty %}
+<p class="empty-message">
+    You have not submitted any rehome requests yet.
+</p>
+{% endfor %}
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin | User Chats</title>
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f6f9;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #a11a3c;
+        }
+
+        .chat-card {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+
+        .chat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .chat-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-info i {
+            font-size: 22px;
+            color: #a11a3c;
+        }
+
+        .chat-info span {
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .badge {
+            background: red;
+            color: white;
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 20px;
+        }
+
+        .open-btn {
+            text-decoration: none;
+            background: #a11a3c;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .open-btn:hover {
+            background: #7e132f;
+        }
+        .back-btn {
+    background: #f3f4f6;
+    padding: 6px 12px;
+    border-radius: 20px;
+    color: #374151;
+    text-decoration: none;
+    font-size: 13px;
+    transition: 0.2s ease;
+}
+
+.back-btn:hover {
+    background: #e5e7eb;
+}
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2><i class="fa-solid fa-comments"></i> User Chat Messages</h2>
+    <div style="margin-bottom:20px;">
+    <a href="{% url 'admin_dashboard' %}" class="back-btn">
+        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+    {% for item in rooms %}
+        <div class="chat-card">
+            <div class="chat-info">
+                <i class="fa-solid fa-user"></i>
+                <span>{{ item.room.user.username }}</span>
+
+                {% if item.unread > 0 %}
+                    <span class="badge">{{ item.unread }} New</span>
+                {% endif %}
+            </div>
+
+            <a href="{% url 'admin_chat_room' item.room.id %}" class="open-btn">
+                Open Chat
+            </a>
+        </div>
+    {% empty %}
+        <p>No chat messages yet.</p>
+    {% endfor %}
+</div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+

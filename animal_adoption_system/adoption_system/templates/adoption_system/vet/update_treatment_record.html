@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Treatment Record</title>
+
+    <style>
+        body { font-family: Arial; background:#f6f6f8; }
+
+        .container {
+            width: 520px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+        }
+
+        input, textarea, select {
+            width:100%;
+            padding:8px;
+            margin-bottom:12px;
+        }
+
+        textarea[readonly] {
+            background:#f3f3f3;
+        }
+
+        button {
+            padding:8px 16px;
+            background:#8b1e3f;
+            color:white;
+            border:none;
+            border-radius:5px;
+            margin-right:8px;
+        }
+
+        .prediction-box {
+            background:#fafafa;
+            border:1px solid #eee;
+            padding:10px;
+            margin-bottom:12px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Current Health Record - {{ animal.name }}</h2>
+
+<form method="POST">
+{% csrf_token %}
+
+<label>Reported Symptoms (Staff)</label>
+<textarea readonly>
+{% if treatment %}
+{{ treatment.reported_symptoms }}
+{% else %}
+No symptoms reported by staff
+{% endif %}
+</textarea>
+
+<!-- Observed Symptoms -->
+<label>Observed Symptoms</label>
+<textarea name="observed_symptoms">{{ treatment.observed_symptoms }}</textarea>
+
+<!-- ML Prediction -->
+<label>Possible Diseases (ML Prediction)</label>
+
+<div class="prediction-box">
+{% if top_predictions %}
+    <ul>
+        {% for disease, confidence in top_predictions %}
+            <li>
+                {% if forloop.first %}
+                    <strong style="color:green;">
+                        {{ disease }} — {{ confidence }}%
+                    </strong>
+                {% else %}
+                    {{ disease }} — {{ confidence }}%
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <span style="color:#777;">Click Predict Disease to update prediction</span>
+{% endif %}
+</div>
+
+<label>Final Diagnosis</label>
+<input type="text" name="final_diagnosis"
+       value="{{ treatment.final_diagnosis }}">
+
+<label>Treatment Plan</label>
+<textarea name="treatment_plan">{{ treatment.treatment_plan }}</textarea>
+
+<label>Medication</label>
+<textarea name="medication">{{ treatment.medication }}</textarea>
+
+<label>Health Status</label>
+<select name="health_status">
+    <option {% if animal.health_status == "Under Treatment" %}selected{% endif %}>Under Treatment</option>
+    <option {% if animal.health_status == "Recovering" %}selected{% endif %}>Recovering</option>
+    <option {% if animal.health_status == "Critical" %}selected{% endif %}>Critical</option>
+    <option {% if animal.health_status == "Healthy" %}selected{% endif %}>Healthy</option>
+</select>
+<!-- Quarantine Option -->
+
+<label>
+<input type="checkbox" name="is_quarantined"
+{% if treatment.is_quarantined %}checked{% endif %}>
+Place Animal in Quarantine
+</label>
+
+<label>Quarantine Reason</label>
+
+<textarea name="quarantine_reason"
+placeholder="Explain why the animal must be isolated...">
+{{ treatment.quarantine_reason }}
+</textarea>
+
+<label>Treatment Status</label>
+<select name="treatment_status">
+    <option value="Ongoing" {% if treatment.treatment_status == "Ongoing" %}selected{% endif %}>Ongoing</option>
+    <option value="Completed" {% if treatment.treatment_status == "Completed" %}selected{% endif %}>Completed</option>
+</select>
+
+<label>Follow Up Date</label>
+<input type="date" name="follow_up_date"
+       value="{{ treatment.follow_up_date|date:'Y-m-d' }}">
+
+<button type="submit" name="action" value="predict">
+    Predict Disease
+</button>
+
+<button type="submit" name="action" value="save">
+    Update Record
+</button>
+
+</form>
+</div>
+
+</body>
+</html>

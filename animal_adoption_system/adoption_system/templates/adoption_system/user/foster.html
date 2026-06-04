@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Foster Care | Animal Shelter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    {% load static %}
+
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    🐾 Open your home temporarily — change a life forever
+</div>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="logo">🐾 Animal Shelter</div>
+    <div class="nav-right">
+        <a href="{% url 'userhome' %}" class="nav-link">
+            <i class="fa-solid fa-house"></i> Dashboard
+        </a>
+        <a href="{% url 'logout' %}" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="foster-hero split-hero">
+    <div class="hero-text">
+        <h1>Open Your Home, Save a Life</h1>
+        <p>
+            Foster care gives rescued animals a safe, loving place
+            while they wait for their forever family.
+        </p>
+        <button onclick="document.querySelector('.foster-section').scrollIntoView({behavior:'smooth'})">
+            View Animals
+        </button>
+    </div>
+
+    <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1558788353-f76d92427f16" alt="Foster animal">
+    </div>
+</section>
+
+
+<!-- ANIMALS -->
+<section class="foster-section">
+    <h2>Animals Looking for Foster Care</h2>
+
+    <div class="foster-grid">
+
+        <div class="foster-card">
+            <img src="https://images.unsplash.com/photo-1558788353-f76d92427f16">
+            <div class="card-body">
+                <h3>Bruno</h3>
+                <p>Recovering dog who needs short-term care and affection.</p>
+            </div>
+            <div class="card-footer">
+                <button onclick="openForm('Bruno')">
+                    <i class="fa-solid fa-heart"></i> Foster Bruno
+                </button>
+            </div>
+        </div>
+
+        <div class="foster-card">
+            <img src="https://images.unsplash.com/photo-1595433562696-e3c1a5b20d15">
+            <div class="card-body">
+                <h3>Luna</h3>
+                <p>Gentle cat who thrives in a calm, quiet home.</p>
+            </div>
+            <div class="card-footer">
+                <button onclick="openForm('Luna')">
+                    <i class="fa-solid fa-heart"></i> Foster Luna
+                </button>
+            </div>
+        </div>
+
+        <div class="foster-card">
+            <img src="https://images.unsplash.com/photo-1601758123927-196bcce4f3b4">
+            <div class="card-body">
+                <h3>Max</h3>
+                <p>Playful puppy needing care and attention.</p>
+            </div>
+            <div class="card-footer">
+                <button onclick="openForm('Max')">
+                    <i class="fa-solid fa-heart"></i> Foster Max
+                </button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- MODAL (UNCHANGED LOGIC) -->
+<div class="modal-overlay" id="fosterModal">
+    <div class="modal-box">
+        <span class="close-btn" onclick="closeFosterForm()">&times;</span>
+
+        <h2>🐾 Foster Application</h2>
+        <p class="modal-subtitle">
+            Thank you for opening your heart and home.
+        </p>
+
+        <form id="fosterApplicationForm">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" required>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" required>
+            </div>
+
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" required>
+            </div>
+
+            <div class="form-group">
+                <label>City</label>
+                <input type="text" required>
+            </div>
+
+            <div class="form-group full">
+                <label>Selected Animal</label>
+                <input type="text" id="modalAnimal" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Foster Duration</label>
+                <select required>
+                    <option value="">Select duration</option>
+                    <option>2 Weeks</option>
+                    <option>1 Month</option>
+                    <option>3 Months</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Housing Type</label>
+                <select required>
+                    <option value="">Select housing</option>
+                    <option>Apartment</option>
+                    <option>Independent House</option>
+                </select>
+            </div>
+
+            <div class="form-group full">
+                <label>Experience with Pets</label>
+                <textarea rows="3" required></textarea>
+            </div>
+
+            <div class="form-group full checkbox">
+                <input type="checkbox" required>
+                <span>I agree to provide proper foster care.</span>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Submit Application
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'js/foster.js' %}"></script>
+</body>
+</html>

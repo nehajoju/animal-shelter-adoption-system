@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Report Symptoms</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* ================= GLOBAL ================= */
+
+body{
+font-family:Arial, sans-serif;
+background:#f4f6f9;
+margin:0;
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
+}
+
+/* ================= CARD ================= */
+
+.container{
+width:520px;
+background:white;
+padding:35px;
+border-radius:10px;
+box-shadow:0 10px 25px rgba(0,0,0,0.12);
+}
+
+h2{
+text-align:center;
+margin-bottom:10px;
+color:#2c3e50;
+}
+
+/* ================= ANIMAL INFO ================= */
+
+.animal-info{
+text-align:center;
+margin-bottom:20px;
+font-size:14px;
+color:#555;
+}
+
+/* ================= SECTIONS ================= */
+
+.section{
+margin-bottom:18px;
+}
+
+.section label{
+font-weight:bold;
+display:block;
+margin-bottom:6px;
+}
+
+/* ================= CHECKLIST ================= */
+
+.checklist{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+font-size:14px;
+}
+
+.checklist label{
+font-weight:normal;
+}
+
+/* ================= PRIORITY ================= */
+
+.priority-select{
+width:100%;
+padding:10px;
+border-radius:6px;
+border:1px solid #ddd;
+}
+
+/* ================= TEXTAREA ================= */
+
+textarea{
+width:100%;
+padding:12px;
+height:110px;
+border:1px solid #ddd;
+border-radius:6px;
+resize:none;
+}
+
+/* ================= NOTIFY ================= */
+
+.notify{
+margin-top:10px;
+font-size:14px;
+}
+
+/* ================= BUTTON ================= */
+
+button{
+margin-top:20px;
+width:100%;
+padding:12px;
+background:#a11a3c;
+color:white;
+border:none;
+border-radius:6px;
+font-size:15px;
+cursor:pointer;
+}
+
+button:hover{
+background:#7f102d;
+}
+
+/* ================= POPUP ================= */
+
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.45);
+display:flex;
+align-items:center;
+justify-content:center;
+visibility:hidden;
+opacity:0;
+transition:0.3s;
+}
+
+.popup.active{
+visibility:visible;
+opacity:1;
+}
+
+.popup-box{
+background:white;
+padding:25px;
+border-radius:8px;
+width:360px;
+text-align:center;
+}
+
+.popup-buttons{
+display:flex;
+justify-content:center;
+gap:10px;
+margin-top:15px;
+}
+
+.cancel-btn{
+padding:8px 14px;
+background:#e5e7eb;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+.confirm-btn{
+padding:8px 14px;
+background:#a11a3c;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2><i class="fa-solid fa-stethoscope"></i> Report Symptoms</h2>
+
+<p class="animal-info">
+<b>Animal:</b> {{ animal.name }}
+</p>
+
+<form method="POST" id="symptomForm">
+
+{% csrf_token %}
+
+<!-- ================= SYMPTOMS CHECKLIST ================= -->
+
+<div class="section">
+
+<label>Observed Symptoms</label>
+
+<div class="checklist">
+
+<label><input type="checkbox" name="symptoms" value="Vomiting"> Vomiting</label> <label><input type="checkbox" name="symptoms" value="Injury"> Injury</label> <label><input type="checkbox" name="symptoms" value="Fever"> Fever</label> <label><input type="checkbox" name="symptoms" value="Infection"> Infection</label> <label><input type="checkbox" name="symptoms" value="Limping"> Limping</label> <label><input type="checkbox" name="symptoms" value="Loss of Appetite"> Loss of Appetite</label>
+
+</div>
+
+</div>
+
+
+<!-- ================= PRIORITY ================= -->
+
+<div class="section">
+
+<label>Medical Priority</label>
+
+<select name="priority" class="priority-select">
+
+<option value="Mild">🟢 Mild</option>
+<option value="Moderate">🟡 Moderate</option>
+<option value="Critical">🔴 Critical</option>
+
+</select>
+
+</div>
+
+<!-- ================= NOTES ================= -->
+
+<div class="section">
+
+<label>Additional Notes</label>
+
+<textarea name="reported_symptoms" placeholder="Describe additional symptoms..."></textarea>
+
+</div>
+
+<!-- ================= VET NOTIFICATION ================= -->
+
+<div class="notify">
+
+<label>
+<input type="checkbox" name="notify_vet" checked>
+Notify veterinarian immediately
+</label>
+
+</div>
+
+<button type="button" onclick="openPopup()">
+Submit Medical Report
+</button>
+
+</form>
+
+</div>
+
+<!-- ================= CONFIRMATION POPUP ================= -->
+
+<div class="popup" id="confirmPopup">
+
+<div class="popup-box">
+
+<h3>Confirm Medical Assignment</h3>
+
+<p>Send this animal for veterinary treatment?</p>
+
+<div class="popup-buttons">
+
+<button class="cancel-btn" onclick="closePopup()">Cancel</button>
+
+<button class="confirm-btn" onclick="submitForm()">Yes, Confirm</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function openPopup(){
+document.getElementById("confirmPopup").classList.add("active");
+}
+
+function closePopup(){
+document.getElementById("confirmPopup").classList.remove("active");
+}
+
+function submitForm(){
+document.getElementById("symptomForm").submit();
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pet Medical History</title>
+
+<style>
+
+:root {
+    --primary: #8b1e3f;
+    --primary-light: #f3e6ea;
+    --bg-main: #f6f6f8;
+    --card-bg: #ffffff;
+    --text-main: #2c2c2c;
+    --text-light: #777;
+}
+
+body {
+    margin: 0;
+    font-family: "Inter", "Poppins", Arial, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+    height: 60px;
+    background: white;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+}
+
+.logo {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.page-title {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.topbar-right {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.nav-link {
+    text-decoration: none;
+    font-size: 13px;
+    color: #555;
+}
+
+.nav-link:hover {
+    color: var(--primary);
+}
+
+.logout-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+    width: 95%;
+    margin: auto;
+    padding: 25px 0;
+}
+
+/* ===== HEADER ===== */
+.page-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.page-header p {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+/* ===== TABLE ===== */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+th {
+    background: var(--primary);
+    color: white;
+    padding: 12px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+    text-align: center;
+}
+
+tr:hover {
+    background: #fafafa;
+}
+
+/* STATUS COLORS */
+.critical { background: #ffe3e3; }
+.treatment { background: #fff1db; }
+.healthy { background: #e8f8ec; }
+
+.no-data {
+    color: #999;
+    font-style: italic;
+}
+
+/* BADGES */
+.ml-badge {
+    background: #f3f3f3;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #666;
+}
+
+.vet-badge {
+    background: #e8f8ec;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #27ae60;
+    font-weight: 600;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <a href="{% url 'vet_dashboard' %}" class="logo">🩺 Vet Panel</a>
+
+    <span class="page-title">Medical History</span>
+
+    <div class="topbar-right">
+        <a href="{% url 'medical_history' %}" class="nav-link">Back</a>
+        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="page-header">
+        <h2>{{ animal.name }} - Medical History</h2>
+        <p>All previous checkups, ML predictions and confirmed diagnoses</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Weight (kg)</th>
+                <th>Temperature (°C)</th>
+                <th>Health Status</th>
+                <th>Predicted Disease (ML)</th>
+                <th>Final Diagnosis</th>
+                <th>Medical Notes</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for record in history %}
+        <tr class="
+            {% if record.health_status == 'Critical' %}critical
+            {% elif record.health_status == 'Under Treatment' %}treatment
+            {% elif record.health_status == 'Healthy' %}healthy
+            {% endif %}
+        ">
+            <td>{{ record.checkup_date|date:"Y-m-d H:i" }}</td>
+            <td>{{ record.weight }}</td>
+            <td>{{ record.temperature }}</td>
+            <td>{{ record.health_status }}</td>
+
+            <!-- ML Prediction -->
+            <td>
+                {% if record.treatment and record.treatment.predicted_disease %}
+                    <span class="ml-badge">
+                        {{ record.treatment.predicted_disease }}
+                    </span>
+                {% else %}
+                    <span class="no-data">N/A</span>
+                {% endif %}
+            </td>
+
+            <!-- Vet Final Diagnosis -->
+            <td>
+                {% if record.treatment and record.treatment.final_diagnosis %}
+                    <span class="vet-badge">
+                        {{ record.treatment.final_diagnosis }}
+                    </span>
+                {% else %}
+                    <span class="no-data">Not Confirmed</span>
+                {% endif %}
+            </td>
+
+            <td>{{ record.medical_notes }}</td>
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="7" class="no-data">
+                No medical records found for this pet.
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

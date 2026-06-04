@@ -1,0 +1,19 @@
+<h2>Staff Members</h2>
+
+{% for s in staff %}
+
+<p>{{ s.username }} ({{ s.email }})</p>
+{% empty %}
+<p>No staff added.</p>
+{% endfor %}
+
+<hr>
+
+<h2>Veterinarians</h2>
+
+{% for v in vets %}
+
+<p>{{ v.username }} ({{ v.email }})</p>
+{% empty %}
+<p>No vets added.</p>
+{% endfor %}

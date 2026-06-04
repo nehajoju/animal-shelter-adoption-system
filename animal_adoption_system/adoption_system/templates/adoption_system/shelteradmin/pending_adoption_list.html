@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin</title>
+    <link rel="stylesheet" href="{% static 'css/adminpanel/admin.css' %}">
+</head>
+
+<body>
+
+    <div class="admin-page">
+
+        <div class="page-header">
+            <h1>PAGE TITLE</h1>
+        </div>
+
+        <div class="card">
+            <!-- PAGE CONTENT -->
+            <div class="page-header">
+                <h1>Pending Adoption Applications</h1>
+            </div>
+
+            <div class="card">
+                <table class="table">
+                    <tr>
+                        <th>User</th>
+                        <th>Animal</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr>
+                        <td>Rahul</td>
+                        <td>Bruno</td>
+                        <td>12 Jan</td>
+                        <td>
+                            <button class="btn btn-approve">Approve</button>
+                            <button class="btn btn-reject">Reject</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

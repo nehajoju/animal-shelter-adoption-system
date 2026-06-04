@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Medical Management</title>
+
+<style>
+
+:root{
+--primary:#8b1e3f;
+--bg:#f6f6f8;
+--card:#ffffff;
+--border:#e6e6e6;
+--text:#444;
+}
+
+/* BODY */
+
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:var(--bg);
+color:var(--text);
+}
+
+/* NAVBAR */
+
+.navbar{
+background:white;
+padding:16px 40px;
+border-bottom:1px solid var(--border);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{
+font-size:18px;
+font-weight:bold;
+color:var(--primary);
+}
+
+.nav-links a{
+margin-left:15px;
+text-decoration:none;
+background:var(--primary);
+color:white;
+padding:6px 12px;
+border-radius:5px;
+font-size:13px;
+}
+
+/* PAGE */
+
+.container{
+width:95%;
+margin:auto;
+padding:30px 0;
+}
+
+h2{
+margin-bottom:20px;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+border-radius:10px;
+overflow:hidden;
+box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+th{
+background:var(--primary);
+color:white;
+padding:12px;
+font-size:13px;
+}
+
+td{
+padding:12px;
+border-bottom:1px solid #eee;
+font-size:13px;
+text-align:center;
+}
+
+tr:hover{
+background:#fafafa;
+}
+
+/* STATUS COLORS */
+
+.critical{
+background:#ffe3e3;
+}
+
+.treatment{
+background:#fff3cd;
+}
+
+.healthy{
+background:#e8f8ec;
+}
+
+/* BADGES */
+
+.badge{
+padding:4px 8px;
+border-radius:5px;
+font-size:12px;
+}
+
+.badge-treatment{
+background:#fff3cd;
+}
+
+.badge-completed{
+background:#e8f8ec;
+}
+
+.badge-critical{
+background:#ffe3e3;
+}
+
+.no-data{
+color:#999;
+font-style:italic;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+<div class="logo">
+🐾 Shelter Admin
+</div>
+
+<div class="nav-links">
+<a href="{% url 'admin_dashboard' %}">Dashboard</a>
+<a href="{% url 'panel_logout' %}">Logout</a>
+</div>
+
+</div>
+
+
+<div class="container">
+
+<h2>Animal Medical Management</h2>
+
+<table>
+
+<tr>
+<th>Pet</th>
+<th>Type</th>
+<th>Age</th>
+<th>Health Status</th>
+<th>Reported Symptoms</th>
+<th>Diagnosis</th>
+<th>Medication</th>
+<th>Follow Up</th>
+<th>Treatment Status</th>
+</tr>
+
+{% for animal in animals %}
+
+<tr class="
+{% if animal.health_status == 'Critical' %}critical
+{% elif animal.health_status == 'Under Treatment' %}treatment
+{% elif animal.health_status == 'Healthy' %}healthy
+{% endif %}
+">
+
+<td>{{ animal.name }}</td>
+
+<td>{{ animal.pet_type }}</td>
+
+<td>{{ animal.age }}</td>
+
+<td>{{ animal.health_status }}</td>
+
+<!-- STAFF SYMPTOMS -->
+
+<td>
+
+{% if animal.latest_treatment and animal.latest_treatment.reported_symptoms %}
+
+{{ animal.latest_treatment.reported_symptoms }}
+
+{% else %}
+
+<span class="no-data">No symptoms reported</span>
+
+{% endif %}
+
+</td>
+
+
+<!-- VET DIAGNOSIS -->
+
+<td>
+
+{% if animal.latest_treatment and animal.latest_treatment.final_diagnosis %}
+
+{{ animal.latest_treatment.final_diagnosis }}
+
+{% else %}
+
+<span class="no-data">Not diagnosed</span>
+
+{% endif %}
+
+</td>
+
+
+<!-- MEDICATION -->
+
+<td>
+
+{% if animal.latest_treatment and animal.latest_treatment.medication %}
+
+{{ animal.latest_treatment.medication }}
+
+{% else %}
+
+<span class="no-data">None</span>
+
+{% endif %}
+
+</td>
+
+
+<!-- FOLLOW UP -->
+
+<td>
+
+{% if animal.latest_treatment and animal.latest_treatment.follow_up_date %}
+
+{{ animal.latest_treatment.follow_up_date }}
+
+{% else %}
+
+<span class="no-data">N/A</span>
+
+{% endif %}
+
+</td>
+
+
+<!-- TREATMENT STATUS -->
+
+<td>
+
+{% if animal.latest_treatment %}
+
+    {% if animal.latest_treatment.treatment_status == "Ongoing" %}
+
+    <span class="badge badge-treatment">
+    Ongoing
+    </span>
+
+    {% elif animal.latest_treatment.treatment_status == "Completed" %}
+
+    <span class="badge badge-completed">
+    Completed
+    </span>
+
+    {% else %}
+
+    <span class="badge badge-critical">
+    Critical
+    </span>
+
+    {% endif %}
+
+{% else %}
+
+<span class="no-data">No treatment</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="9" class="no-data">
+No medical records available
+</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</body>
+</html>

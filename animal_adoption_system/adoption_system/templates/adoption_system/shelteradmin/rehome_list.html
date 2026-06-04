@@ -1,0 +1,509 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Rehome Requests</title>
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+       
+
+/* ================= ROOT VARIABLES ================= */
+:root {
+    --primary:#a11a3c;
+    --primary-dark:#7f102d;
+    --secondary:#1f2937;
+    --text-muted:#6b7280;
+    --bg-main:#f4f6fa;
+    --bg-card:#ffffff;
+    --border-soft:#e5e7eb;
+}
+
+/* ================= GLOBAL ================= */
+body{
+    margin:0;
+    font-family:"Poppins",sans-serif;
+    background:var(--bg-main);
+    color:var(--secondary);
+}
+
+/* ================= HERO ================= */
+.hero{
+    text-align:center;
+    padding:40px 8%;
+}
+
+.hero h1{
+    font-size:28px;
+    font-weight:800;
+    margin-bottom:6px;
+}
+
+.hero p{
+    color:var(--text-muted);
+}
+
+/* ================= PAGE ================= */
+.admin-page{
+    padding:30px 8% 60px;
+}
+
+/* ================= FILTER BAR ================= */
+.filter-bar{
+    background:var(--bg-card);
+    padding:16px 18px;
+    border-radius:14px;
+    border:1px solid var(--border-soft);
+    display:flex;
+    gap:14px;
+    margin-bottom:30px;
+    flex-wrap:wrap;
+}
+
+.filter-bar input,
+.filter-bar select{
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid var(--border-soft);
+    background:#f9fafb;
+    font-size:13px;
+}
+
+.filter-bar button{
+    padding:10px 18px;
+    border-radius:10px;
+    border:none;
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+}
+
+/* ================= GRID ================= */
+.application-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:22px;
+}
+
+/* ================= CARD ================= */
+.application-card{
+    position:relative;
+    background:linear-gradient(to bottom,#ffffff,#fafafa);
+    padding:20px;
+    border-radius:18px;
+    border:1px solid var(--border-soft);
+    box-shadow:0 10px 22px rgba(0,0,0,0.06);
+    transition:0.25s;
+}
+
+.application-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 35px rgba(0,0,0,0.12);
+}
+
+.application-card::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:14px;
+    bottom:14px;
+    width:5px;
+    border-radius:0 6px 6px 0;
+    background:var(--primary);
+}
+
+.application-card h3{
+    font-size:17px;
+    margin-left:12px;
+}
+
+.small-text{
+    font-size:13px;
+    color:var(--text-muted);
+    margin-left:12px;
+}
+
+/* ================= STATUS ================= */
+.status{
+    display:inline-block;
+    margin-left:12px;
+    margin-bottom:14px;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.status.pending{
+    background:#fff7ed;
+    color:#9a3412;
+}
+
+.status.approved{
+    background:#ecfdf5;
+    color:#065f46;
+}
+
+.status.rejected{
+    background:#fee2e2;
+    color:#7f1d1d;
+}
+
+.status.rehomed{
+    background:#e0f2fe;
+    color:#075985;
+}
+
+/* ================= BUTTON ================= */
+.btn{
+    padding:9px 12px;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:600;
+    border:none;
+    cursor:pointer;
+    width:100%;
+}
+
+.btn-view{
+    background:var(--primary);
+    color:white;
+}
+
+</style>
+  
+</head>
+
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<div class="top-bar">
+    <i class="fa-solid fa-paw"></i> Shelter Admin Panel
+</div>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+
+    <div class="logo">
+        🐾 Animal Shelter
+    </div>
+
+    <div class="nav-right">
+
+        <!-- Dashboard -->
+        <a href="{% url 'admin_dashboard' %}" class="nav-link">
+            <i class="fa-solid fa-chart-line"></i> Dashboard
+        </a>
+
+        <!-- Notification -->
+        <div class="notification">
+            <i class="fa-solid fa-bell"></i>
+            <span class="badge">
+                {{ notification_count|default:"0" }}
+            </span>
+        </div>
+
+        <!-- Logout -->
+        <a href="{% url 'panel_logout' %}" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+        </a>
+
+    </div>
+
+</header>
+<!-- HERO -->
+<section class="hero">
+    <h1>Rehome Requests</h1>
+    <p>Review and manage pet rehoming submissions</p>
+</section>
+
+<!-- CONTENT -->
+<section class="admin-page">
+
+    <!-- FILTER BAR -->
+    <form method="GET" class="filter-bar">
+
+        <input type="text" name="search"
+               placeholder="Search pet / owner"
+               value="{{ search_query|default:'' }}">
+
+        <select name="status">
+            <option value="">All Status</option>
+            <option value="Pending Review"
+                {% if status_filter == "Pending Review" %}selected{% endif %}>
+                Pending Review
+            </option>
+            <option value="Approved"
+                {% if status_filter == "Approved" %}selected{% endif %}>
+                Approved
+            </option>
+            <option value="Rejected"
+                {% if status_filter == "Rejected" %}selected{% endif %}>
+                Rejected
+            </option>
+            <option value="Rehomed"
+                {% if status_filter == "Rehomed" %}selected{% endif %}>
+                Rehomed
+            </option>
+        </select>
+
+        <button type="submit">Filter</button>
+    </form>
+
+    <!-- GRID -->
+    <div class="application-grid">
+
+        {% for pet in requests %}
+        <div class="application-card">
+
+            <h3>{{ pet.pet_name }}</h3>
+
+            <p class="small-text">
+                Owner: <strong>{{ pet.owner_name }}</strong>
+            </p>
+
+            <p class="small-text">
+                Type: {{ pet.pet_type }} |
+                Breed: {{ pet.breed }}
+            </p>
+
+            <p class="small-text">
+                City: {{ pet.city }}
+            </p>
+
+            <span class="status {{ pet.status|lower }}">
+                {{ pet.status }}
+            </span>
+
+            <!-- VIEW BUTTON (Redirect only) -->
+            <a href="{% url 'rehome_review' pet.id %}">
+                <button class="btn btn-view">
+                    View Application
+                </button>
+            </a>
+
+        </div>
+
+        {% empty %}
+        <p>No rehome requests found.</p>
+        {% endfor %}
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</section>
+
+</body>
+</html>

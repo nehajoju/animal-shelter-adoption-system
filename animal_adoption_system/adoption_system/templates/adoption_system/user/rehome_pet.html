@@ -1,0 +1,589 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Rehome My Pet | Animal Shelter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/rehome_pet.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+<style>
+    /* ================= ROOT COLORS ================= */
+:root {
+    --primary: #a11a3c;
+    --primary-dark: #7f102f;
+    --secondary: #111827;
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #374151;
+    --text-muted: #6b7280;
+    --border-soft: #e5e7eb;
+}
+
+/* ================= GLOBAL ================= */
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* SUBTLE PAW BACKGROUND */
+body::before{
+    content:"🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾";
+    position:fixed;
+    font-size:120px;
+    opacity:0.08;
+    top:20%;
+    left:5%;
+    transform:rotate(-20deg);
+    z-index:-1;
+}
+
+/* ================= TOP BAR ================= */
+.top-bar {
+    background: var(--secondary);
+    color: white;
+    padding: 12px 8%;
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+/* ================= NAVBAR ================= */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    background:var(--bg-card);
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:20px;
+    font-weight:700;
+    color:var(--primary);
+}
+
+.nav-links{
+    display:flex;
+    gap:25px;
+    align-items:center;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:var(--secondary);
+    font-weight:600;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:var(--primary);
+}
+
+/* Notification badge */
+.notification-icon {
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: var(--primary);
+    color: white;
+    font-size: 10px;
+    padding: 3px 6px;
+    border-radius: 50%;
+}
+
+/* ================= HERO ================= */
+.rehome-hero {
+    padding: 100px 20px 80px;
+    text-align: center;
+    background:
+        linear-gradient(rgba(161,26,60,.85), rgba(127,16,47,.85)),
+        url("https://images.unsplash.com/photo-1518717758536-85ae29035b6d")
+        center/cover no-repeat;
+    color: white;
+}
+
+.rehome-hero h1 {
+    font-size: 2.6rem;
+    margin-bottom: 10px;
+}
+
+.rehome-hero p {
+    opacity: 0.9;
+}
+
+/* ================= STEP PROGRESS ================= */
+.form-steps {
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin-top:-40px;
+    margin-bottom:40px;
+    flex-wrap:wrap;
+}
+
+.step {
+    padding:10px 18px;
+    background:#e5e7eb;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:600;
+    color:var(--text-muted);
+    transition:0.3s;
+}
+
+.step.active {
+    background:var(--primary);
+    color:white;
+}
+
+/* ================= FORM CONTAINER ================= */
+.form-container {
+    max-width:900px;
+    margin:0 auto 80px;
+    padding:0 20px;
+}
+
+.rehome-form {
+    background:var(--bg-card);
+    padding:50px;
+    border-radius:28px;
+    box-shadow:0 20px 45px rgba(0,0,0,.08);
+}
+
+/* ================= FORM ELEMENTS ================= */
+.rehome-form h2 {
+    margin-top:35px;
+    color:var(--primary-dark);
+}
+
+.rehome-form input,
+.rehome-form select,
+.rehome-form textarea {
+    width:100%;
+    padding:13px 15px;
+    margin-top:10px;
+    margin-bottom:15px;
+    border-radius:10px;
+    border:1.5px solid var(--border-soft);
+    font-size:0.95rem;
+    transition:0.3s;
+}
+
+.rehome-form input:focus,
+.rehome-form select:focus,
+.rehome-form textarea:focus {
+    outline:none;
+    border-color:var(--primary);
+    box-shadow:0 0 0 4px rgba(161,26,60,.12);
+}
+
+.field-label {
+    font-weight:600;
+    margin-top:10px;
+    display:block;
+}
+
+.help-text {
+    font-size:0.8rem;
+    color:var(--text-muted);
+}
+
+/* ================= IMAGE PREVIEW ================= */
+#preview {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:10px;
+}
+
+#preview img {
+    width:100px;
+    height:100px;
+    object-fit:cover;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* ================= CONSENT ================= */
+.consent {
+    font-size:0.9rem;
+    margin-top:10px;
+    display:block;
+}
+
+/* ================= BUTTON ================= */
+.rehome-form button {
+    margin-top:25px;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:var(--primary);
+    color:white;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.rehome-form button:hover {
+    background:var(--primary-dark);
+}
+
+/* ================= SUCCESS POPUP ================= */
+.success-popup {
+    position:fixed;
+    bottom:30px;
+    right:30px;
+    background:#16a34a;
+    color:white;
+    padding:18px 25px;
+    border-radius:14px;
+    box-shadow:0 15px 35px rgba(0,0,0,.15);
+    opacity:0;
+    transform:translateY(20px);
+    transition:0.4s ease;
+}
+
+.success-popup.show {
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+    .rehome-form{
+        padding:30px;
+    }
+}
+</style>
+        </head>
+
+<body>
+
+<div class="top-bar">
+    🐾 Responsible rehoming ensures a safe and loving future for your pet
+</div>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+    <div class="logo">🐾 Animal Shelter</div>
+
+    <div class="nav-links">
+
+        <!-- Dashboard -->
+        <a href="{% url 'userhome' %}">
+            <i class="fa fa-home"></i> Dashboard
+        </a>
+
+        <!-- Notifications -->
+        <a href="{% url 'user_notifications' %}" class="notification-icon">
+            <i class="fa fa-bell"></i>
+
+            {% if unread_count > 0 %}
+                <span class="notification-badge">
+                    {{ unread_count }}
+                </span>
+            {% endif %}
+        </a>
+
+        <!-- Logout -->
+        <a href="{% url 'logout' %}">
+            <i class="fa fa-sign-out-alt"></i> Logout
+        </a>
+
+    </div>
+</header>
+
+<header class="page-header rehome-hero">
+    <h1>🏠 Rehome My Pet</h1>
+    <p>We help your pet transition safely into a responsible and loving new home.</p>
+</header>
+
+<!-- STEP PROGRESS INDICATOR -->
+<div class="form-steps">
+    <div class="step active" id="step1">Pet Details</div>
+    <div class="step" id="step2">Health</div>
+    <div class="step" id="step3">Behavior</div>
+    <div class="step" id="step4">Owner Info</div>
+    <div class="step" id="step5">Submit</div>
+</div>
+
+<section class="form-container">
+
+<form class="rehome-form" id="rehomeForm" method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+
+<h2 id="pet-details">🐾 Pet Details</h2>
+<label class="field-label">Pet Type</label>
+<select name="pet_type" required>
+    <option value="">Select Pet Type</option>
+
+    {% for type in pet_types %}
+        <option value="{{ type.id }}">{{ type.name }}</option>
+    {% endfor %}
+
+</select>
+<input type="text" name="pet_name" placeholder="Pet Name" required>
+<input type="number" name="age" placeholder="Age (years)" required>
+<label class="field-label">Breed</label>
+<select name="breed">
+
+    <option value="">Select Breed</option>
+
+    {% for breed in breeds %}
+        <option value="{{ breed.id }}">
+            {{ breed.name }}
+        </option>
+    {% endfor %}
+
+</select>
+<label class="field-label">Color</label>
+<input type="text" name="color" placeholder="e.g., Brown, Black & White">
+
+
+<select name="gender" required>
+    <option value="">Gender</option>
+    <option>Male</option>
+    <option>Female</option>
+</select>
+
+
+
+<h2 id="health-info">🏥 Health Information</h2>
+<input type="text" name="medical_conditions" placeholder="Any medical conditions?">
+
+<select name="neutered" required>
+    <option value="">Neutered / Spayed?</option>
+    <option>Yes</option>
+    <option>No</option>
+    <option>Not Sure</option>
+</select>
+<select name="vaccination_status" id="vaccinationStatus" required>
+    <option value="">Vaccination Status</option>
+    <option>Vaccinated</option>
+    <option>Not Vaccinated</option>
+    <option>Unknown</option>
+</select>
+
+
+<small class="help-text">
+    Select the date when the pet last received vaccination.
+</small>
+<input type="date"
+       name="last_vaccination_date"
+       id="lastVaccinationDate"
+       max="">
+
+
+
+<textarea name="special_diet" rows="3"
+placeholder="Special diet or medication requirements"></textarea>
+
+
+<h2>📸 Upload Pet Photos</h2>
+<input type="file" name="pet_image" id="petImages" accept="image/*">
+<div id="preview"></div>
+
+
+<h2>📝 Reason for Rehoming</h2>
+<textarea name="rehoming_reason" rows="4" required></textarea>
+
+<label class="consent">
+    <input type="checkbox" name="hide_reason">
+    Hide my reason from public listings
+</label>
+
+
+<h2 id="behavior-info">🏡 Pet Behavior & Living Details</h2>
+
+<select name="living_environment" required>
+    <option value="">Living Environment</option>
+    <option>Indoor</option>
+    <option>Outdoor</option>
+    <option>Both</option>
+</select>
+
+<select name="child_friendly" required>
+    <option value="">Child Friendly?</option>
+    <option>Yes</option>
+    <option>No</option>
+    <option>Not Sure</option>
+</select>
+
+<select name="good_with_pets" required>
+    <option value="">Good with Other Pets?</option>
+    <option>Yes</option>
+    <option>No</option>
+    <option>Not Sure</option>
+</select>
+<h2>🎓 Training Details</h2>
+
+<select name="house_trained" required>
+    <option value="">House Trained?</option>
+    <option>Yes</option>
+    <option>No</option>
+    <option>Partially</option>
+</select>
+
+<select name="leash_trained" required>
+    <option value="">Leash Trained?</option>
+    <option>Yes</option>
+    <option>No</option>
+</select>
+
+<select name="aggressive_behavior" required>
+    <option value="">Aggressive Behaviour?</option>
+    <option>No</option>
+    <option>Sometimes</option>
+    <option>Yes</option>
+</select>
+
+
+<h2>💛 Pet Description</h2>
+<textarea name="pet_description" rows="4"></textarea>
+
+
+<h2>🤝 Meet & Greet Availability</h2>
+<select name="meet_greet_availability" required>
+    <option value="">Available for meet & greet?</option>
+    <option>Yes</option>
+    <option>No</option>
+    <option>After approval only</option>
+</select>
+<h2>⏰ Rehoming Urgency</h2>
+
+<select name="urgency" required>
+    <option value="">How soon does the pet need rehoming?</option>
+    <option value="Immediately">Immediately</option>
+    <option value="Within 1 Month">Within 1 Month</option>
+    <option value="Flexible">Flexible</option>
+</select>
+
+
+<h2 id="owner-info">📞 Owner Contact Information</h2>
+<h2>Owner Contact Information</h2>
+
+<input type="text" value="{{ profile.username }}" readonly>
+<input type="text" value="{{ profile.phone_number }}" >
+
+
+<label class="consent">
+    <input type="checkbox" required>
+    I confirm that I am the legal owner of this pet.
+</label>
+
+<button type="submit">
+    <i class="fa-solid fa-house-heart"></i>
+    Submit Rehoming Request
+</button>
+
+</form>
+</section>
+
+
+<!-- SUCCESS MESSAGE -->
+<div id="successMessage" class="success-popup">
+    <i class="fa-solid fa-circle-check"></i>
+    <p>Rehoming request submitted successfully!</p>
+</div>
+
+
+<script>
+/* IMAGE PREVIEW */
+document.getElementById("petImages").addEventListener("change", function(event) {
+    const preview = document.getElementById("preview");
+    preview.innerHTML = "";
+
+    Array.from(event.target.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            preview.appendChild(img);
+        }
+        reader.readAsDataURL(file);
+    });
+});
+
+
+/* STEP HIGHLIGHT ON SCROLL */
+window.addEventListener("scroll", function() {
+    const sections = [
+        {id: "pet-details", step: "step1"},
+        {id: "health-info", step: "step2"},
+        {id: "behavior-info", step: "step3"},
+        {id: "owner-info", step: "step4"}
+    ];
+
+    let current = "";
+
+    sections.forEach(section => {
+        const element = document.getElementById(section.id);
+        if (element.getBoundingClientRect().top <= 150) {
+            current = section.step;
+        }
+    });
+
+    document.querySelectorAll(".step").forEach(s =>
+        s.classList.remove("active")
+    );
+
+    if(current){
+        document.getElementById(current).classList.add("active");
+    }
+});
+
+
+/* SUCCESS ANIMATION */
+document.getElementById("rehomeForm").addEventListener("submit", function() {
+    const popup = document.getElementById("successMessage");
+    popup.classList.add("show");
+});
+
+
+
+/* Prevent future dates */
+const today = new Date().toISOString().split("T")[0];
+const vaccinationDate = document.getElementById("lastVaccinationDate");
+vaccinationDate.setAttribute("max", today);
+
+/* Disable date if not vaccinated */
+const vaccinationStatus = document.getElementById("vaccinationStatus");
+
+function toggleVaccinationDate() {
+    if (vaccinationStatus.value === "Not Vaccinated") {
+        vaccinationDate.value = "";
+        vaccinationDate.disabled = true;
+    } else {
+        vaccinationDate.disabled = false;
+    }
+}
+
+vaccinationStatus.addEventListener("change", toggleVaccinationDate);
+
+document.getElementById("rehomeForm")
+.addEventListener("submit", function() {
+    document.getElementById("successMessage")
+    .classList.add("show");
+});
+</script>
+
+</body>
+</html>

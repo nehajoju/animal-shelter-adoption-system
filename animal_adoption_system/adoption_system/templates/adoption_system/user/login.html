@@ -1,0 +1,366 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Login | Animal Shelter</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* ================= BODY ================= */
+
+body{
+    margin:0;
+    font-family:"Poppins",sans-serif;
+    background:linear-gradient(135deg,#ffffff,#fdf2f8);
+    overflow-x:hidden;
+    position:relative;
+}
+
+/* Paw background (same as index/register) */
+body::before{
+    content:"🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾";
+    position:fixed;
+    font-size:120px;
+    opacity:0.1;
+    top:20%;
+    left:5%;
+    transform:rotate(-20deg);
+    z-index:0;
+}
+
+/* ================= WRAPPER ================= */
+
+.login-wrapper{
+    position:relative;
+    z-index:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
+}
+
+/* ================= CARD ================= */
+
+.card{
+    background:rgba(255,255,255,0.95);
+    backdrop-filter:blur(10px);
+    width:100%;
+    max-width:420px;
+    padding:40px;
+    border-radius:25px;
+    box-shadow:0 30px 70px rgba(0,0,0,0.1);
+    animation:fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+h3{
+    margin-bottom:8px;
+}
+
+.subtitle{
+    color:#666;
+    margin-bottom:25px;
+}
+
+/* ================= FORM ================= */
+
+input{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #e5e7eb;
+    margin-bottom:18px;
+    transition:0.3s;
+}
+
+input:focus{
+    border-color:#a11a3c;
+    box-shadow:0 0 0 3px rgba(161,26,60,0.15);
+    outline:none;
+}
+
+/* Password toggle */
+.password-wrapper{
+    position:relative;
+}
+
+.password-wrapper input{
+    margin-bottom:0;
+}
+
+.toggle-btn{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    cursor:pointer;
+    color:#888;
+}
+
+/* Login button */
+button{
+    width:100%;
+    padding:14px;
+    border-radius:14px;
+    border:none;
+    background:linear-gradient(135deg,#a11a3c,#7f102f);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    margin-top:15px;
+}
+
+button:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 30px rgba(161,26,60,0.3);
+}
+
+/* Error box */
+.error-box{
+    background:#ffe5e9;
+    color:#a11a3c;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:15px;
+    font-size:14px;
+}
+
+/* Footer links */
+.small{
+    text-align:center;
+    margin-top:18px;
+}
+
+.small a{
+    color:#a11a3c;
+    text-decoration:none;
+    font-weight:500;
+}
+
+.small a:hover{
+    text-decoration:underline;
+}
+/* Password field wrapper */
+.password-field{
+    position: relative;
+    margin-bottom: 18px;
+}
+
+/* Input styling */
+.password-field input{
+    width: 100%;
+    padding: 12px 45px 12px 12px; /* right padding for icon */
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    transition: 0.3s;
+}
+
+/* Focus effect */
+.password-field input:focus{
+    border-color: #a11a3c;
+    box-shadow: 0 0 0 3px rgba(161,26,60,0.15);
+    outline: none;
+}
+
+/* Eye icon styling */
+.toggle-password{
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+/* Hover effect */
+.toggle-password:hover{
+    color: #a11a3c;
+}
+/* ===== LOGIN POPUP ===== */
+
+.popup-overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.45);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:3000;
+}
+
+.popup-box{
+background:white;
+padding:30px;
+border-radius:12px;
+text-align:center;
+width:350px;
+box-shadow:0 20px 40px rgba(0,0,0,0.2);
+animation:popupFade 0.3s ease;
+}
+
+.popup-box h2{
+color:#b91c1c;
+margin-bottom:10px;
+}
+
+.popup-box p{
+color:#374151;
+margin-bottom:20px;
+}
+
+.popup-box button{
+background:#a11a3c;
+color:white;
+border:none;
+padding:10px 20px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.popup-box button:hover{
+background:#7f102d;
+}
+
+@keyframes popupFade{
+from{
+opacity:0;
+transform:scale(0.9);
+}
+to{
+opacity:1;
+transform:scale(1);
+}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="login-wrapper">
+<div class="card">
+
+<h3>Welcome Back 🐾</h3>
+<p class="subtitle">Login to continue your adoption journey</p>
+
+{% if form.non_field_errors %}
+<div class="error-box">
+    {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form method="post" novalidate>
+{% csrf_token %}
+
+<input
+type="text"
+name="identifier"
+placeholder="Email or Phone Number"
+required
+autocomplete="username"
+>
+
+<div class="password-wrapper">
+<input
+type="password"
+name="password"
+id="password"
+placeholder="Password"
+required
+autocomplete="current-password"
+>
+<button type="button" class="toggle-btn" onclick="togglePassword()">
+<i class="fa-solid fa-eye"></i>
+</button>
+</div>
+
+<button type="submit">Login</button>
+
+</form>
+
+<div class="small">
+<p>
+Don’t have an account?
+<a href="{% url 'register' %}">Register</a>
+</p>
+<p>
+<a href="{% url 'home' %}">← Back to Home</a>
+</p>
+</div>
+
+</div>
+</div>
+
+<script>
+function togglePassword(){
+const pw=document.getElementById("password");
+const icon=document.querySelector(".toggle-btn i");
+
+if(pw.type==="password"){
+pw.type="text";
+icon.classList.replace("fa-eye","fa-eye-slash");
+}else{
+pw.type="password";
+icon.classList.replace("fa-eye-slash","fa-eye");
+}
+}
+
+function closePopup(){
+document.getElementById("loginPopup").style.display="none";
+}
+</script>
+{% if login_success %}
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    Swal.fire({
+        title: "Login Successful 🎉",
+        text: "Welcome back!",
+        icon: "success",
+        confirmButtonColor: "#a11a3c",
+        confirmButtonText: "Continue"
+    }).then(() => {
+        window.location.href = "{% url 'userhome' %}";
+    });
+
+});
+</script>
+{% endif %}
+
+<!-- BLOCKED USER POPUP -->
+{% if error %}
+<div id="loginPopup" class="popup-overlay">
+
+    <div class="popup-box">
+
+        <h2>⚠ Access Denied</h2>
+
+        <p>{{ error }}</p>
+
+        <button onclick="closePopup()">OK</button>
+
+    </div>
+
+</div>
+{% endif %}
+</body>
+</html>

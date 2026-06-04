@@ -1,0 +1,114 @@
+/* .profile-hero {
+    padding: 110px 20px 100px;
+    text-align: center;
+    background:
+        linear-gradient(rgba(190,18,60,.78), rgba(159,18,57,.78)),
+        url("https://images.unsplash.com/photo-1548199973-03cce0bbc87b")
+        center/cover no-repeat;
+    color: var(--light);
+}
+
+.profile-hero h1 {
+    font-size: 2.6rem;
+    font-weight: 700;
+}
+
+.profile-hero p {
+    opacity: 0.9;
+}
+
+.badge {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge.success { background: #16a34a; color: #fff; }
+.badge.warning { background: #f59e0b; color: #fff; }
+
+.profile-card {
+    background: #fff;
+    padding: 60px 55px;
+    border-radius: 28px;
+    max-width: 1050px;
+    margin: -70px auto 80px;
+    box-shadow: 0 20px 45px rgba(0,0,0,.08);
+}
+
+.profile-card form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px 35px;
+    margin-top: 30px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 13px 15px;
+    border-radius: 10px;
+    border: 1.5px solid #ddd;
+    font-size: 0.95rem;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: rgba(190,18,60,.6);
+    box-shadow: 0 0 0 4px rgba(190,18,60,.12);
+}
+
+.form-group input[readonly] {
+    background: #f6f6f6;
+    cursor: not-allowed;
+}
+
+.section-divider {
+    grid-column: 1 / -1;
+    height: 1px;
+    background: #eee;
+    margin: 10px 0;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.edit-btn,
+.submit-btn {
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background: #444;
+    color: #fff;
+}
+
+.submit-btn {
+    background: rgba(190,18,60,1);
+    color: #fff;
+}
+.submit-btn:hover {
+    background: rgba(190,18,60,.85);
+} */

@@ -1,0 +1,360 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Staff Medical Attention</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* ================= ROOT ================= */
+
+:root{
+--primary:#a11a3c;
+--primary-dark:#7f102d;
+--secondary:#1f2937;
+--bg-main:#f4f6fa;
+--bg-card:#ffffff;
+--text-muted:#6b7280;
+--border-soft:#e5e7eb;
+}
+
+/* ================= GLOBAL ================= */
+
+body{
+margin:0;
+font-family:"Poppins",sans-serif;
+background:var(--bg-main);
+color:var(--secondary);
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+background:white;
+padding:18px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid var(--border-soft);
+}
+
+.logo{
+font-size:20px;
+font-weight:800;
+color:var(--primary);
+}
+
+.nav-right{
+display:flex;
+gap:20px;
+}
+
+.nav-link{
+color:var(--secondary);
+font-weight:600;
+font-size:14px;
+text-decoration:none;
+}
+
+.logout-btn{
+background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+padding:8px 16px;
+border-radius:8px;
+color:white;
+font-size:13px;
+text-decoration:none;
+}
+
+/* ================= TITLE ================= */
+
+.page-title{
+text-align:center;
+margin:35px 0 20px;
+font-size:26px;
+font-weight:700;
+}
+
+/* ================= SEARCH ================= */
+
+.search-bar{
+width:90%;
+margin:auto;
+margin-bottom:20px;
+display:flex;
+gap:10px;
+}
+
+.search-bar input{
+flex:1;
+padding:10px 14px;
+border-radius:8px;
+border:1px solid var(--border-soft);
+font-size:14px;
+}
+
+/* ================= TABLE ================= */
+
+.table-container{
+width:90%;
+margin:auto;
+background:white;
+border-radius:16px;
+border:1px solid var(--border-soft);
+box-shadow:0 10px 22px rgba(0,0,0,0.06);
+overflow:hidden;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+color:white;
+padding:14px;
+font-size:14px;
+}
+
+td{
+padding:14px;
+border-bottom:1px solid var(--border-soft);
+text-align:center;
+font-size:14px;
+color:var(--text-muted);
+}
+
+/* ================= PRIORITY BADGES ================= */
+
+.badge{
+padding:5px 12px;
+border-radius:20px;
+font-size:12px;
+font-weight:700;
+}
+
+.critical{
+background:#fee2e2;
+color:#991b1b;
+}
+
+.moderate{
+background:#fef9c3;
+color:#92400e;
+}
+
+.healthy{
+background:#dcfce7;
+color:#065f46;
+}
+
+/* ================= ROW COLORS ================= */
+
+tr.critical-row{
+background:#fff1f1;
+}
+
+tr.moderate-row{
+background:#fff8e6;
+}
+
+/* ================= BUTTON ================= */
+
+.btn{
+padding:7px 14px;
+border-radius:8px;
+font-size:13px;
+font-weight:600;
+background:linear-gradient(135deg,#fff7ed,#fed7aa);
+color:#9a3412;
+text-decoration:none;
+}
+
+/* ================= HEALTH ICON ================= */
+
+.health-icon{
+font-size:16px;
+margin-right:5px;
+}
+.symptoms{
+max-width:200px;
+font-size:13px;
+color:#444;
+}
+</style>
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+<div class="logo">🐾 Animal Shelter</div>
+
+<div class="nav-right">
+
+<a href="{% url 'staff_dashboard' %}" class="nav-link">
+<i class="fa-solid fa-chart-line"></i> Dashboard
+</a>
+
+<a href="{% url 'staff_animals' %}" class="nav-link">
+<i class="fa-solid fa-paw"></i> Animals
+</a>
+
+
+<a href="{% url 'panel_logout' %}" class="logout-btn">
+Logout
+</a>
+
+</div>
+
+</header>
+
+<h2 class="page-title">Medical Updates</h2>
+
+<!-- ================= SEARCH ================= -->
+
+<div class="search-bar">
+<input type="text" id="searchInput" placeholder="Search animal name...">
+</div>
+
+<!-- ================= TABLE ================= -->
+
+<div class="table-container">
+
+<table id="animalTable">
+
+<tr>
+<th>Pet Name</th>
+<th>Type</th>
+<th>Age</th>
+<th>Health</th>
+<th>Symptoms</th>
+<th>Priority</th>
+<th>Action</th>
+</tr>
+
+{% for animal in animals %}
+
+<tr class="animal-row">
+
+<td class="animal-name">{{ animal.name }}</td>
+
+<td>{{ animal.pet_type }}</td>
+
+<td>{{ animal.age }}</td>
+
+<td class="health-status">
+<i class="fa-solid fa-heart-pulse health-icon"></i>
+{{ animal.health_status }}
+</td>
+
+
+<!-- ⭐ OBSERVED SYMPTOMS COLUMN -->
+<td class="symptoms">
+{{ animal.symptoms }}
+</td>
+
+<td class="priority-cell"></td>
+
+<td>
+
+{% if animal.treatment_status == "pending" %}
+
+<span style="color:green;font-weight:bold;">
+<i class="fa-solid fa-check"></i> Assigned
+</span>
+
+{% else %}
+
+<a href="{% url 'staff_add_symptoms' animal.id %}" class="btn">
+Update Symptoms
+</a>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="6">No animals available</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+<script>
+
+/* ================= PRIORITY DETECTION ================= */
+
+const rows=document.querySelectorAll(".animal-row");
+
+rows.forEach(row=>{
+
+const health=row.querySelector(".health-status").innerText.toLowerCase();
+const priorityCell=row.querySelector(".priority-cell");
+
+let label="";
+let className="healthy";
+
+if(health.includes("critical")){
+
+label="🔴 Critical";
+className="critical";
+row.classList.add("critical-row");
+
+}
+else if(health.includes("treatment") || health.includes("injury")){
+
+label="🟡 Moderate";
+className="moderate";
+row.classList.add("moderate-row");
+
+}
+else{
+
+label="🟢 Healthy";
+className="healthy";
+
+}
+
+priorityCell.innerHTML=
+`<span class="badge ${className}">${label}</span>`;
+
+});
+
+/* ================= LIVE SEARCH ================= */
+
+document.getElementById("searchInput")
+.addEventListener("keyup",function(){
+
+let filter=this.value.toLowerCase();
+
+document.querySelectorAll(".animal-row").forEach(row=>{
+
+let name=row.querySelector(".animal-name").innerText.toLowerCase();
+
+if(name.includes(filter)){
+row.style.display="";
+}else{
+row.style.display="none";
+}
+
+});
+
+});
+
+</script>
+
+</body>
+</html>

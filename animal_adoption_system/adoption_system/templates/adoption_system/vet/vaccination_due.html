@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vaccination Due</title>
+
+<style>
+
+:root {
+    --primary: #8b1e3f;
+    --primary-light: #f3e6ea;
+    --bg-main: #f6f6f8;
+    --text-main: #2c2c2c;
+    --text-light: #777;
+}
+
+/* ===== BODY ===== */
+body {
+    margin: 0;
+    font-family: "Inter", "Poppins", Arial, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+    height: 60px;
+    background: white;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+}
+
+.logo {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.page-title {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.topbar-right {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.nav-link {
+    text-decoration: none;
+    font-size: 13px;
+    color: #555;
+}
+
+.nav-link:hover {
+    color: var(--primary);
+}
+
+.logout-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+    width: 95%;
+    margin: auto;
+    padding: 25px 0;
+}
+
+/* ===== HEADER ===== */
+.page-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.page-header p {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+/* ===== TABLE ===== */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+th {
+    background: var(--primary);
+    color: white;
+    padding: 12px;
+    font-size: 13px;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    font-size: 13px;
+}
+
+tr:hover {
+    background: #fafafa;
+}
+
+/* STATUS COLORS */
+.overdue {
+    background: #ffe3e3;
+}
+
+.due-soon {
+    background: #fff1db;
+}
+
+.no-data {
+    color: #999;
+    font-style: italic;
+}
+
+/* BUTTON */
+.btn {
+    padding: 6px 14px;
+    background: var(--primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.btn:hover {
+    background: #701732;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <a href="{% url 'vet_dashboard' %}" class="logo">🩺 Vet Panel</a>
+
+    <span class="page-title">Vaccination Due</span>
+
+    <div class="topbar-right">
+        <a href="{% url 'vet_dashboard' %}" class="nav-link">Dashboard</a>
+        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="page-header">
+        <h2>Vaccination Due</h2>
+        <p>Animals whose vaccination is due or overdue</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Pet Name</th>
+                <th>Type</th>
+                <th>Vaccine</th>
+                <th>Last Dose</th>
+                <th>Next Due Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for vaccine in vaccinations %}
+        <tr class="
+            {% if vaccine.is_overdue %}overdue
+            {% elif vaccine.due_soon %}due-soon
+            {% endif %}
+        ">
+            <td>{{ vaccine.checkup.animal.name }}</td>
+            <td>{{ vaccine.checkup.animal.pet_type }}</td>
+            <td>{{ vaccine.vaccine.name }}</td>
+            <td>{{ vaccine.dose_date|date:"Y-m-d" }}</td>
+            <td>{{ vaccine.next_due_date|date:"Y-m-d" }}</td>
+
+            <td>
+                {% if vaccine.is_overdue %}
+                    <span style="color:red; font-weight:600;">
+                        Overdue
+                    </span>
+                {% elif vaccine.due_soon %}
+                    <span style="color:#e67e22; font-weight:600;">
+                        Due Soon
+                    </span>
+                {% else %}
+                    Scheduled
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="{% url 'mark_vaccinated' vaccine.id %}" class="btn">
+                    Mark Vaccinated
+                </a>
+            </td>
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="7" class="no-data">
+                No vaccinations due at the moment.
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

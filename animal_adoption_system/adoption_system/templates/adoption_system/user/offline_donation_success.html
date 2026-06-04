@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Offline Donation Confirmation</title>
+
+<style>
+
+body{
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#f3f4f6,#e5e7eb);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    background:white;
+    width:450px;
+    padding:40px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+.icon{
+    font-size:55px;
+    color:#16a34a;
+    margin-bottom:10px;
+}
+
+h2{
+    color:#111827;
+    margin-bottom:10px;
+}
+
+.message{
+    color:#6b7280;
+    margin-bottom:25px;
+}
+
+.info-box{
+    background:#f9fafb;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.info-box p{
+    margin:6px 0;
+    font-size:15px;
+}
+
+.status{
+    color:#f59e0b;
+    font-weight:600;
+}
+
+.steps{
+    text-align:left;
+    margin-top:20px;
+    font-size:14px;
+    color:#4b5563;
+}
+
+.steps li{
+    margin-bottom:6px;
+}
+
+.btn{
+    display:inline-block;
+    margin-top:25px;
+    background:#dc2626;
+    color:white;
+    padding:12px 30px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:500;
+    transition:0.3s;
+}
+
+.btn:hover{
+    background:#b91c1c;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="icon">✔</div>
+
+<h2>Donation Request Recorded</h2>
+
+<p class="message">
+Thank you for supporting our shelter ❤️
+</p>
+
+<div class="info-box">
+
+<p><strong>Donation Amount:</strong> ₹{{ donation.amount }}</p>
+
+<p><strong>Payment Method:</strong> Offline</p>
+
+<p><strong>Status:</strong> 
+<span class="status">Pending Confirmation</span>
+</p>
+
+</div>
+
+<div class="steps">
+<strong>Next Steps:</strong>
+<ul>
+<li>Visit the animal shelter.</li>
+<li>Pay the donation amount at the reception.</li>
+<li>Staff will confirm your donation.</li>
+<li>Your contribution will help rescue animals in need.</li>
+</ul>
+</div>
+
+<a href="{% url 'user_home' %}" class="btn">
+Back to Home
+</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add Checkup</title>
+
+<style>
+
+:root {
+    --primary: #8b1e3f;
+    --primary-soft: #f7e9ee;
+    --bg-main: #f7f8fb;
+    --card-bg: #ffffff;
+    --text-main: #2b2b2b;
+    --text-light: #7a7a7a;
+    --border: #e6e6e6;
+}
+
+/* ===== BODY ===== */
+body {
+    margin: 0;
+    font-family: "Inter", "Poppins", Arial, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* ===== NAVBAR ===== */
+.topbar {
+    height: 60px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+}
+
+.logo {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.page-title {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.logout-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.logout-btn:hover {
+    background: #701732;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.container {
+    width: 68%;
+    margin: 35px auto;
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+}
+
+/* ===== HEADINGS ===== */
+h2 {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 28px;
+    margin-bottom: 12px;
+    color: var(--primary);
+}
+
+/* ===== INFO BOX ===== */
+.info-box {
+    background: var(--primary-soft);
+    border-left: 4px solid var(--primary);
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.info-box p {
+    margin: 4px 0;
+}
+
+/* ===== FORM ===== */
+label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #444;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 4px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    background: #fff;
+    transition: all 0.2s ease;
+}
+
+/* INPUT FOCUS */
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(139,30,63,0.08);
+    outline: none;
+}
+
+/* READONLY FIELD */
+.readonly {
+    background: #f3f3f3;
+    color: #777;
+}
+
+/* ===== BUTTON ===== */
+button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 11px 24px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #701732;
+    transform: translateY(-1px);
+}
+
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="topbar">
+    <a href="{% url 'vet_dashboard' %}" class="logo">🩺 Vet Panel</a>
+
+    <span class="page-title">Add Checkup</span>
+
+    <div class="topbar-right">
+        <a href="{% url 'vet_dashboard' %}" class="nav-link">Dashboard</a>
+        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+
+<h2>Animal Checkup</h2>
+
+<!-- Animal Info -->
+<h3>Animal Information</h3>
+<div class="info-box">
+    <p><b>Name:</b> {{ animal.name }}</p>
+    <p><b>Type:</b> {{ animal.pet_type }}</p>
+    <p><b>Breed:</b> {{ animal.breed }}</p>
+</div>
+
+<form method="POST">
+{% csrf_token %}
+
+<!-- Physical Examination -->
+<h3>Physical Examination</h3>
+
+<label>Weight (kg)</label>
+<input type="number" step="0.01" name="weight" value="{{ animal.weight }}">
+
+<label>Height (cm)</label>
+<input type="number" step="0.01" name="height" value="{{ animal.height }}">
+
+<label>Temperature (°C)</label>
+<input type="number" step="0.1" name="temperature" value="{{ animal.temperature }}">
+
+<label>General Condition</label>
+<select name="general_condition">
+    <option value="Normal">Normal</option>
+    <option value="Weak">Weak</option>
+    <option value="Underweight">Underweight</option>
+    <option value="Critical">Critical</option>
+</select>
+
+<!-- Medical Update -->
+<h3>Medical Update</h3>
+
+<label>Health Status</label>
+<select name="health_status" required>
+    <option value="">-- Select Health Status --</option>
+    <option value="Healthy">Healthy</option>
+    <option value="Under Treatment">Under Treatment</option>
+    <option value="Recovering">Recovering</option>
+    <option value="Critical">Critical</option>
+</select>
+
+<label>Medical Notes</label>
+<textarea name="medical_notes"></textarea>
+
+<h3>Vaccination Record</h3>
+
+<div id="vaccine-container">
+
+    <div class="vaccine-row">
+        <label>Vaccine Name</label>
+        <select name="vaccine[]">
+            <option value="">-- Select Vaccine --</option>
+            {% for v in vaccines %}
+                <option value="{{ v.id }}">{{ v.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Dose Date</label>
+        <input type="date" name="date_given[]" class="dose-date">
+
+        <label>Next Dose After (Days)</label>
+        <input type="number" name="next_dose_after_days[]" class="dose-days">
+
+        <label>Next Due Date</label>
+        <input type="date" class="next-due readonly" readonly>
+    </div>
+
+</div>
+
+<button type="button" onclick="addVaccineRow()">
+    + Add Another Vaccine
+</button>
+
+
+<button type="submit">Save Checkup</button>
+
+</form>
+
+</div>
+
+<script>
+
+function calculateNextDue(row) {
+
+    const doseDate = row.querySelector(".dose-date").value;
+    const doseDays = parseInt(row.querySelector(".dose-days").value);
+    const nextDueInput = row.querySelector(".next-due");
+
+    if (doseDate && doseDays) {
+        let date = new Date(doseDate);
+        date.setDate(date.getDate() + doseDays);
+
+        let formatted =
+            date.getFullYear() + "-" +
+            String(date.getMonth()+1).padStart(2,'0') + "-" +
+            String(date.getDate()).padStart(2,'0');
+
+        nextDueInput.value = formatted;
+    }
+}
+
+document.addEventListener("input", function(e) {
+    if (e.target.classList.contains("dose-date") ||
+        e.target.classList.contains("dose-days")) {
+
+        const row = e.target.closest(".vaccine-row");
+        calculateNextDue(row);
+    }
+});
+
+function addVaccineRow() {
+
+    let container = document.getElementById("vaccine-container");
+
+    let row = document.createElement("div");
+    row.classList.add("vaccine-row");
+
+    row.innerHTML = `
+        <hr>
+
+        <label>Vaccine Name</label>
+        <select name="vaccine[]">
+            <option value="">-- Select Vaccine --</option>
+            {% for v in vaccines %}
+                <option value="{{ v.id }}">{{ v.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Dose Date</label>
+        <input type="date" name="date_given[]" class="dose-date">
+
+        <label>Next Dose After (Days)</label>
+        <input type="number" name="next_dose_after_days[]" class="dose-days">
+
+        <label>Next Due Date</label>
+        <input type="date" class="next-due readonly" readonly>
+    `;
+
+    container.appendChild(row);
+}
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,395 @@
+{% load custom_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost Pet Reports | Admin</title>
+
+    <link rel="stylesheet" href="{% static 'css/adminpanel/admin.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ================= GLOBAL ================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        /* ================= NAVBAR ================= */
+        .admin-navbar {
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 40px;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .admin-navbar h2 { font-size: 20px; font-weight: 600; color: #a11a3c; }
+        .nav-right { display: flex; gap: 25px; align-items: center; }
+        .admin-navbar a {
+            text-decoration: none; font-size: 14px; font-weight: 500;
+            color: #475569; transition: 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .admin-navbar a:hover { color: #a11a3c; }
+        .logout { color: #dc2626 !important; }
+
+        .notification { position: relative; cursor: pointer; color: #475569; }
+        .notification .badge {
+            position: absolute; top: -8px; right: -10px;
+            background: #a11a3c; color: white;
+            font-size: 10px; font-weight: bold;
+            padding: 2px 6px; border-radius: 10px;
+        }
+
+        /* ================= HERO ================= */
+        .hero { text-align: center; padding: 40px 20px 20px; }
+        .hero h1 { font-size: 32px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+        .hero p { font-size: 15px; color: #64748b; max-width: 600px; margin: auto; }
+
+        /* ================= PAGE CONTAINER ================= */
+        .admin-page { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px; }
+
+        /* ================= TOOLBAR (SEARCH & FILTER) ================= */
+        .toolbar-form {
+            display: flex; gap: 15px; flex-wrap: wrap; align-items: center;
+            background: white; padding: 20px; border-radius: 16px;
+            border: 1px solid #e2e8f0; margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        }
+        .search-box { flex: 1; position: relative; min-width: 250px; }
+        .search-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        .search-box input {
+            width: 100%; padding: 12px 15px 12px 45px;
+            border-radius: 8px; border: 1px solid #e2e8f0; outline: none; background: #f8fafc; transition: 0.3s;
+        }
+        .search-box input:focus { border-color: #a11a3c; background: white; box-shadow: 0 0 0 3px rgba(161, 26, 60, 0.1); }
+        
+        .filter-select {
+            padding: 12px 15px; border-radius: 8px; border: 1px solid #e2e8f0;
+            background: #f8fafc; outline: none; cursor: pointer; color: #475569;
+        }
+        .btn-submit {
+            padding: 12px 24px; border-radius: 8px; border: none;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2); }
+
+        /* ================= PET CARD ================= */
+        .pet-card {
+            background: white; border-radius: 16px; padding: 24px; margin-bottom: 24px;
+            border: 1px solid #e2e8f0; display: flex; gap: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: 0.3s ease;
+        }
+        .pet-card:hover { border-color: #cbd5e1; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); }
+
+        /* Pet Image */
+        .pet-image-container { flex-shrink: 0; width: 180px; }
+        .pet-image {
+            width: 100%; height: 180px; object-fit: cover; border-radius: 12px;
+            cursor: pointer; transition: 0.3s; border: 1px solid #e2e8f0;
+        }
+        .pet-image:hover { opacity: 0.9; transform: scale(1.02); }
+        .pet-image-hint { text-align: center; font-size: 11px; color: #94a3b8; margin-top: 6px; }
+
+        /* Pet Details */
+        .pet-info { flex: 1; }
+        .pet-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .pet-header h3 { font-size: 22px; margin: 0; color: #0f172a; }
+        
+        /* Badges */
+        .badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+        .badge.Missing { background: #fee2e2; color: #991b1b; }
+        .badge.Found { background: #dcfce7; color: #166534; }
+        .badge.type { background: #f1f5f9; color: #475569; }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px; margin-bottom: 16px; background: #f8fafc; padding: 16px; border-radius: 12px;
+        }
+        .info-item { font-size: 13px; color: #64748b; }
+        .info-item strong { color: #1e293b; display: block; margin-bottom: 2px; }
+
+        /* Quick Contact */
+        .quick-contact { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
+        .contact-btn {
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;
+            border-radius: 8px; font-size: 12px; font-weight: 600; text-decoration: none; transition: 0.2s;
+        }
+        .contact-email { background: #e0f2fe; color: #0369a1; }
+        .contact-email:hover { background: #bae6fd; }
+        .contact-phone { background: #dcfce7; color: #166534; }
+        .contact-phone:hover { background: #bbf7d0; }
+
+        /* ================= MATCH BOX ================= */
+        .match-box {
+            background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #22c55e;
+            border-radius: 12px; padding: 16px; margin-top: 16px;
+        }
+        .match-box h4 { margin: 0 0 12px; color: #166534; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        
+        .match-item {
+            display: flex; gap: 16px; align-items: center; background: white;
+            padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 8px;
+        }
+        .match-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; cursor: pointer; }
+        .match-details { flex: 1; font-size: 13px; color: #475569; }
+        
+        /* AI Score Badge */
+        .ai-score {
+            background: linear-gradient(135deg, #10b981, #059669); color: white;
+            padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+            display: inline-block; margin-bottom: 4px; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Buttons */
+        .btn-action {
+            padding: 8px 16px; border: none; border-radius: 8px; font-size: 12px;
+            font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .btn-map { background: #f1f5f9; color: #475569; }
+        .btn-map:hover { background: #e2e8f0; color: #0f172a; }
+        .btn-found { background: linear-gradient(135deg, #a11a3c, #7f102d); color: white; margin-top: 15px; }
+        .btn-found:hover { box-shadow: 0 4px 12px rgba(161, 26, 60, 0.3); transform: translateY(-2px); }
+
+        /* ================= MODALS ================= */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center;
+            z-index: 2000; padding: 20px; opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        
+        .modal-content {
+            background: white; border-radius: 16px; overflow: hidden; position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); transform: translateY(20px); transition: 0.3s ease;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        
+        .modal-close {
+            position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.5); color: white;
+            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border: none; font-size: 16px; z-index: 10; transition: 0.2s;
+        }
+        .modal-close:hover { background: #dc2626; }
+
+        /* Specific Modals */
+        .image-modal .modal-content { max-width: 800px; max-height: 90vh; }
+        .image-modal img { width: 100%; height: auto; max-height: 90vh; display: block; object-fit: contain; }
+        
+        .map-modal .modal-content { width: 100%; max-width: 600px; padding: 20px; }
+        .map-modal h3 { margin: 0 0 15px; color: #0f172a; }
+        .map-container { width: 100%; height: 350px; border-radius: 12px; overflow: hidden; background: #f1f5f9; }
+
+        /* ================= RESPONSIVE ================= */
+        @media(max-width: 768px) {
+            .pet-card { flex-direction: column; }
+            .pet-image-container { width: 100%; }
+            .pet-image { height: 250px; }
+            .toolbar-form { flex-direction: column; align-items: stretch; }
+            .match-item { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="admin-navbar">
+        <div class="nav-left">
+            <h2><i class="fa-solid fa-paw"></i> Shelter Admin</h2>
+        </div>
+        <div class="nav-right">
+            <a href="{% url 'admin_dashboard' %}"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <div class="notification">
+                <i class="fa-solid fa-bell"></i>
+                <span class="badge">{{ notification_count|default:"0" }}</span>
+            </div>
+            <a href="{% url 'panel_logout' %}" class="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>Lost Pet Reports</h1>
+        <p>Review missing reports, cross-reference AI matches, and help reunite pets with their owners.</p>
+    </header>
+
+    <main class="admin-page">
+        <form method="GET" class="toolbar-form">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="search" placeholder="Search pet name, breed, or user..." value="{{ search_query|default:'' }}">
+            </div>
+
+            <select name="status" class="filter-select">
+                <option value="">All Statuses</option>
+                <option value="Missing" {% if status_filter == 'Missing' %}selected{% endif %}>Missing Only</option>
+                <option value="Found" {% if status_filter == 'Found' %}selected{% endif %}>Found Only</option>
+            </select>
+
+            <select name="type" class="filter-select">
+                <option value="">All Pet Types</option>
+                <option value="Dog" {% if type_filter == 'Dog' %}selected{% endif %}>Dog</option>
+                <option value="Cat" {% if type_filter == 'Cat' %}selected{% endif %}>Cat</option>
+                <option value="Other" {% if type_filter == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+
+            <select name="sort" class="filter-select">
+                <option value="latest" {% if sort_filter == 'latest' %}selected{% endif %}>Latest Reports</option>
+                <option value="oldest" {% if sort_filter == 'oldest' %}selected{% endif %}>Oldest Reports</option>
+            </select>
+
+            <button type="submit" class="btn-submit">Apply Filters</button>
+        </form>
+
+        {% if lost_pets %}
+            {% for pet in lost_pets %}
+            <article class="pet-card">
+                
+                <div class="pet-image-container">
+                    {% if pet.pet_photo %}
+                        <img src="{{ pet.pet_photo.url }}" class="pet-image" onclick="openImageModal(this.src)" alt="{{ pet.pet_name }}">
+                        <p class="pet-image-hint"><i class="fa-solid fa-expand"></i> Click to preview</p>
+                    {% else %}
+                        <div class="pet-image" style="background:#e2e8f0; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:30px;">
+                            <i class="fa-solid fa-image"></i>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="pet-info">
+                    <div class="pet-header">
+                        <div>
+                            <h3>{{ pet.pet_name }}</h3>
+                            <div class="badges">
+                                <span class="badge {{ pet.status }}">{{ pet.status }}</span>
+                                <span class="badge type">{{ pet.pet_type }} • {{ pet.breed }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-contact">
+                        <span style="font-size:13px; color:#64748b;">Reported by <strong>{{ pet.user.username }}</strong>:</span>
+                        <a href="mailto:{{ pet.user.email }}" class="contact-btn contact-email"><i class="fa-regular fa-envelope"></i> Email</a>
+                        {% if pet.user.phone_number %}
+                        <a href="tel:{{ pet.user.phone_number }}" class="contact-btn contact-phone"><i class="fa-solid fa-phone"></i> Call</a>
+                        {% endif %}
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item"><strong>Date Lost</strong> {{ pet.date_lost }}</div>
+                        <div class="info-item"><strong>Reported On</strong> {{ pet.reported_date }}</div>
+                        <div class="info-item" style="grid-column: 1 / -1;"><strong>Last Seen Location</strong> <i class="fa-solid fa-location-dot" style="color:#ef4444;"></i> {{ pet.last_seen_location }}</div>
+                    </div>
+
+                    {% with matches|get_item:pet.id as matched_found %}
+                        {% if matched_found %}
+                        <div class="match-box">
+                            <h4><i class="fa-solid fa-wand-magic-sparkles"></i> AI Suggested Matches</h4>
+                            
+                            {% for found in matched_found %}
+                            <div class="match-item">
+                                {% if found.pet_photo %}
+                                    <img src="{{ found.pet_photo.url }}" class="match-img" onclick="openImageModal(this.src)">
+                                {% endif %}
+                                
+                                <div class="match-details">
+                                    <div class="ai-score"><i class="fa-solid fa-bolt"></i> Match Score: {{ found.match_score|default:"85" }}%</div>
+                                    <p style="margin:4px 0;">Found <b>{{ found.pet_type }}</b> reported by {{ found.user.username }}</p>
+                                    <p style="margin:0; font-size:12px;"><i class="fa-regular fa-calendar"></i> Found on: {{ found.date_found }}</p>
+                                </div>
+
+                                {% if found.found_location %}
+                                <button class="btn-action btn-map" onclick="openMapModal('{{ found.found_location }}')">
+                                    <i class="fa-solid fa-map-location-dot"></i> View Map
+                                </button>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    {% endwith %}
+
+                    {% if pet.status == "Missing" %}
+                    <form method="POST" action="{% url 'mark_pet_found' pet.id %}" style="text-align: right;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-action btn-found">
+                            <i class="fa-solid fa-check-circle"></i> Mark as Found
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 16px; border: 1px solid #e2e8f0;">
+                <i class="fa-solid fa-shield-cat" style="font-size: 48px; color: #cbd5e1; margin-bottom: 15px;"></i>
+                <h3 style="color: #475569; margin-bottom: 5px;">No Reports Found</h3>
+                <p style="color: #94a3b8; font-size: 14px;">Try adjusting your filters or search terms.</p>
+            </div>
+        {% endif %}
+    </main>
+
+    <div class="modal-overlay image-modal" id="imageModal" onclick="closeModals(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModals()"><i class="fa-solid fa-xmark"></i></button>
+            <img id="previewImage" src="" alt="Pet Preview">
+        </div>
+    </div>
+
+    <div class="modal-overlay map-modal" id="mapModal" onclick="closeModals(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModals()"><i class="fa-solid fa-xmark"></i></button>
+            <h3><i class="fa-solid fa-location-dot" style="color:#ef4444;"></i> Location Found</h3>
+            <div class="map-container" id="mapContainer">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // Image Preview Modal Logic
+        function openImageModal(imgSrc) {
+            document.getElementById('previewImage').src = imgSrc;
+            document.getElementById('imageModal').classList.add('active');
+            document.body.style.overflow = "hidden";
+        }
+
+        // Map Modal Logic
+        function openMapModal(locationQuery) {
+            const mapContainer = document.getElementById('mapContainer');
+            // Encode the location string for the URL
+            const encodedLocation = encodeURIComponent(locationQuery);
+            
+            // FIXED: Standard Google Maps iframe URL layout. 
+            mapContainer.innerHTML = `<iframe width="100%" height="100%" frameborder="0" style="border:0;" src="https://maps.google.com/maps?q=${encodedLocation}&output=embed" allowfullscreen></iframe>`;
+            
+            document.getElementById('mapModal').classList.add('active');
+            document.body.style.overflow = "hidden";
+        }
+
+        // Close Modals
+        function closeModals(e) {
+            // Close if clicking the overlay background OR the close button
+            if (!e || e.target.classList.contains('modal-overlay') || e.target.closest('.modal-close')) {
+                document.querySelectorAll('.modal-overlay').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.getElementById('mapContainer').innerHTML = ""; // Stop iframe loading when closed
+                document.body.style.overflow = "auto";
+            }
+        }
+
+        // Escape key to close modals
+        window.addEventListener("keydown", function(e) {
+            if (e.key === "Escape") closeModals();
+        });
+    </script>
+</body>
+</html>

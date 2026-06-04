@@ -1,0 +1,389 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+:root{
+--primary:#a11a3c;
+--primary-light:#f7e9ee;
+--bg-main:#f4f6f9;
+--card-bg:#ffffff;
+--text-main:#2b2b2b;
+--text-light:#7a7a7a;
+}
+
+/* PAGE */
+
+body{
+background:var(--bg-main);
+font-family:'Poppins',sans-serif;
+margin:0;
+}
+
+/* NAVBAR */
+
+.navbar{
+background:var(--primary);
+color:white;
+padding:15px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 2px 8px rgba(0,0,0,0.15);
+}
+
+.navbar h3{
+margin:0;
+font-weight:600;
+}
+
+/* CONTAINER */
+
+.container{
+max-width:850px;
+margin:40px auto;
+padding:0 20px;
+}
+
+/* HEADER */
+
+.page-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+/* BUTTONS */
+
+.btn{
+border:none;
+padding:8px 16px;
+border-radius:6px;
+cursor:pointer;
+font-size:14px;
+display:inline-flex;
+align-items:center;
+gap:6px;
+}
+
+.btn-primary{
+background:var(--primary);
+color:white;
+}
+
+.btn-outline{
+border:1px solid var(--primary);
+color:var(--primary);
+background:white;
+}
+
+.btn-danger{
+background:#e74c3c;
+color:white;
+}
+
+.btn:hover{
+opacity:0.9;
+}
+
+/* NOTIFICATION CARD */
+
+.notification-card{
+background:var(--card-bg);
+border-radius:10px;
+padding:16px;
+margin-bottom:15px;
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+border-left:4px solid transparent;
+box-shadow:0 3px 10px rgba(0,0,0,0.05);
+transition:.25s;
+}
+
+.notification-card.unread{
+border-left:4px solid var(--primary);
+background:var(--primary-light);
+}
+
+.notification-card:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 18px rgba(0,0,0,0.1);
+}
+
+.notification-title{
+font-weight:600;
+margin-bottom:3px;
+color:var(--text-main);
+}
+
+.notification-message{
+font-size:14px;
+color:var(--text-light);
+}
+
+.notification-time{
+font-size:12px;
+color:var(--text-light);
+margin-top:5px;
+}
+
+/* DELETE */
+
+.delete-btn{
+background:none;
+border:none;
+font-size:18px;
+color:#888;
+cursor:pointer;
+}
+
+.delete-btn:hover{
+color:#e74c3c;
+}
+
+/* EMPTY */
+
+.empty-state{
+background:white;
+padding:40px;
+border-radius:10px;
+text-align:center;
+color:#777;
+box-shadow:0 3px 10px rgba(0,0,0,0.05);
+}
+
+/* CONFIRM MODAL */
+
+.confirm-overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.45);
+display:flex;
+align-items:center;
+justify-content:center;
+visibility:hidden;
+opacity:0;
+transition:.3s;
+}
+
+.confirm-overlay.active{
+visibility:visible;
+opacity:1;
+}
+
+.confirm-box{
+background:white;
+padding:30px;
+border-radius:10px;
+width:320px;
+text-align:center;
+box-shadow:0 8px 30px rgba(0,0,0,0.2);
+}
+
+.confirm-buttons{
+margin-top:20px;
+display:flex;
+justify-content:center;
+gap:10px;
+}
+
+.confirm-buttons button{
+padding:6px 18px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.btn-cancel{
+background:#bdc3c7;
+color:white;
+}
+
+.btn-confirm{
+background:#e74c3c;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+<h3><i class="fa-solid fa-bell"></i> Notifications</h3>
+
+<a href="{% url 'userhome' %}" class="btn btn-outline">
+<i class="fa-solid fa-arrow-left"></i> Back to Home
+</a>
+</div>
+
+<div class="container">
+
+<div class="page-header">
+
+<div>
+<button class="btn btn-primary" onclick="markAllRead()">
+<i class="fa-solid fa-check-double"></i> Mark All Read
+</button>
+
+<button class="btn btn-danger" onclick="clearAllNotifications()">
+<i class="fa-solid fa-trash"></i> Clear All
+</button>
+</div>
+
+</div>
+
+<div id="notification-container">
+
+{% for notif in notifications %}
+
+<div class="notification-card {% if not notif.is_read %}unread{% endif %}" id="notif-{{ notif.id }}">
+
+<div>
+
+<div class="notification-title">{{ notif.title }}</div>
+
+<div class="notification-message">{{ notif.message }}</div>
+
+<div class="notification-time">
+<i class="fa-regular fa-clock"></i>
+{{ notif.created_at|timesince }} ago
+</div>
+
+{% if notif.link %} <a href="{{ notif.link }}" class="btn btn-outline" style="margin-top:8px;font-size:13px;">
+View Details </a>
+{% endif %}
+
+</div>
+
+<button class="delete-btn" data-id="{{ notif.id }}" onclick="showConfirm(this)">
+<i class="fa-solid fa-xmark"></i>
+</button>
+
+</div>
+
+{% empty %}
+
+<div class="empty-state">
+<i class="fa-regular fa-bell-slash" style="font-size:40px"></i>
+<h4>No Notifications</h4>
+<p>You have no notifications right now.</p>
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+<!-- CONFIRM POPUP -->
+
+<div class="confirm-overlay" id="confirmPopup">
+
+<div class="confirm-box">
+
+<h4>Delete Notification?</h4>
+<p>This action cannot be undone.</p>
+
+<div class="confirm-buttons">
+
+<button class="btn-cancel" onclick="closeConfirm()">Cancel</button> <button class="btn-confirm" onclick="deleteConfirmed()">Delete</button>
+
+</div>
+
+</div>
+
+</div>
+
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+<script>
+
+let selectedButton=null;
+
+const csrfToken=document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+function getHeaders(){
+return{
+'X-CSRFToken':csrfToken,
+'Content-Type':'application/json'
+}
+}
+
+function showConfirm(button){
+selectedButton=button;
+document.getElementById("confirmPopup").classList.add("active");
+}
+
+function closeConfirm(){
+document.getElementById("confirmPopup").classList.remove("active");
+}
+
+function deleteConfirmed(){
+
+const id=selectedButton.getAttribute("data-id");
+
+fetch(`/delete-notification/${id}/`,{
+method:"POST",
+headers:getHeaders()
+})
+.then(res=>res.json())
+.then(data=>{
+if(data.status==="deleted"){
+selectedButton.closest(".notification-card").remove();
+}
+})
+
+closeConfirm();
+}
+
+function markAllRead(){
+
+fetch("{% url 'mark_all_read' %}",{
+method:"POST",
+headers:getHeaders()
+})
+.then(res=>res.json())
+.then(data=>{
+if(data.status==="updated"){
+document.querySelectorAll(".notification-card.unread")
+.forEach(card=>card.classList.remove("unread"))
+}
+})
+
+}
+
+function clearAllNotifications(){
+
+if(confirm("Delete all notifications?")){
+
+fetch("{% url 'clear_all_notifications' %}",{
+method:"POST",
+headers:getHeaders()
+})
+.then(()=>location.reload())
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

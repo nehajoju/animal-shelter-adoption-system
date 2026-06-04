@@ -1,0 +1,451 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile | Animal Shelter</title>
+
+    
+    <link rel="stylesheet"
+       
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    /* ================= ROOT COLORS ================= */
+:root {
+    --primary: #a11a3c;          /* Wine Rose */
+    --primary-dark: #7f102f;     /* Deep Wine */
+    --secondary: #111827;        /* Deep Charcoal */
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #374151;
+    --text-muted: #6b7280;
+    --border-soft: #e5e7eb;
+    --light: #fff7ed;
+}
+
+/* ================= GLOBAL ================= */
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* SUBTLE PAW BACKGROUND */
+body::before{
+    content:"🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾";
+    position:fixed;
+    font-size:120px;
+    opacity:0.08;
+    top:20%;
+    left:5%;
+    transform:rotate(-20deg);
+    z-index:-1;
+}
+
+/* ================= NAVBAR ================= */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 8%;
+    background: var(--bg-card);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.nav-right {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-link {
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--secondary);
+    transition: 0.3s;
+}
+
+.nav-link:hover {
+    color: var(--primary);
+}
+
+.logout-btn {
+    background: var(--primary);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background: var(--primary-dark);
+}
+
+/* Notification Icon */
+.notification-icon {
+    position: relative;
+    color: var(--secondary);
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.notification-icon:hover {
+    color: var(--primary);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: var(--primary);
+    color: white;
+    font-size: 10px;
+    padding: 3px 6px;
+    border-radius: 50%;
+}
+
+/* ================= HERO ================= */
+.profile-hero {
+    padding: 110px 20px 100px;
+    text-align: center;
+    background:
+        linear-gradient(rgba(161,26,60,.85), rgba(127,16,47,.85)),
+        url("https://images.unsplash.com/photo-1548199973-03cce0bbc87b")
+        center/cover no-repeat;
+    color: white;
+}
+
+.profile-hero h1 {
+    font-size: 2.6rem;
+    font-weight: 700;
+}
+
+.profile-hero p {
+    opacity: 0.9;
+}
+
+/* Status Badge */
+.badge {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge.success { background: #16a34a; color: #fff; }
+.badge.warning { background: #f59e0b; color: #fff; }
+
+/* ================= PROFILE CARD ================= */
+.profile-card {
+    background: var(--bg-card);
+    padding: 60px 55px;
+    border-radius: 28px;
+    max-width: 1050px;
+    margin: -70px auto 80px;
+    box-shadow: 0 20px 45px rgba(0,0,0,.08);
+}
+
+/* ================= FORM ================= */
+.profile-card form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px 35px;
+    margin-top: 30px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 13px 15px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border-soft);
+    font-size: 0.95rem;
+    transition: 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(161,26,60,.12);
+}
+
+.form-group input[readonly] {
+    background: #f6f6f6;
+    cursor: not-allowed;
+}
+
+/* Divider */
+.section-divider {
+    grid-column: 1 / -1;
+    height: 1px;
+    background: var(--border-soft);
+    margin: 10px 0;
+}
+
+/* ================= BUTTONS ================= */
+.submit-btn {
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    background: var(--primary);
+    color: white;
+    transition: 0.3s;
+}
+
+.submit-btn:hover {
+    background: var(--primary-dark);
+}
+
+/* ================= ACTIVITY SECTION ================= */
+.activity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+    gap: 25px;
+    margin-top: 25px;
+}
+
+.activity-card {
+    background: var(--bg-main);
+    padding: 25px;
+    border-radius: 18px;
+    text-align: center;
+    transition: 0.3s;
+    border: 1px solid var(--border-soft);
+}
+
+.activity-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.activity-card i {
+    font-size: 24px;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.activity-card a,
+.activity-card button {
+    margin-top: 10px;
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    background: var(--primary);
+    color: white;
+    border: none;
+}
+
+.activity-card button[disabled] {
+    background: #ccc;
+    cursor: not-allowed;
+}
+</style>
+
+</head>
+<body>
+
+
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="logo">🐾 Animal Shelter</div>
+
+    <div class="nav-right">
+        <a href="{% url 'userhome' %}" class="nav-link">
+            <i class="fa-solid fa-house"></i> Dashboard
+        </a>
+
+        <a href="" class="notification-icon">
+            <i class="fa-solid fa-bell"></i>
+            <span class="notification-badge">3</span>
+        </a>
+
+        <a href="{% url 'logout' %}" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="profile-hero">
+    <h1>{{ user.username }} 👋</h1>
+    <p>{{ user.email }}</p>
+
+    {% if user.is_profile_completed %}
+        <span class="badge success">Profile Completed</span>
+    {% else %}
+        <span class="badge warning">Profile Incomplete</span>
+    {% endif %}
+</section>
+
+<!-- PROFILE CONTENT -->
+<section class="profile-section">
+    <div class="profile-card">
+
+        <!-- INFO MESSAGE -->
+        {% if not user.is_profile_completed %}
+            <div class="alert warning">
+                Please complete your profile to continue adoption.
+            </div>
+        {% else %}
+            <div class="alert success">
+                Your profile is complete. You may update details anytime.
+            </div>
+        {% endif %}
+
+        <!-- PROFILE FORM -->
+        <h2>👤 Personal Information</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- READ ONLY INFO -->
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" value="{{ user.username }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" value="{{ user.email }}" readonly>
+            </div>
+
+            <!-- EDITABLE -->
+            <div class="form-group">
+                <label>Phone Number</label>
+                {{ form.phone_number }}
+            </div>
+
+            <div class="form-group">
+                <label>Occupation</label>
+                {{ form.occupation }}
+            </div>
+
+            <div class="form-group full">
+                <label>Residential Address</label>
+                {{ form.address }}
+            </div>
+
+            <div class="form-group">
+                <label>City</label>
+                {{ form.city }}
+            </div>
+
+            <div class="form-group">
+                <label>State</label>
+                {{ form.state }}
+            </div>
+
+            <div class="form-group">
+                <label>Pincode</label>
+                {{ form.pincode }}
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- HOUSEHOLD DETAILS -->
+            <h2 class="full">🏠 Household Details</h2>
+
+            <div class="form-group">
+                <label>Housing Type</label>
+                {{ form.housing_type }}
+            </div>
+
+            <div class="form-group">
+                <label>Ownership</label>
+                {{ form.ownership }}
+            </div>
+
+            <div class="form-group">
+                <label>Total Family Members</label>
+                {{ form.family_members }}
+            </div>
+
+            <div class="form-group">
+                <label>Children Present?</label>
+                {{ form.children }}
+            </div>
+
+            <div class="form-group">
+                <label>Other Pets</label>
+                {{ form.other_pets }}
+            </div>
+
+            <div class="form-group full">
+                <label>Home Ownership / Rental Proof</label>
+                {{ form.home_proof }}
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <i class="fa-solid fa-save"></i> Save Profile
+            </button>
+        </form>
+
+        <div class="section-divider"></div>
+
+        <!-- USER ACTIVITY -->
+        <h2>📊 My Activity</h2>
+
+        <div class="activity-grid">
+
+            <div class="activity-card">
+                <i class="fa-solid fa-heart"></i>
+                <h3>Adoption History</h3>
+                <p>View past and current adoption requests</p>
+                <a href="{% url 'my_adoptions' %}">View</a>
+            </div>
+
+            <div class="activity-card">
+                <i class="fa-solid fa-bookmark"></i>
+                <h3>Saved Searches</h3>
+                <p>Animals you searched for earlier</p>
+                <button disabled>Coming Soon</button>
+            </div>
+
+            <div class="activity-card">
+                <i class="fa-solid fa-paw"></i>
+                <h3>Favorite Animals</h3>
+                <p>Animals you liked or shortlisted</p>
+                <button disabled>Coming Soon</button>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<script src="{% static 'js/profile.js' %}"></script>
+</body>
+</html>

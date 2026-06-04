@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Successful</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        body {
+            margin: 0; font-family: "Poppins", sans-serif;
+            background: #f0fdf4; display: flex;
+            justify-content: center; align-items: center;
+            height: 100vh; overflow: hidden;
+        }
+
+        .success-card {
+            background: white; padding: 40px; width: 420px;
+            border-radius: 24px; text-align: center;
+            box-shadow: 0 25px 50px rgba(22, 163, 74, 0.15);
+            position: relative; z-index: 10;
+            border-top: 10px dashed #16a34a;
+            animation: slideDown 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .checkmark-wrapper {
+            width: 80px; height: 80px; background: #dcfce7;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; margin: -80px auto 20px;
+            box-shadow: 0 0 0 10px white;
+        }
+
+        .checkmark-wrapper i { font-size: 40px; color: #16a34a; animation: scaleUp 0.5s ease 0.3s both; }
+
+        @keyframes scaleUp {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        h2 { margin: 0 0 5px; color: #1f2937; font-size: 26px; font-weight: 700; }
+        .subtitle { color: #6b7280; font-size: 15px; margin-bottom: 25px; }
+
+        .receipt-details {
+            text-align: left; background: #f9fafb; padding: 20px;
+            border-radius: 16px; font-size: 14px; color: #4b5563;
+            border: 1px solid #e5e7eb;
+        }
+        .receipt-row { display: flex; justify-content: space-between; margin-bottom: 12px; }
+        .receipt-row:last-child { margin-bottom: 0; padding-top: 12px; border-top: 1px dashed #d1d5db; font-weight: 700; color: #1f2937; font-size: 16px; }
+
+        .buttons { margin-top: 30px; display: flex; flex-direction: column; gap: 12px; }
+        
+        .btn {
+            padding: 15px; border: none; border-radius: 12px; font-size: 15px;
+            font-weight: 600; cursor: pointer; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: 0.3s; width: 100%; box-sizing: border-box;
+        }
+
+        .btn-receipt { background: #1f2937; color: white; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .btn-receipt:hover { background: #111827; transform: translateY(-2px); }
+
+        .btn-back { background: #f3f4f6; color: #4b5563; }
+        .btn-back:hover { background: #e5e7eb; color: #1f2937; }
+
+        /* Confetti Container */
+        #confetti-container { position: absolute; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+        .confetti { position: absolute; width: 10px; height: 10px; animation: fall linear forwards; }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="confetti-container"></div>
+
+<div class="success-card">
+    <div class="checkmark-wrapper">
+        <i class="fa-solid fa-check"></i>
+    </div>
+
+    <h2>Payment Confirmed!</h2>
+    <p class="subtitle">Your adoption is secured. Thank you!</p>
+
+    <div class="receipt-details">
+        <div class="receipt-row">
+            <span>Transaction ID</span>
+            <strong>#{{ transaction_id }}</strong>
+        </div>
+        <div class="receipt-row">
+            <span>Adopter</span>
+            <strong>{{ adoption.full_name }}</strong>
+        </div>
+        <div class="receipt-row">
+            <span>Pet Name</span>
+            <strong>{{ adoption.pet_name }}</strong>
+        </div>
+        <div class="receipt-row">
+            <span>Status</span>
+            <strong style="color: #16a34a;"><i class="fa-solid fa-circle-check"></i> {{ adoption.payment_status }}</strong>
+        </div>
+        <div class="receipt-row">
+            <span>Total Paid</span>
+            <span>₹ {{ total }}</span>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <a href="{% url 'download_receipt' adoption.id %}" class="btn btn-receipt">
+            <i class="fa-solid fa-file-invoice"></i> Download E-Receipt
+        </a>
+        <a href="{% url 'my_adoptions' %}" class="btn btn-back">
+            <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<script>
+    // Premium Confetti Effect
+    const container = document.getElementById('confetti-container');
+    const colors = ['#16a34a', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
+    const shapes = ['50%', '0%']; // Circle and Square
+
+    for (let i = 0; i < 60; i++) {
+        let conf = document.createElement("div");
+        conf.classList.add("confetti");
+        conf.style.left = Math.random() * 100 + "vw";
+        conf.style.background = colors[Math.floor(Math.random() * colors.length)];
+        conf.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
+        conf.style.animationDuration = (Math.random() * 2 + 2) + "s";
+        conf.style.animationDelay = (Math.random() * 1.5) + "s";
+        container.appendChild(conf);
+    }
+</script>
+
+</body>
+</html>

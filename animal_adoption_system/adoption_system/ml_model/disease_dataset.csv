@@ -1,0 +1,47 @@
+symptoms,disease
+vomiting diarrhea stomach pain loss of appetite,Gastrointestinal Infection
+vomiting dehydration weakness,Gastrointestinal Infection
+diarrhea abdominal pain lethargy,Gastrointestinal Infection
+bloody diarrhea vomiting dehydration,Parvovirus Infection
+severe vomiting diarrhea weakness,Parvovirus Infection
+loss of appetite fever vomiting,Viral Infection
+high fever lethargy weakness,Viral Fever
+fever shivering loss of energy,Viral Fever
+cough fever breathing difficulty nasal discharge,Respiratory Infection
+cough sneezing fever tiredness,Respiratory Infection
+rapid breathing coughing weakness,Respiratory Infection
+sneezing nasal discharge eye discharge,Respiratory Infection
+itching hair loss red skin rash,Skin Allergy
+itching scratching redness skin irritation,Skin Allergy
+hair loss flaky skin itching,Skin Allergy
+skin redness swelling irritation,Fungal Infection
+round patches hair loss itching,Fungal Infection
+skin lesions redness infection,Fungal Infection
+worms in stool weight loss weakness,Worm Infestation
+bloated stomach diarrhea weight loss,Worm Infestation
+poor coat weakness parasite infection,Worm Infestation
+frequent urination blood in urine,Urinary Infection
+pain while urinating fever lethargy,Urinary Infection
+excessive thirst frequent urination weakness,Urinary Infection
+ear scratching head shaking ear discharge,Ear Infection
+ear odor redness ear pain,Ear Infection
+ear swelling irritation scratching,Ear Infection
+eye redness discharge swelling eye,Eye Infection
+watery eyes blinking irritation,Eye Infection
+eye swelling redness discharge,Eye Infection
+limping swelling pain in leg,Injury or Trauma
+wound bleeding swelling pain,Injury or Trauma
+difficulty walking leg pain swelling,Injury or Trauma
+joint stiffness difficulty standing pain,Arthritis
+joint swelling movement difficulty,Arthritis
+slow movement pain in joints,Arthritis
+weight loss loss of appetite weakness,Malnutrition
+thin body low energy weakness,Malnutrition
+poor appetite dull coat weakness,Malnutrition
+excessive scratching fleas hair loss,Flea Allergy
+skin redness itching flea infestation,Flea Allergy
+restlessness scratching skin irritation,Flea Allergy
+fever nasal discharge coughing,Lung Infection
+breathing difficulty fatigue cough,Lung Infection
+loss of appetite dehydration weakness,Bacterial Infection
+fever swelling infection wound,Bacterial Infection

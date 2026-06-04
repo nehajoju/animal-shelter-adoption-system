@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Request Adoption Date</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+body {
+    background: #f9fafb;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* PAGE WRAPPER */
+.container {
+    max-width: 650px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* CARD */
+.request-card {
+    background: white;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+}
+
+/* HEADER */
+.request-card h2 {
+    margin-bottom: 10px;
+    color: #be123c;
+}
+
+.request-card p {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* FORM */
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+/* BUTTON */
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #be123c;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background: #9f1239;
+}
+
+.note {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="request-card">
+
+        <h2><i class="fa-solid fa-calendar-check"></i> Request Adoption Date</h2>
+
+        <p>
+            Select your preferred date and time to complete the adoption.
+            The shelter admin will confirm availability.
+        </p>
+
+        <!-- FORM -->
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Pet Name</label>
+                <input type="text" value="{{ adoption.pet_name }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Preferred Adoption Date</label>
+                <input type="date" name="requested_date" required>
+            </div>
+
+            <div class="form-group">
+                <label>Preferred Time</label>
+                <select name="requested_time" required>
+                    <option value="">Select time</option>
+                    <option>10:00 AM</option>
+                    <option>11:00 AM</option>
+                    <option>12:00 PM</option>
+                    <option>2:00 PM</option>
+                    <option>3:00 PM</option>
+                    <option>4:00 PM</option>
+                </select>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Submit Request
+            </button>
+
+        </form>
+
+        <p class="note">
+            📌 Adoption will be scheduled only after admin approval.
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+/* Prevent past dates */
+const today = new Date().toISOString().split("T")[0];
+document.querySelector("input[name='requested_date']")
+        .setAttribute("min", today);
+</script>
+
+</body>
+</html>

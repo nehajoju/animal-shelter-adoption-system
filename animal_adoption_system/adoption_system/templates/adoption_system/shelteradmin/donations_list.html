@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Donations Received</title>
+    <link rel="stylesheet" href="{% static 'css/adminpanel/admin.css' %}">
+
+<style>
+.page-header h1 {
+    margin-bottom: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table th, .table td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
+}
+
+.table th {
+    background: #f3f4f6;
+    font-weight: 600;
+}
+
+.amount {
+    font-weight: 600;
+    color: #16a34a;
+}
+
+.total-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #ecfdf5;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #065f46;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="admin-page">
+
+    <div class="card">
+
+        <div class="page-header">
+            <h1>Donations Received</h1>
+        </div>
+
+        <table class="table">
+            <tr>
+                <th>Donor</th>
+                <th>Pet</th>
+                <th>Amount</th>
+                <th>Payment Method</th>
+                <th>Transaction ID</th>
+                <th>Date</th>
+            </tr>
+
+            {% for donation in donations %}
+            <tr>
+                <td>{{ donation.full_name }}</td>
+                <td>
+                    {% if donation.animal %}
+                        {{ donation.animal.name }}
+                    {% elif donation.rehome_pet %}
+                        {{ donation.rehome_pet.pet_name }}
+                    {% endif %}
+                </td>
+                <td class="amount">₹ {{ donation.donation_amount }}</td>
+                <td>{{ donation.payment_method }}</td>
+                <td>{{ donation.transaction_id|default:"-" }}</td>
+                <td>{{ donation.submitted_at|date:"d M Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No donations received yet.</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="total-box">
+            Total Donations Received: ₹ {{ total_donations }}
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

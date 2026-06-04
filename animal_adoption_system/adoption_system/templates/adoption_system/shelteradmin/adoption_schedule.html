@@ -1,0 +1,457 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Adoption Schedule | Admin</title>
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+/* ================= ROOT VARIABLES ================= */
+:root {
+    --primary: #a11a3c;
+    --primary-dark: #7f102d;
+    --secondary: #1f2937;
+    --text-muted: #6b7280;
+    --bg-main: #f4f6fa;
+    --bg-card: #ffffff;
+    --border-soft: #e5e7eb;
+}
+
+/* ================= GLOBAL ================= */
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: var(--bg-main);
+    color: var(--secondary);
+}
+
+a {
+    text-decoration: none;
+}
+
+/* ================= TOP BAR ================= */
+.top-bar {
+    background: var(--secondary);
+    color: white;
+    padding: 10px 8%;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+
+/* ================= NAVBAR ================= */
+.navbar {
+    background: white;
+    padding: 18px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.logo {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-link {
+    color: var(--secondary);
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-link:hover {
+    color: var(--primary);
+}
+
+.notification {
+    position: relative;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--secondary);
+}
+
+.notification:hover {
+    color: var(--primary);
+}
+
+.badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 50px;
+}
+
+.logout-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.logout-btn:hover {
+    opacity: 0.9;
+}
+
+/* ================= CONTAINER ================= */
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 8%;
+}
+
+/* ================= PAGE TITLE ================= */
+.page-title {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 25px;
+}
+
+/* ================= SECTION TITLE ================= */
+.section-title {
+    margin: 35px 0 18px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--secondary);
+}
+
+/* ================= CARD ================= */
+.schedule-card {
+    position: relative;
+    background: linear-gradient(to bottom, #ffffff, #fafafa);
+    padding: 22px;
+    margin-bottom: 20px;
+    border-radius: 18px;
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.schedule-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* Accent Strip */
+.schedule-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 14px;
+    bottom: 14px;
+    width: 5px;
+    border-radius: 0 6px 6px 0;
+    background: var(--primary);
+}
+
+.schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.schedule-header h3 {
+    margin-left: 12px;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+/* ================= STATUS BADGES ================= */
+.status {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* Status Variants */
+.requested {
+    background: #fff7ed;
+    color: #9a3412;
+}
+
+.scheduled {
+    background: #ede9fe;
+    color: #5b21b6;
+}
+
+.completed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* ================= DETAILS ================= */
+.details {
+    margin-top: 12px;
+    margin-left: 12px;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.details p {
+    margin-bottom: 6px;
+}
+
+/* ================= BUTTONS ================= */
+.action-btn {
+    padding: 9px 14px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    margin-right: 8px;
+    margin-top: 12px;
+}
+
+.approve-btn {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #065f46;
+}
+
+.reject-btn {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: #7f1d1d;
+}
+
+.complete-btn {
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    color: #3730a3;
+}
+
+.action-btn:hover {
+    opacity: 0.9;
+}
+
+/* ================= EMPTY BOX ================= */
+.empty-box {
+    text-align: center;
+    padding: 40px;
+    background: var(--bg-card);
+    border-radius: 16px;
+    border: 1px dashed var(--border-soft);
+    color: var(--text-muted);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 5%;
+    }
+
+    .schedule-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+</style>
+</head>
+
+<body><!-- ================= TOP BAR ================= -->
+<div class="top-bar">
+    <i class="fa-solid fa-paw"></i> Shelter Admin Panel
+</div>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+    <div class="logo">
+        🐾 Animal Shelter
+    </div>
+
+    <div class="nav-right">
+
+<a href="{% url 'admin_dashboard' %}" class="nav-link">
+<i class="fa-solid fa-chart-line"></i> Dashboard
+</a>
+
+<a href="{% url 'adoption_review' %}" class="nav-link">
+<i class="fa-solid fa-file"></i> Applications
+</a>
+
+<a href="{% url 'panel_logout' %}" class="logout-btn">
+<i class="fa-solid fa-right-from-bracket"></i> Logout
+</a>
+
+    </div>
+</header>
+
+<div class="container">
+
+
+<!-- ================= DATE REQUESTED ================= -->
+<h3 class="section-title">📅 Date Requested</h3>
+
+{% for adoption in pending_requests %}
+<div class="schedule-card">
+
+    <div class="schedule-header">
+        <h3>{{ adoption.pet_name }}</h3>
+        <span class="status requested">Date Requested</span>
+    </div>
+
+    <div class="details">
+        <p><strong>User:</strong> {{ adoption.full_name }}</p>
+        <p><strong>Email:</strong> {{ adoption.email }}</p>
+        <p><strong>Phone:</strong> {{ adoption.phone }}</p>
+
+        <p><strong>Requested Date:</strong>
+            {{ adoption.requested_date }}
+            at {{ adoption.requested_time }}
+        </p>
+    </div>
+
+    <div style="margin-top:12px;">
+        <form method="POST"
+              action="{% url 'approve_adoption_schedule' adoption.id %}"
+              style="display:inline;">
+            {% csrf_token %}
+            <button class="action-btn approve-btn">
+                Approve Schedule
+            </button>
+        </form>
+
+        <form method="POST"
+              action="{% url 'reject_adoption_schedule' adoption.id %}"
+              style="display:inline;">
+            {% csrf_token %}
+            <button class="action-btn reject-btn">
+                Reject
+            </button>
+        </form>
+    </div>
+
+</div>
+
+{% empty %}
+<div class="empty-box">
+    <p>No adoption date requests yet.</p>
+</div>
+{% endfor %}
+
+
+<div class="container">
+
+<!-- ================= SCHEDULED ================= -->
+<h3 class="section-title">🟣 Scheduled Adoptions</h3>
+
+{% for adoption in scheduled_adoptions %}
+<div class="schedule-card">
+
+    <div class="schedule-header">
+        <h3>{{ adoption.pet_name }}</h3>
+        <span class="status scheduled">Scheduled</span>
+    </div>
+
+    <div class="details">
+        <p><strong>User:</strong> {{ adoption.full_name }}</p>
+        <p><strong>Scheduled:</strong>
+            {{ adoption.scheduled_date }} at {{ adoption.scheduled_time }}
+        </p>
+
+        <p><strong>Payment Method:</strong>
+            {{ adoption.payment_method|default:"-" }}
+        </p>
+
+        <p><strong>Payment Status:</strong>
+            {% if adoption.payment_status == "Paid" %}
+                <span class="badge-paid">Paid</span>
+            {% elif adoption.payment_status == "Pending" %}
+                <span class="badge-pending">Pending</span>
+            {% else %}
+                <span class="badge-unpaid">Not Paid</span>
+            {% endif %}
+        </p>
+
+        {% if adoption.transaction_id %}
+            <p><strong>Transaction ID:</strong> {{ adoption.transaction_id }}</p>
+        {% endif %}
+    </div>
+
+    <!-- OFFLINE VERIFY -->
+    {% if adoption.payment_method == "Offline" and adoption.payment_status == "Pending" %}
+    <form method="POST"
+          action="{% url 'admin_mark_paid' adoption.id %}">
+        {% csrf_token %}
+        <button class="action-btn approve-btn">
+            Mark Payment as Paid
+        </button>
+    </form>
+    {% endif %}
+
+    <!-- COMPLETE ONLY IF PAID -->
+    {% if adoption.payment_status == "Paid" %}
+    <form method="POST"
+          action="{% url 'complete_adoption' adoption.id %}">
+        {% csrf_token %}
+        <button class="action-btn complete-btn">
+            Mark Completed
+        </button>
+    </form>
+    {% endif %}
+
+</div>
+
+{% empty %}
+<div class="empty-box">
+    <p>No scheduled adoptions.</p>
+</div>
+{% endfor %}
+
+</div>
+
+
+
+<!-- ================= COMPLETED ================= -->
+<h3 class="section-title">✅ Completed Adoptions</h3>
+
+{% for adoption in completed_adoptions %}
+<div class="schedule-card">
+
+    <div class="schedule-header">
+        <h3>{{ adoption.pet_name }}</h3>
+        <span class="status completed">Completed</span>
+    </div>
+
+    <div class="details">
+        <p><strong>User:</strong> {{ adoption.full_name }}</p>
+        <p><strong>Adopted On:</strong>
+            {{ adoption.scheduled_date }}
+        </p>
+    </div>
+
+</div>
+
+{% empty %}
+<div class="empty-box">
+    <p>No completed adoptions yet.</p>
+</div>
+{% endfor %}
+
+</div>
+
+</body>
+</html>

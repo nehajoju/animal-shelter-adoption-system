@@ -1,0 +1,189 @@
+/* ================= ROOT THEME ================= */
+:root{
+    --accent: #be123c;          /* matches home/login theme */
+    --accent-dark: #9f1239;
+    --muted: #6b7280;
+    --bg: #fff7ed;
+    --card: #ffffff;
+    --radius: 14px;
+    --shadow: 0 15px 35px rgba(159, 18, 57, 0.18);
+}
+
+/* ================= RESET ================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: "Segoe UI", Inter, system-ui, Arial, sans-serif;
+}
+
+/* ================= PAGE WRAPPER ================= */
+html, body{
+    height:100%;
+}
+
+body{
+    background: linear-gradient(135deg, #fff1f2, #fff7ed);
+    color:#0f172a;
+}
+
+.wrap{
+    min-height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+}
+
+/* ================= CARD ================= */
+.card{
+    width:100%;
+    max-width:420px;
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:30px 26px;
+}
+
+/* ================= HEADINGS ================= */
+h1{
+    font-size:22px;
+    margin-bottom:6px;
+    color:var(--accent-dark);
+}
+
+p.lead{
+    margin-bottom:18px;
+    font-size:14px;
+    color:var(--muted);
+}
+
+/* ================= FORM FIELDS ================= */
+.field{
+    margin-bottom:14px;
+}
+
+label{
+    display:block;
+    font-size:13px;
+    margin-bottom:6px;
+    font-weight:500;
+    color:#111827;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"]{
+    width:100%;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1.5px solid #e5e7eb;
+    background:#fcfdff;
+    font-size:14px;
+    transition:border 0.25s ease, box-shadow 0.25s ease;
+}
+
+input:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(190,18,60,0.15);
+}
+
+/* ================= PASSWORD ROW ================= */
+.row{
+    display:flex;
+    gap:12px;
+}
+
+.row .col{
+    flex:1;
+}
+
+.control{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+/* ================= PASSWORD TOGGLE ================= */
+.pw-toggle{
+    background:transparent;
+    border:none;
+    cursor:pointer;
+    font-size:13px;
+    color:var(--muted);
+}
+
+/* ================= SMALL TEXT ================= */
+.small{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:4px;
+}
+
+/* ================= ERRORS ================= */
+.error{
+    color:#b91c1c;
+    font-size:13px;
+    margin-top:6px;
+}
+
+/* Top error box */
+.errors-box{
+    background:#fff1f2;
+    border:1px solid #fecaca;
+    color:#991b1b;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:14px;
+    font-size:13px;
+}
+
+/* ================= SUBMIT BUTTON ================= */
+button[type="submit"]{
+    width:100%;
+    padding:12px 14px;
+    border-radius:999px;
+    border:none;
+    background:linear-gradient(135deg, var(--accent-dark), var(--accent));
+    color:#fff7ed;
+    font-weight:600;
+    cursor:pointer;
+    margin-top:10px;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button[type="submit"]:hover{
+    transform:translateY(-1px);
+    box-shadow:0 10px 22px rgba(190,18,60,0.35);
+}
+
+/* ================= FOOT LINKS ================= */
+.muted-center{
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+    margin-top:14px;
+}
+
+a.link{
+    color:var(--accent);
+    text-decoration:none;
+    font-weight:600;
+}
+
+a.link:hover{
+    text-decoration:underline;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width:420px){
+    .card{
+        padding:20px;
+    }
+
+    .row{
+        flex-direction:column;
+    }
+}

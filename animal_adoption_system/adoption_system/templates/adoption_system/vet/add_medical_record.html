@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add Medical Record</title>
+
+<style>
+
+:root {
+    --primary: #8b1e3f;
+    --primary-soft: #f7e9ee;
+    --bg-main: #f7f8fb;
+    --card-bg: #ffffff;
+    --text-main: #2b2b2b;
+    --text-light: #7a7a7a;
+    --border: #e6e6e6;
+}
+
+/* ===== BODY ===== */
+body {
+    margin: 0;
+    font-family: "Inter", "Poppins", Arial, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* ===== NAVBAR ===== */
+.topbar {
+    height: 60px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+}
+
+.logo {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.page-title {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.logout-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.logout-btn:hover {
+    background: #701732;
+}
+
+/* ===== MAIN CARD ===== */
+.container {
+    width: 40%;
+    margin: 40px auto;
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+}
+
+/* ===== HEADINGS ===== */
+h2 {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* ===== FORM ===== */
+label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #444;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 4px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    transition: 0.2s ease;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(139,30,63,0.08);
+    outline: none;
+}
+
+/* ===== BUTTON ===== */
+button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 11px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #701732;
+    transform: translateY(-1px);
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+<h2>{{ animal.name }} - Medical Treatment Record</h2>
+
+<form method="POST">
+{% csrf_token %}
+
+<!-- Reported Symptoms -->
+<label>Reported Symptoms (Staff)</label>
+<textarea readonly>{{ treatment.reported_symptoms }}</textarea>
+
+<!-- Observed Symptoms -->
+<label>Observed Symptoms (Vet)</label>
+<textarea name="observed_symptoms">
+{{ treatment.observed_symptoms }}
+</textarea>
+
+<!-- ML Prediction -->
+<label>Possible Diseases (ML Prediction)</label>
+
+{% if top_predictions %}
+<ul>
+{% for disease, confidence in top_predictions %}
+    <li>
+        {% if forloop.first %}
+            <strong style="color:green;">
+                {{ disease }} — {{ confidence }}%
+            </strong>
+        {% else %}
+            {{ disease }} — {{ confidence }}%
+        {% endif %}
+    </li>
+{% endfor %}
+</ul>
+{% else %}
+<p style="color:#777;">Click Predict Disease to see results</p>
+{% endif %}
+<!-- Buttons -->
+<button type="submit" name="action" value="predict">
+    Predict Disease
+</button>
+
+
+<!-- Final Diagnosis -->
+<label>Final Diagnosis</label>
+<input type="text"
+       name="final_diagnosis"
+       value="{% if top_predictions %}{{ top_predictions.0.0 }}{% endif %}">
+
+<!-- Treatment Plan -->
+<label>Treatment Plan</label>
+<textarea name="treatment_plan">{{ treatment.treatment_plan }}</textarea>
+
+<!-- Medication -->
+<label>Medication</label>
+<textarea name="medication">{{ treatment.medication }}</textarea>
+
+
+
+<!-- Health Status -->
+<label>Health Status</label>
+<select name="health_status">
+    <option value="Healthy">Healthy</option>
+    <option value="Under Treatment">Under Treatment</option>
+    <option value="Recovering">Recovering</option>
+    <option value="Critical">Critical</option>
+</select>
+
+<label>Next Visit Date</label>
+<input type="date" name="follow_up_date">
+
+
+
+<button type="submit" name="action" value="save">
+    Save Medical Record
+</button>
+
+</form>
+</div>
+
+</body>
+</html>

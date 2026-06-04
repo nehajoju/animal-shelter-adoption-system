@@ -1,0 +1,244 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin | Chat Room</title>
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f6f9;
+        }
+
+        .chat-container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #a11a3c;
+        }
+
+        .chat-top-bar {
+            margin-bottom: 15px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            font-size: 14px;
+            color: #a11a3c;
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        .messages {
+            height: 420px;
+            overflow-y: auto;
+            border-radius: 15px;
+            padding: 15px;
+            background: #fafafa;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 15px;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .message.user {
+            background: #e5e7eb;
+        }
+
+        .message.admin {
+            background: #a11a3c;
+            color: white;
+            margin-left: auto;
+        }
+
+        .timestamp {
+            font-size: 11px;
+            display: block;
+            margin-top: 4px;
+            opacity: 0.7;
+        }
+
+        .delete-options {
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .delete-options a {
+            color: #ffdddd;
+            text-decoration: none;
+            margin-right: 5px;
+        }
+
+        .delete-options a:hover {
+            text-decoration: underline;
+        }
+
+        .deleted-text {
+            font-style: italic;
+            color: #6b7280;
+        }
+
+        form {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #a11a3c;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #7e132f;
+        }
+        .clear-btn {
+    float: right;
+    font-size: 13px;
+    color: #dc2626;
+    text-decoration: none;
+    margin-left: 15px;
+}
+
+.clear-btn:hover {
+    text-decoration: underline;
+}
+    </style>
+</head>
+
+<body>
+
+<div class="chat-container">
+
+    <div class="chat-header">
+        <i class="fa-solid fa-user"></i>
+        Chat with {{ room.user.username }}
+    </div>
+
+   <a href="{% url 'admin_chat_list' %}" class="back-btn">
+        <i class="fa-solid fa-arrow-left"></i> Back
+    </a>
+
+    <a href="{% url 'clear_chat_admin' room.id %}" class="clear-btn">
+        <i class="fa-solid fa-trash"></i> Clear Chat
+    </a>
+    <div class="messages" id="chatBox">
+
+        {% for msg in messages %}
+
+            <div class="message {{ msg.sender }}">
+
+                {% if msg.deleted_for_everyone %}
+                    <span class="deleted-text">
+                        This message was deleted
+                    </span>
+
+                {% else %}
+                    {{ msg.message }}
+
+                    <span class="timestamp">
+                        {{ msg.timestamp|time:"H:i" }}
+                    </span>
+
+                    {% if msg.sender == 'admin' %}
+                        <div class="delete-options">
+                            <a href="{% url 'delete_message_admin' msg.id %}">
+                                Delete for Me
+                            </a>
+                            |
+                            <a href="{% url 'delete_message_everyone_admin' msg.id %}">
+                                Delete for Everyone
+                            </a>
+                        </div>
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="message" placeholder="Type reply..." required>
+        <button type="submit">
+            <i class="fa-solid fa-paper-plane"></i>
+        </button>
+    </form>
+
+</div>
+
+<script>
+function loadMessages() {
+    fetch("/fetch-admin-messages/{{ room.id }}/")
+        .then(response => response.json())
+        .then(data => {
+            let chatBox = document.getElementById("chatBox");
+            chatBox.innerHTML = "";
+
+            data.messages.forEach(msg => {
+
+                let messageHTML = "";
+
+                if (msg.deleted_for_everyone) {
+                    messageHTML = `
+                        <div class="message ${msg.sender}">
+                            <span class="deleted-text">This message was deleted</span>
+                        </div>
+                    `;
+                } else {
+                    messageHTML = `
+                        <div class="message ${msg.sender}">
+                            ${msg.message}
+                            <span class="timestamp">${msg.timestamp}</span>
+                        </div>
+                    `;
+                }
+
+                chatBox.innerHTML += messageHTML;
+            });
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+}
+
+setInterval(loadMessages, 5000);
+</script>
+
+</body>
+</html>

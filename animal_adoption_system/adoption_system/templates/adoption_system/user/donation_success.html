@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Donation Successful</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg,#ecfdf5,#f0fdf4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.success-card {
+    background: white;
+    width: 480px;
+    padding: 40px;
+    border-radius: 22px;
+    text-align: center;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.08);
+    animation: fadeIn 0.4s ease;
+}
+
+.icon {
+    font-size: 55px;
+    color: #16a34a;
+    margin-bottom: 15px;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+.amount {
+    font-size: 24px;
+    font-weight: 700;
+    color: #16a34a;
+    margin: 15px 0;
+}
+
+.details {
+    background: #f9fafb;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.btn {
+    margin-top: 20px;
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: #be123c;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn:hover {
+    background: #9f1239;
+}
+
+@keyframes fadeIn {
+    from {opacity:0; transform:translateY(10px);}
+    to {opacity:1; transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="success-card">
+
+    <div class="icon">✔</div>
+
+    <h2>Donation Successful!</h2>
+
+    <div class="amount">
+        ₹ {{ total }}
+    </div>
+
+    <div class="details">
+        <p><strong>Transaction ID:</strong> {{ transaction_id }}</p>
+        <p>Your support helps provide food, medical care, and shelter for animals in need.</p>
+    </div>
+
+    <a href="{% url 'userhome' %}" class="btn">
+        Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

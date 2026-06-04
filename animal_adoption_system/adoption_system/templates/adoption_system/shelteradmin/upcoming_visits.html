@@ -1,0 +1,230 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upcoming Visits | Admin</title>
+
+    <link rel="stylesheet" href="{% static 'css/adminpanel/admin.css' %}">
+
+<style>
+
+body {
+    background: #f3f4f6;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* PAGE HEADER */
+.page-header {
+    background: #0f766e;
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+
+/* CONTAINER */
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+}
+
+/* CARD */
+.visit-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* GRID */
+.visit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+/* STATUS */
+.status {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.approved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* BUTTONS */
+.card-actions {
+    margin-top: 15px;
+}
+
+.btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 8px;
+    font-weight: 600;
+}
+
+.btn-approve {
+    background: #16a34a;
+    color: white;
+}
+
+.btn-reject {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-approve:hover {
+    background: #15803d;
+}
+
+.btn-reject:hover {
+    background: #b91c1c;
+}
+
+.empty {
+    text-align: center;
+    color: #6b7280;
+    margin-top: 40px;
+}
+
+</style>
+</head>
+
+<body>
+    <!-- ================= TOP BAR ================= -->
+<div class="top-bar">
+    <i class="fa-solid fa-paw"></i> Shelter Admin Panel
+</div>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+    <div class="logo">
+        🐾 Animal Shelter
+    </div>
+
+    <div class="nav-right">
+
+        <!-- Dashboard -->
+        <a href="{% url 'admin_dashboard' %}" class="nav-link">
+            <i class="fa-solid fa-chart-line"></i> Dashboard
+        </a>
+
+        <!-- Notification Icon -->
+        <div class="notification">
+            <i class="fa-solid fa-bell"></i>
+            <span class="badge">{{ notification_count|default:"0" }}</span>
+        </div>
+
+        <!-- Logout -->
+        <a href="{% url 'panel_logout' %}" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+
+    </div>
+</header>
+
+<div class="top-bar">
+    🐾 Upcoming Visit Requests
+</div>
+
+<header class="navbar">
+    <div class="logo">🐾 Animal Shelter Admin</div>
+
+    <div class="nav-right">
+        <a href="{% url 'admin_dashboard' %}" class="nav-link">Dashboard</a>
+        <a href="{% url 'panel_logout' %}" class="logout-btn">Logout</a>
+    </div>
+</header>
+
+<div class="page-header">
+    <h1>📅 Visit Requests</h1>
+    <p>Approve or manage user visit bookings</p>
+</div>
+
+<div class="container">
+
+{% for visit in visits %}
+<div class="visit-card">
+
+    <h3>
+        {% if visit.animal %}
+            {{ visit.animal.name }} (Shelter Animal)
+        {% else %}
+            {{ visit.rehome_pet.pet_name }} (Rehome Pet)
+        {% endif %}
+    </h3>
+
+    <span class="status {{ visit.status|lower }}">
+        {{ visit.status }}
+    </span>
+
+    <div class="visit-grid">
+
+        <p><strong>User:</strong> {{ visit.user.username }}</p>
+        <p><strong>Phone:</strong> {{ visit.user.phone_number }}</p>
+
+        <p><strong>Date:</strong> {{ visit.visit_date }}</p>
+        <p><strong>Time:</strong> {{ visit.visit_time }}</p>
+
+        <p><strong>Requested On:</strong>
+            {{ visit.created_at|date:"d M Y" }}
+        </p>
+
+    </div>
+
+    {% if visit.message %}
+    <p style="margin-top:10px;">
+        <strong>User Message:</strong><br>
+        {{ visit.message }}
+    </p>
+    {% endif %}
+
+    {% if visit.status == "Pending" %}
+    <form method="POST" action="{% url 'update_visit_status' visit.id %}">
+        {% csrf_token %}
+
+        <div class="card-actions">
+            <button type="submit"
+                    name="action"
+                    value="approve"
+                    class="btn btn-approve">
+                Approve
+            </button>
+
+            <button type="submit"
+                    name="action"
+                    value="reject"
+                    class="btn btn-reject">
+                Reject
+            </button>
+        </div>
+    </form>
+    {% endif %}
+
+</div>
+
+{% empty %}
+<p class="empty">No visit requests available.</p>
+{% endfor %}
+
+</div>
+
+</body>
+</html>

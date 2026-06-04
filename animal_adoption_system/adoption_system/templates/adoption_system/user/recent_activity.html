@@ -1,0 +1,382 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Recent Activity</title>
+
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* ================= PAGE ================= */
+
+body{
+background:#f6f8fb;
+font-family:'Poppins',sans-serif;
+padding:40px;
+color:#333;
+}
+
+/* ================= HEADER ================= */
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+.header h2{
+color:#8b1e3f;
+}
+
+/* ================= BUTTONS ================= */
+
+.btn{
+padding:7px 14px;
+border-radius:6px;
+text-decoration:none;
+font-size:13px;
+margin-left:6px;
+}
+
+.btn-back{
+background:#e5e7eb;
+color:#333;
+}
+
+.btn-danger{
+background:#dc2626;
+color:white;
+}
+
+/* ================= CONTAINER ================= */
+
+.container{
+background:white;
+border-radius:16px;
+padding:25px;
+box-shadow:0 15px 35px rgba(0,0,0,0.06);
+}
+
+/* ================= SEARCH ================= */
+
+.search-box{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+}
+
+.search-box input{
+flex:1;
+padding:10px;
+border-radius:8px;
+border:1px solid #ddd;
+}
+
+/* ================= FILTERS ================= */
+
+.filter-buttons{
+margin-bottom:20px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.filter-btn{
+padding:6px 12px;
+border-radius:20px;
+border:1px solid #ddd;
+background:#fafafa;
+cursor:pointer;
+font-size:13px;
+}
+
+.filter-btn.active{
+background:#8b1e3f;
+color:white;
+}
+
+/* ================= TIMELINE ================= */
+
+.timeline{
+position:relative;
+margin-top:20px;
+}
+
+.timeline::before{
+content:"";
+position:absolute;
+left:20px;
+top:0;
+bottom:0;
+width:3px;
+background:#eee;
+}
+
+/* ================= GROUP TITLE ================= */
+
+.group-title{
+font-weight:bold;
+margin:20px 0 10px 0;
+color:#555;
+}
+
+/* ================= ACTIVITY ITEM ================= */
+
+.activity-item{
+display:flex;
+align-items:flex-start;
+gap:15px;
+padding:12px 10px;
+margin-left:40px;
+position:relative;
+border-radius:8px;
+transition:0.25s;
+}
+
+.activity-item:hover{
+background:#f9f9f9;
+}
+
+/* timeline dot */
+
+.activity-dot{
+position:absolute;
+left:-28px;
+top:12px;
+width:12px;
+height:12px;
+border-radius:50%;
+background:#8b1e3f;
+}
+
+/* ================= ICON ================= */
+
+.activity-icon{
+font-size:18px;
+width:30px;
+text-align:center;
+}
+
+/* color types */
+
+.icon-adoption{color:#16a34a;}
+.icon-donation{color:#dc2626;}
+.icon-visit{color:#2563eb;}
+.icon-lost{color:#f59e0b;}
+.icon-default{color:#8b1e3f;}
+
+/* ================= TEXT ================= */
+
+.activity-text strong{
+font-size:15px;
+}
+
+.activity-text small{
+color:#777;
+}
+
+/* ================= DELETE ================= */
+
+.btn-delete{
+background:#ef4444;
+color:white;
+font-size:12px;
+padding:5px 10px;
+border-radius:5px;
+text-decoration:none;
+}
+
+/* ================= PAGINATION ================= */
+
+.pagination{
+margin-top:20px;
+text-align:center;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+<h2>Recent Activity</h2>
+
+<div>
+<a href="{% url 'export_activity_pdf' %}" class="btn btn-back">Export PDF</a>
+<a href="{% url 'userhome' %}" class="btn btn-back">← Dashboard</a>
+</div>
+
+</div>
+
+
+<div class="container">
+
+<!-- SEARCH -->
+
+<form method="GET" class="search-box">
+<input type="text" name="search" placeholder="Search activities..." value="{{ search_query|default:'' }}">
+<button class="btn btn-back">Search</button>
+</form>
+
+
+<!-- FILTERS -->
+
+<div class="filter-buttons">
+
+<button class="filter-btn active" data-filter="all">All</button>
+<button class="filter-btn" data-filter="adoption">Adoptions</button>
+<button class="filter-btn" data-filter="donation">Donations</button>
+<button class="filter-btn" data-filter="visit">Visits</button>
+<button class="filter-btn" data-filter="lost">Lost Pets</button>
+
+</div>
+
+
+<!-- TIMELINE -->
+
+<div class="timeline" id="activityContainer">
+
+
+{% regroup page_obj by date|date:"Y-m-d" as activity_groups %}
+
+{% for group in activity_groups %}
+
+<div class="group-title">
+
+{% if group.grouper == today %}
+Today
+{% elif group.grouper == yesterday %}
+Yesterday
+{% else %}
+{{ group.grouper|date:"d M Y" }}
+{% endif %}
+
+</div>
+
+
+{% for activity in group.list %}
+
+<div class="activity-item" data-type="{{ activity.type }}">
+
+<div class="activity-dot"></div>
+
+<i class="fa-solid {{ activity.icon }} activity-icon
+{% if activity.type == 'adoption' %}icon-adoption
+{% elif activity.type == 'donation' %}icon-donation
+{% elif activity.type == 'visit' %}icon-visit
+{% elif activity.type == 'lost' %}icon-lost
+{% else %}icon-default{% endif %}
+"></i>
+
+
+<div class="activity-text">
+
+<strong>{{ activity.title }}</strong><br>
+
+<small>
+{{ activity.status }} •
+{{ activity.date|timesince }} ago
+</small>
+
+</div>
+
+
+<div style="margin-left:auto">
+
+<a href="{% url 'delete_activity' activity.type activity.id %}"
+class="btn-delete"
+onclick="return confirm('Delete this activity?')">
+Delete
+</a>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+{% endfor %}
+
+</div>
+
+
+<!-- PAGINATION -->
+
+<div class="pagination">
+
+{% if page_obj.has_previous %}
+<a href="?page={{ page_obj.previous_page_number }}" class="btn btn-back">Previous</a>
+{% endif %}
+
+Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+
+{% if page_obj.has_next %}
+<a href="?page={{ page_obj.next_page_number }}" class="btn btn-back">Next</a>
+{% endif %}
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* ================= FILTER SYSTEM ================= */
+
+const filterButtons = document.querySelectorAll(".filter-btn");
+const activities = document.querySelectorAll(".activity-item");
+
+filterButtons.forEach(btn => {
+
+btn.addEventListener("click",()=>{
+
+filterButtons.forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+
+let filter = btn.dataset.filter;
+
+activities.forEach(act=>{
+
+if(filter === "all" || act.dataset.type === filter){
+act.style.display="flex";
+}else{
+act.style.display="none";
+}
+
+});
+
+});
+
+});
+
+
+/* ================= REALTIME UPDATE ================= */
+
+function loadActivityUpdates(){
+
+fetch("/fetch-recent-activity/")
+.then(res=>res.json())
+.then(data=>{
+
+/* you can append new activities here */
+
+console.log("activity updated",data)
+
+})
+
+}
+
+/* poll every 10 seconds */
+
+setInterval(loadActivityUpdates,10000)
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,664 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Animals in Care | Admin</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* ================= GLOBAL ================= */
+
+body{
+font-family:'Poppins',sans-serif;
+margin:0;
+background:#f8fafc;
+color:#334155;
+}
+
+/* ================= TOP BAR ================= */
+
+.top-bar{
+background:#1e293b;
+color:white;
+padding:10px 20px;
+font-size:14px;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 30px;
+background:white;
+box-shadow:0 3px 10px rgba(0,0,0,0.05);
+}
+
+.logo{
+font-weight:600;
+font-size:18px;
+}
+
+.nav-right{
+display:flex;
+gap:20px;
+align-items:center;
+}
+
+.nav-link{
+text-decoration:none;
+color:#334155;
+font-size:14px;
+}
+
+.logout-btn{
+background:#a11a3c;
+color:white;
+padding:8px 14px;
+border-radius:6px;
+text-decoration:none;
+font-size:13px;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+text-align:center;
+padding:40px 20px;
+}
+
+.hero h1{
+font-size:28px;
+margin-bottom:5px;
+}
+
+.hero p{
+color:#64748b;
+}
+
+/* ================= FILTERS ================= */
+
+.filters{
+display:flex;
+gap:15px;
+justify-content:center;
+margin-bottom:25px;
+}
+
+.filters select{
+padding:8px 10px;
+border-radius:6px;
+border:1px solid #e2e8f0;
+}
+
+/* ================= GRID ================= */
+
+.animal-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+gap:20px;
+padding:0 40px 40px;
+}
+
+/* ================= CARD ================= */
+/* ================= 3D ANIMAL CARD ================= */
+
+.animal-card{
+
+background:white;
+
+border-radius:16px;
+
+box-shadow:0 8px 25px rgba(0,0,0,0.08);
+
+padding:18px;
+
+text-align:center;
+
+transition:transform .35s ease, box-shadow .35s ease;
+
+transform-style:preserve-3d;
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+.animal-card:hover{
+
+transform:rotateX(6deg) rotateY(-6deg) translateY(-8px);
+
+box-shadow:0 25px 50px rgba(0,0,0,0.15);
+
+}
+
+/* image */
+
+.animal-card img{
+
+width:100%;
+
+height:170px;
+
+object-fit:cover;
+
+border-radius:12px;
+
+margin-bottom:10px;
+
+transition:transform .4s;
+
+}
+
+.animal-card:hover img{
+
+transform:scale(1.05);
+
+}
+
+/* ================= BUTTON GROUP ================= */
+
+.btn-group{
+display:flex;
+justify-content:center;
+gap:10px;
+margin-top:10px;
+}
+
+.view-btn{
+background:#2563eb;
+color:white;
+border:none;
+padding:6px 12px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.status-btn{
+padding:6px 10px;
+border-radius:6px;
+font-size:12px;
+}
+
+.available{
+background:#dcfce7;
+color:#15803d;
+}
+
+.adopted{
+background:#fee2e2;
+color:#b91c1c;
+}
+
+.under{
+background:#fef3c7;
+color:#92400e;
+}
+
+/* ================= MODAL ================= */
+/* ================= MODAL OVERLAY ================= */
+
+.modal-overlay{
+
+position:fixed;
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,0.6);
+
+display:none;
+align-items:center;
+justify-content:center;
+
+z-index:9999;
+
+padding:20px;
+
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+
+background:white;
+
+border-radius:16px;
+
+width:420px;
+max-width:95%;
+
+max-height:90vh;
+
+overflow-y:auto;
+
+padding:25px;
+
+position:relative;
+
+box-shadow:0 20px 60px rgba(0,0,0,0.2);
+
+}
+
+/* ================= CLOSE BUTTON ================= */
+
+.close-btn{
+
+position:absolute;
+
+top:12px;
+right:15px;
+
+font-size:24px;
+
+cursor:pointer;
+
+color:#64748b;
+
+}
+
+.close-btn:hover{
+color:#ef4444;
+}
+
+/* ================= MODAL IMAGE ================= */
+
+.modal img{
+
+width:100%;
+height:220px;
+
+object-fit:cover;
+
+border-radius:10px;
+
+margin-bottom:15px;
+
+}
+
+.close-btn{
+position:absolute;
+top:10px;
+right:15px;
+font-size:22px;
+cursor:pointer;
+}
+
+.modal img{
+width:100%;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+/* ================= FOOTER ================= */
+
+.footer{
+text-align:center;
+padding:20px;
+background:#111;
+color:white;
+margin-top:20px;
+}
+/* ================= HEALTH BADGES ================= */
+
+.health-badge{
+
+display:inline-block;
+
+padding:4px 10px;
+
+border-radius:20px;
+
+font-size:11px;
+
+margin-top:6px;
+
+}
+
+/* healthy */
+
+.health-badge.healthy{
+
+background:#dcfce7;
+
+color:#166534;
+
+}
+
+/* treatment */
+
+.health-badge.under-treatment{
+
+background:#fef3c7;
+
+color:#92400e;
+
+}
+
+/* recovering */
+
+.health-badge.recovering{
+
+background:#dbeafe;
+
+color:#1e40af;
+
+}
+
+/* critical */
+
+.health-badge.critical{
+
+background:#fee2e2;
+
+color:#991b1b;
+
+}
+.animal-card{
+position:relative;
+overflow:hidden;
+}
+
+/* paw trail container */
+
+.animal-card::after{
+
+content:"🐾  🐾  🐾";
+
+position:absolute;
+
+bottom:10px;
+left:-120px;
+
+font-size:18px;
+
+opacity:0;
+
+pointer-events:none;
+
+transition:opacity .2s;
+
+}
+
+/* animate when hovering */
+
+.animal-card:hover::after{
+
+opacity:0.15;
+
+animation:pawWalk 1.4s linear forwards;
+
+}
+
+/* walking animation */
+
+@keyframes pawWalk{
+
+0%{
+left:-120px;
+transform:rotate(-10deg);
+}
+
+50%{
+transform:rotate(5deg);
+}
+
+100%{
+left:120%;
+transform:rotate(0deg);
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= TOP BAR ================= -->
+
+<div class="top-bar">
+<i class="fa-solid fa-paw"></i> Shelter Admin Panel
+</div>
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+<div class="logo">🐾 Animal Shelter</div>
+
+<div class="nav-right">
+
+<a href="{% url 'admin_dashboard' %}" class="nav-link">
+<i class="fa-solid fa-chart-line"></i> Dashboard
+</a>
+
+<a href="{% url 'panel_logout' %}" class="logout-btn">
+Logout
+</a>
+
+</div>
+
+</header>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+<h1>Animals in Shelter Care 🐾</h1>
+
+<p>View and manage animals currently housed in the shelter.</p>
+
+</section>
+
+<!-- ================= FILTERS ================= -->
+
+<section class="filters">
+
+<select id="typeFilter">
+<option value="all">All Animals</option>
+<option value="Dog">Dogs</option>
+<option value="Cat">Cats</option>
+</select>
+
+<select id="statusFilter">
+<option value="all">All Status</option>
+<option value="Available">Available</option>
+<option value="Adopted">Adopted</option>
+<option value="Under Treatment">Medical Care</option>
+</select>
+
+</section>
+
+<!-- ================= GRID ================= -->
+
+<section class="animals">
+
+<div class="animal-grid">
+
+{% for animal in animals %}
+
+<div class="animal-card"
+
+data-type="{{ animal.pet_type.name }}"
+data-status="{{ animal.status }}"
+
+>
+
+<img src="{{ animal.image.url }}" alt="{{ animal.name }}">
+
+<h3>{{ animal.name }}</h3>
+
+<p>
+
+{{ animal.breed.name }} •
+
+{{ animal.age }} Years •
+
+{{ animal.gender }}
+
+</p>
+<span class="health-badge {{ animal.health_status|lower }}">
+{{ animal.health_status }}
+</span>
+<div class="btn-group">
+
+<button class="view-btn"
+
+onclick="openAnimalModal(
+'{{ animal.name }}',
+'{{ animal.pet_type.name }}',
+'{{ animal.breed.name }}',
+'{{ animal.age }}',
+'{{ animal.gender }}',
+'{{ animal.health_status }}',
+'{{ animal.status }}',
+'{{ animal.image.url }}',
+'{{ animal.temperament }}'
+)">
+
+View
+
+</button>
+
+<span class="status-btn {{ animal.status|lower }}">
+
+{{ animal.status }}
+
+</span>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</section>
+
+<!-- ================= MODAL ================= -->
+
+<div class="modal-overlay" id="animalModal">
+
+<div class="modal">
+
+<span class="close-btn" onclick="closeAnimalModal()">×</span>
+
+<img id="modalImage">
+
+<h2 id="modalName"></h2>
+
+<p><strong>Type:</strong> <span id="modalType"></span></p>
+
+<p><strong>Breed:</strong> <span id="modalBreed"></span></p>
+
+<p><strong>Age:</strong> <span id="modalAge"></span></p>
+
+<p><strong>Gender:</strong> <span id="modalGender"></span></p>
+
+<p><strong>Health:</strong> <span id="modalHealth"></span></p>
+
+<p><strong>Status:</strong> <span id="modalStatus"></span></p>
+
+<p><strong>Temperament:</strong> <span id="modalTemperament"></span></p>
+
+</div>
+
+</div>
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+<p>© 2026 Animal Adoption & Shelter Management System</p>
+
+</footer>
+
+<!-- ================= JS ================= -->
+
+<script>
+
+/* ================= MODAL ================= */
+
+function openAnimalModal(
+name,
+type,
+breed,
+age,
+gender,
+health,
+status,
+image,
+temperament
+){
+
+document.getElementById("animalModal").style.display="flex"
+
+document.getElementById("modalName").innerText=name
+document.getElementById("modalType").innerText=type
+document.getElementById("modalBreed").innerText=breed
+document.getElementById("modalAge").innerText=age + " Years"
+document.getElementById("modalGender").innerText=gender
+document.getElementById("modalHealth").innerText=health
+document.getElementById("modalStatus").innerText=status
+document.getElementById("modalTemperament").innerText=temperament
+
+document.getElementById("modalImage").src=image
+
+}
+
+function closeAnimalModal(){
+
+document.getElementById("animalModal").style.display="none"
+
+}
+
+/* ================= FILTER ================= */
+
+const typeFilter=document.getElementById("typeFilter")
+const statusFilter=document.getElementById("statusFilter")
+
+typeFilter.addEventListener("change",filterAnimals)
+statusFilter.addEventListener("change",filterAnimals)
+
+function filterAnimals(){
+
+const type=typeFilter.value
+const status=statusFilter.value
+
+const cards=document.querySelectorAll(".animal-card")
+
+cards.forEach(card=>{
+
+const animalType=card.dataset.type
+const animalStatus=card.dataset.status
+
+let show=true
+
+if(type!=="all" && animalType!==type){
+show=false
+}
+
+if(status!=="all" && animalStatus!==status){
+show=false
+}
+
+card.style.display=show?"block":"none"
+
+})
+
+}
+
+</script>
+
+</body>
+</html>

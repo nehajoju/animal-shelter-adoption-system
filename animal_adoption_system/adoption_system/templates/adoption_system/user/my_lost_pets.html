@@ -1,0 +1,358 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Lost Pets | Animal Shelter</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* ================= ROOT COLORS ================= */
+:root {
+    --primary: #a11a3c;
+    --primary-dark: #7f102f;
+    --secondary: #111827;
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #374151;
+    --text-muted: #6b7280;
+    --border-soft: #e5e7eb;
+}
+
+/* ================= GLOBAL ================= */
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* Paw background */
+body::before{
+    content:"🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾";
+    position:fixed;
+    font-size:120px;
+    opacity:0.06;
+    top:20%;
+    left:5%;
+    transform:rotate(-20deg);
+    z-index:-1;
+}
+
+/* ================= NAVBAR ================= */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    background:var(--bg-card);
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:20px;
+    font-weight:700;
+    color:var(--primary);
+}
+
+.nav-links{
+    display:flex;
+    gap:25px;
+    align-items:center;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:var(--secondary);
+    font-weight:600;
+}
+
+.nav-links a:hover{
+    color:var(--primary);
+}
+
+.notification-icon {
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: var(--primary);
+    color: white;
+    font-size: 10px;
+    padding: 3px 6px;
+    border-radius: 50%;
+}
+
+/* ================= HERO ================= */
+.page-header {
+    padding: 80px 20px;
+    text-align: center;
+    background:
+        linear-gradient(rgba(161,26,60,.85), rgba(127,16,47,.85)),
+        url("https://images.unsplash.com/photo-1558944351-cb6a2f7f5b30")
+        center/cover no-repeat;
+    color: white;
+}
+
+.page-header h2 {
+    font-size: 2.4rem;
+    margin-bottom: 10px;
+}
+
+/* ================= CONTAINER ================= */
+.container {
+    max-width: 1000px;
+    margin: -60px auto 80px;
+    padding: 0 20px;
+}
+
+/* ================= INFO NOTE ================= */
+.info-note {
+    text-align: center;
+    background: #f3f4f6;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+/* ================= CARD ================= */
+.pet-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,.08);
+    padding: 25px;
+    margin-bottom: 25px;
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.pet-card:hover {
+    transform: translateY(-4px);
+}
+
+.pet-image img {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+/* ================= DETAILS ================= */
+.pet-details {
+    flex: 1;
+}
+
+.pet-details h3 {
+    margin: 0 0 8px;
+    font-size: 20px;
+}
+
+/* ================= STATUS BADGE ================= */
+.status {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 8px;
+}
+
+.status.Missing {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status.Found {
+    background: #dcfce7;
+    color: #166534;
+    animation: foundGlow 0.6s ease-in-out;
+}
+
+@keyframes foundGlow {
+    0% { transform: scale(0.9); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* ================= BUTTONS ================= */
+.found-btn, .back-btn {
+    margin-top: 12px;
+    padding: 8px 14px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.found-btn:hover,
+.back-btn:hover {
+    background: var(--primary-dark);
+}
+
+.back-btn {
+    display: inline-block;
+    margin-bottom: 25px;
+    text-decoration: none;
+}
+
+/* ================= EMPTY ================= */
+.empty-message {
+    text-align: center;
+    margin-top: 50px;
+    color: var(--text-muted);
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+    .pet-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .pet-image img {
+        width: 100%;
+        height: auto;
+    }
+}
+.match-box {
+    background: #e6fffa;
+    border-left: 5px solid #14b8a6;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 8px;
+}
+
+.match-box h4 {
+    color: #0f766e;
+    margin-bottom: 6px;
+}
+
+.matched-image {
+    width: 120px;
+    margin-top: 8px;
+    border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="logo">🐾 Animal Shelter</div>
+
+    <div class="nav-links">
+        <a href="{% url 'userhome' %}">
+            <i class="fa fa-home"></i> Dashboard
+        </a>
+
+        <a href="" class="notification-icon">
+            <i class="fa fa-bell"></i>
+            {% if unread_count > 0 %}
+                <span class="notification-badge">
+                    {{ unread_count }}
+                </span>
+            {% endif %}
+        </a>
+
+        <a href="{% url 'logout' %}">
+            <i class="fa fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="page-header">
+    <h2>🔍 My Lost Pets</h2>
+    <p>Track updates about your missing pets</p>
+</section>
+
+<div class="container">
+
+<a href="{% url 'lost_pet' %}" class="back-btn">
+    ← Go to Lost Pet Page
+</a>
+
+<p class="info-note">
+    The shelter may contact you using your registered phone number regarding updates.
+</p>
+
+{% if lost_pets %}
+
+    {% for pet in lost_pets %}
+<div class="pet-card">
+
+    <div class="pet-image">
+        {% if pet.pet_photo %}
+        <img src="{{ pet.pet_photo.url }}">
+        {% endif %}
+    </div>
+
+    <div class="pet-details">
+        <h3>{{ pet.pet_name }}</h3>
+
+        <p><b>Type:</b> {{ pet.pet_type }}</p>
+        <p><b>Breed:</b> {{ pet.breed }}</p>
+        <p><b>Last Seen:</b> {{ pet.last_seen_location }}</p>
+        <p><b>Date Lost:</b> {{ pet.date_lost }}</p>
+
+        <span class="status {{ pet.status }}">
+            {{ pet.status }}
+        </span>
+
+        {% if pet.status == "Missing" %}
+        <form method="POST" action="{% url 'mark_pet_found' pet.id %}">
+            {% csrf_token %}
+            <button class="found-btn">
+                Mark as Found
+            </button>
+        </form>
+        {% endif %}
+
+        <!-- ✅ MATCH RESULT -->
+        {% if pet.matched_found_pet %}
+        <div class="match-box">
+            <h4>🐶 Possible Match Found!</h4>
+
+            <p><strong>Confidence:</strong>
+                {{ pet.match_score|floatformat:2 }}
+            </p>
+
+            <p><strong>Found Location:</strong>
+                {{ pet.matched_found_pet.found_location }}
+            </p>
+
+            <p><strong>Date Found:</strong>
+                {{ pet.matched_found_pet.date_found }}
+            </p>
+
+            {% if pet.matched_found_pet.pet_photo %}
+            <img src="{{ pet.matched_found_pet.pet_photo.url }}"
+                 class="matched-image">
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+{% endfor %}
+<!-- {% endif %} -->
+</body>
+</html>

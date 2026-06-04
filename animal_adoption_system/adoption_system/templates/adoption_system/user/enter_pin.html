@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Authorize Payment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        body {
+            margin: 0; font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #111827, #1f2937);
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; color: white;
+        }
+
+        .card {
+            background: white; color: #1f2937; width: 420px;
+            padding: 40px; border-radius: 24px; text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .lock-icon {
+            width: 70px; height: 70px; background: #f3f4f6;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; margin: 0 auto 20px;
+            font-size: 28px; color: #10b981;
+        }
+
+        h2 { margin: 0 0 10px; font-weight: 700; font-size: 22px; }
+        p { color: #6b7280; font-size: 14px; margin-bottom: 25px; }
+
+        /* ERROR FIX */
+        .error-alert {
+            background: #fef2f2; color: #dc2626; padding: 12px;
+            border-radius: 10px; font-size: 13px; font-weight: 600;
+            margin-bottom: 20px; border: 1px solid #fecaca;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .pin-inputs { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        .pin-inputs input {
+            width: 55px; height: 65px; font-size: 28px; font-weight: 700;
+            text-align: center; border-radius: 14px;
+            border: 2px solid #d1d5db; background: #f9fafb;
+            color: #1f2937; transition: 0.2s; outline: none;
+        }
+        .pin-inputs input:focus { border-color: #10b981; background: white; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15); }
+
+        .btn-verify {
+            width: 100%; padding: 16px; border-radius: 14px; border: none;
+            background: #10b981; color: white; font-weight: 700; font-size: 16px;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+        .btn-verify:hover { background: #059669; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+    <h2>Authorize Payment</h2>
+    <p>Enter your 4-digit security PIN to confirm.</p>
+
+    {% if error %}
+        <div class="error-alert">
+            <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+        </div>
+    {% endif %}
+
+    <form method="POST" id="pinForm">
+        {% csrf_token %}
+        <div class="pin-inputs">
+            <input type="password" maxlength="1" required autofocus>
+            <input type="password" maxlength="1" required>
+            <input type="password" maxlength="1" required>
+            <input type="password" maxlength="1" required>
+        </div>
+        <input type="hidden" name="pin" id="fullPin">
+        <button type="submit" class="btn-verify">Verify & Pay</button>
+    </form>
+</div>
+
+<script>
+    const inputs = document.querySelectorAll(".pin-inputs input");
+    const form = document.getElementById("pinForm");
+
+    inputs.forEach((input, index) => {
+        // Handle input typing
+        input.addEventListener("input", (e) => {
+            // Move to next box
+            if (input.value.length === 1 && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+            // Auto-submit on 4th digit
+            if (index === 3 && input.value.length === 1) {
+                submitForm();
+            }
+        });
+
+        // Handle Backspace
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Backspace" && input.value === "" && index > 0) {
+                inputs[index - 1].focus();
+            }
+        });
+    });
+
+    function submitForm() {
+        let pin = "";
+        inputs.forEach(i => pin += i.value);
+        document.getElementById("fullPin").value = pin;
+        form.submit();
+    }
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        submitForm();
+    });
+</script>
+
+</body>
+</html>

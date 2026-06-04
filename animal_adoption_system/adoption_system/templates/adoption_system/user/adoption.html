@@ -1,0 +1,348 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detailed Adoption Application</title>
+
+```
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+    :root {
+        --primary: #be123c;
+        --primary-dark: #9f1239;
+        --secondary: #1f2937;
+        --bg-main: #f9fafb;
+        --bg-card: #ffffff;
+        --text-main: #374151;
+        --text-muted: #6b7280;
+        --border-soft: #d1d5db;
+        --success: #16a34a;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+        background: var(--bg-main);
+        color: var(--text-main);
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    /* HEADER */
+    .page-header {
+        background: var(--bg-card);
+        border-left: 8px solid var(--primary);
+        padding: 28px;
+        border-radius: 14px;
+        margin-bottom: 25px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+        color: var(--primary-dark);
+    }
+
+    .page-header p {
+        font-size: 14px;
+        color: var(--text-muted);
+    }
+
+    /* PROGRESS BAR */
+    .progress {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 25px;
+        font-size: 13px;
+    }
+
+    .progress span {
+        background: #e5e7eb;
+        padding: 6px 12px;
+        border-radius: 20px;
+    }
+
+    .progress .active {
+        background: var(--primary);
+        color: white;
+    }
+
+    form {
+        background: var(--bg-card);
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+    }
+
+    .form-section {
+        margin-bottom: 35px;
+    }
+
+    .form-section h2 {
+        font-size: 18px;
+        margin-bottom: 14px;
+        color: var(--secondary);
+    }
+
+    .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    label {
+        font-size: 13px;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .required::after {
+        content: " *";
+        color: red;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 13px;
+        border-radius: 10px;
+        border: 1.8px solid var(--border-soft);
+        font-size: 14px;
+    }
+
+    textarea {
+        min-height: 100px;
+    }
+
+    .errorlist {
+        color: red;
+        font-size: 12px;
+        margin-top: 3px;
+    }
+
+    .success-box {
+        background: #ecfdf5;
+        border-left: 4px solid var(--success);
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .checkbox {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 15px;
+        border-radius: 10px;
+        border: none;
+        background: var(--primary);
+        color: white;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .submit-btn:hover {
+        background: var(--primary-dark);
+    }
+
+    @media (max-width: 768px) {
+        .row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+
+<div class="container">
+
+```
+<div class="page-header">
+    <h1><i class="fa-solid fa-paw"></i> Adoption Application</h1>
+    <p>Please complete all required information for approval.</p>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress">
+    <span class="active">Personal</span>
+    <span class="active">Pet</span>
+    <span class="active">Housing</span>
+    <span>Experience</span>
+    <span>Commitment</span>
+</div>
+
+<form method="POST">
+    {% csrf_token %}
+
+    {% if messages %}
+        <div class="success-box">
+            Application submitted successfully.
+        </div>
+    {% endif %}
+
+    <!-- PERSONAL -->
+    <section class="form-section">
+        <h2>👤 Personal Information</h2>
+
+        <div class="row">
+            <div>
+                <label class="required">Full Name</label>
+                {{ form.full_name }}
+                {{ form.full_name.errors }}
+            </div>
+
+            <div>
+                <label class="required">Age</label>
+                {{ form.age }}
+                {{ form.age.errors }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div>
+                <label class="required">Email</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+
+            <div>
+                <label class="required">Phone Number</label>
+                {{ form.phone }}
+                {{ form.phone.errors }}
+            </div>
+        </div>
+
+        <label class="required">Address</label>
+        {{ form.address }}
+        {{ form.address.errors }}
+    </section>
+
+    <!-- PET -->
+    <section class="form-section">
+        <h2>🐾 Selected Pet</h2>
+
+        <div class="row">
+            <div>
+                <label>Pet Name</label>
+                {{ form.pet_name }}
+            </div>
+
+            <div>
+                <label>Pet Type</label>
+                {{ form.pet_type }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div>
+                <label>Pet Age</label>
+                {{ form.pet_age }}
+            </div>
+
+            <div>
+                <label>Pet Gender</label>
+                {{ form.pet_gender }}
+            </div>
+        </div>
+    </section>
+
+    <!-- HOUSING -->
+    <section class="form-section">
+        <h2>🏠 Housing Details</h2>
+
+        <label class="required">Housing Type</label>
+        {{ form.housing_type }}
+
+        <label class="required">Ownership Status</label>
+        {{ form.ownership }}
+
+        <label>Landlord Permission (if rented)</label>
+        {{ form.permission }}
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section class="form-section">
+        <h2>🐕 Experience & Lifestyle</h2>
+
+        <label>Existing Pets</label>
+        {{ form.existing_pets }}
+
+        <label class="required">Previous Experience</label>
+        {{ form.experience }}
+
+        <label class="required">Daily Schedule</label>
+{{ form.daily_schedule }}
+
+    </section>
+
+    <!-- COMMITMENT -->
+   <section class="form-section">
+    <h2>❤️ Commitment</h2>
+
+    <label class="required">Reason for Adoption</label>
+    {{ form.reason }}
+    
+
+    <label class="required">Long Term Plan</label>
+    {{ form.long_term_plan }}
+    
+
+    <label class="checkbox">
+        {{ form.terms_accepted }}
+        I agree to shelter rules and follow-up checks
+    </label>
+</section>
+{% if animal and animal.adoption_fee %}
+    <div class="form-group">
+        <label>Adoption Fee</label>
+        <input type="text"
+               value="₹ {{ animal.adoption_fee }}"
+               class="form-control"
+               readonly>
+    </div>
+{% endif %}
+ {% if rehome_pet and rehome_pet.adoption_fee %}
+        <div class="form-group">
+            <label>Adoption Fee</label>
+            <input type="text"
+                   value="₹ {{ rehome_pet.adoption_fee }}"
+                   class="form-control"
+                   readonly>
+        </div>
+    {% endif %}
+    <button type="submit" class="submit-btn">
+        <i class="fa-solid fa-paper-plane"></i> Submit Application
+    </button>
+
+</form>
+
+
+</div>
+
+</body>
+</html>

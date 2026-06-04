@@ -1,0 +1,297 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add Pet Type | Admin</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root{
+--primary:#a11a3c;
+--primary-dark:#7f102d;
+--secondary:#111827;
+--text-main:#374151;
+--text-muted:#6b7280;
+--bg-main:#f8fafc;
+--border-soft:#e5e7eb;
+}
+
+/* GLOBAL */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:var(--bg-main);
+color:var(--text-main);
+}
+
+/* NAVBAR */
+
+.navbar{
+background:rgba(255,255,255,0.85);
+backdrop-filter:blur(15px);
+padding:15px 5%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid var(--border-soft);
+position:sticky;
+top:0;
+z-index:1000;
+}
+
+.logo{
+font-size:1.5rem;
+font-weight:800;
+color:var(--primary);
+}
+
+.nav-right{
+display:flex;
+gap:20px;
+align-items:center;
+}
+
+.nav-link{
+color:var(--secondary);
+font-weight:600;
+text-decoration:none;
+transition:0.3s;
+}
+
+.nav-link:hover{
+color:var(--primary);
+}
+
+.logout-btn{
+color:var(--primary);
+font-weight:700;
+}
+
+/* PAGE */
+
+.admin-container{
+max-width:900px;
+margin:60px auto;
+padding:0 5%;
+animation:fadeIn .5s ease;
+}
+
+/* HEADER */
+
+.page-title{
+margin-bottom:30px;
+}
+
+.page-title h1{
+font-size:1.8rem;
+font-weight:700;
+color:var(--secondary);
+}
+
+.page-title p{
+color:var(--text-muted);
+font-size:14px;
+margin-top:5px;
+}
+
+/* CARD */
+
+.form-card{
+background:white;
+border-radius:22px;
+padding:40px;
+border:1px solid var(--border-soft);
+box-shadow:0 15px 35px rgba(0,0,0,0.05);
+transition:.3s;
+}
+
+.form-card:hover{
+transform:translateY(-3px);
+box-shadow:0 20px 45px rgba(0,0,0,0.08);
+}
+
+/* LABEL */
+
+.form-card label{
+display:block;
+font-weight:600;
+margin-bottom:6px;
+margin-top:20px;
+color:var(--secondary);
+}
+
+/* INPUT */
+
+.form-card input[type="text"]{
+width:100%;
+padding:12px 16px;
+border-radius:12px;
+border:1px solid var(--border-soft);
+background:#f9fafb;
+transition:.3s;
+font-size:14px;
+}
+
+.form-card input[type="text"]:focus{
+outline:none;
+border-color:var(--primary);
+background:white;
+box-shadow:0 0 0 3px rgba(161,26,60,0.12);
+}
+
+/* CHECKBOX */
+
+.checkbox-row{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:20px;
+font-weight:600;
+color:var(--secondary);
+}
+
+/* BUTTON AREA */
+
+.form-actions{
+display:flex;
+gap:15px;
+margin-top:35px;
+flex-wrap:wrap;
+}
+
+/* SAVE BUTTON */
+
+.btn-primary{
+flex:1;
+padding:14px;
+border-radius:12px;
+border:none;
+background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+color:white;
+font-weight:700;
+font-size:14px;
+cursor:pointer;
+transition:.3s;
+}
+
+.btn-primary:hover{
+transform:translateY(-2px);
+box-shadow:0 12px 25px rgba(161,26,60,0.35);
+}
+
+/* DELETE BUTTON */
+
+.btn-danger{
+flex:1;
+text-align:center;
+padding:14px;
+border-radius:12px;
+background:linear-gradient(135deg,#ef4444,#dc2626);
+color:white;
+font-weight:700;
+text-decoration:none;
+transition:.3s;
+}
+
+.btn-danger:hover{
+transform:translateY(-2px);
+box-shadow:0 12px 25px rgba(220,38,38,0.35);
+}
+
+/* ANIMATION */
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+.form-card{
+padding:25px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<header class="navbar">
+<div class="logo">🐾 Animal Shelter</div>
+
+<div class="nav-right">
+<a href="{% url 'admin_dashboard' %}" class="nav-link">Dashboard</a>
+<a href="{% url 'animal_management' %}" class="nav-link">Animals</a>
+<a href="{% url 'panel_logout' %}" class="logout-btn">Logout</a>
+</div>
+
+</header>
+
+<!-- PAGE -->
+
+<div class="admin-container">
+
+<div class="page-title">
+<h1>Pet Type Management</h1>
+<p>Create or update categories for animals in the shelter.</p>
+</div>
+
+<form method="POST" class="form-card">
+
+{% csrf_token %}
+
+<label>Pet Type Name</label>
+{{ form.name }}
+
+<div class="checkbox-row">
+{{ form.is_active }}
+<span>Active</span>
+</div>
+
+<div class="form-actions">
+
+<button type="submit" class="btn-primary">
+
+{% if edit_mode %}
+<i class="fa-solid fa-pen"></i> Update
+{% else %}
+<i class="fa-solid fa-floppy-disk"></i> Save
+{% endif %}
+
+</button>
+
+{% if edit_mode %}
+<a href="{% url 'delete_pet_type' object.id %}"
+class="btn-danger"
+onclick="return confirm('Are you sure you want to delete this pet type?');">
+
+<i class="fa-solid fa-trash"></i> Delete
+
+</a>
+{% endif %}
+
+</div>
+
+</form>
+
+</div>
+
+</body>
+</html>

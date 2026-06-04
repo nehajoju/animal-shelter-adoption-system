@@ -1,0 +1,108 @@
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ================= PAGE WRAPPER ================= */
+.login-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #fff1f2, #fff7ed);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ================= LOGIN CARD ================= */
+.card {
+    background: #ffffff;
+    width: 360px;
+    padding: 30px 26px;
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(159, 18, 57, 0.2);
+}
+
+/* ================= HEADING ================= */
+.card h3 {
+    text-align: center;
+    color: #9f1239;
+    font-size: 26px;
+    margin-bottom: 6px;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+/* ================= LABELS ================= */
+label {
+    display: block;
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+/* ================= INPUT FIELDS ================= */
+input {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 6px;
+    border-radius: 10px;
+    border: 1.5px solid #e5e7eb;
+    font-size: 14px;
+    transition: all 0.25s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: #be123c;
+    box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.15);
+}
+
+/* ================= LOGIN BUTTON ================= */
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 11px;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg, #9f1239, #be123c);
+    color: #fff7ed;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(190, 18, 60, 0.35);
+}
+
+/* ================= FOOT LINKS ================= */
+.small {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 13px;
+    color: #374151;
+}
+
+.small p {
+    margin-top: 8px;
+}
+
+.small a {
+    color: #be123c;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.small a:hover {
+    text-decoration: underline;
+}

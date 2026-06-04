@@ -1,0 +1,256 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>{{ animal.name }} | Animal Details</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* ================= ROOT COLORS ================= */
+:root {
+    --primary: #a11a3c;
+    --primary-dark: #7f102f;
+    --secondary: #111827;
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #374151;
+    --text-muted: #6b7280;
+    --border-soft: #e5e7eb;
+    --light: #fff7ed;
+}
+
+body{
+    margin:0;
+    font-family:"Poppins",sans-serif;
+    background:var(--bg-main);
+    color:var(--text-main);
+}
+
+/* SUBTLE PAW BACKGROUND */
+body::before{
+    content:"🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾";
+    position:fixed;
+    font-size:120px;
+    opacity:0.08;
+    top:20%;
+    left:5%;
+    transform:rotate(-20deg);
+    z-index:-1;
+}
+
+/* ================= NAVBAR ================= */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    background:white;
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+}
+
+.logo{
+    font-weight:700;
+    color:var(--primary);
+}
+
+.nav-links a{
+    margin-left:20px;
+    text-decoration:none;
+    font-weight:600;
+    color:var(--secondary);
+}
+
+.nav-links a:hover{
+    color:var(--primary);
+}
+
+/* ================= CONTAINER ================= */
+.container{
+    max-width:1100px;
+    margin:60px auto;
+    background:white;
+    border-radius:20px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.08);
+    display:flex;
+    gap:40px;
+    padding:40px;
+}
+
+/* LEFT IMAGE */
+.image-section{
+    flex:1;
+}
+
+.image-section img{
+    width:100%;
+    height:450px;
+    object-fit:cover;
+    border-radius:20px;
+}
+
+/* RIGHT DETAILS */
+.details-section{
+    flex:1;
+}
+
+.details-section h2{
+    font-size:30px;
+    margin-bottom:15px;
+}
+
+.info-box{
+    margin-bottom:12px;
+    font-size:15px;
+}
+
+.info-box span{
+    font-weight:600;
+    color:var(--primary-dark);
+}
+
+/* STATUS BADGE */
+.status{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.available{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.adopted{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+/* BUTTONS */
+.action-buttons{
+    margin-top:25px;
+    display:flex;
+    gap:15px;
+}
+
+.btn{
+    padding:12px 18px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:600;
+    text-align:center;
+}
+
+.adopt-btn{
+    background:var(--primary);
+    color:white;
+}
+
+.chat-btn{
+    background:var(--secondary);
+    color:white;
+}
+
+.back-btn{
+    display:inline-block;
+    margin-top:20px;
+    color:var(--primary);
+    font-weight:600;
+    text-decoration:none;
+}
+.disabled{
+    background:#9ca3af;
+    cursor:not-allowed;
+    opacity:0.7;
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="logo">🐾 Animal Shelter</div>
+    <div class="nav-links">
+        <a href="{% url 'userhome' %}">Dashboard</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- LEFT IMAGE -->
+    <div class="image-section">
+        <img src="{% if animal.image %}{{ animal.image.url }}{% else %}{% static 'images/no-animal.png' %}{% endif %}">
+    </div>
+
+    <!-- RIGHT DETAILS -->
+    <div class="details-section">
+
+        <h2>{{ animal.name }}</h2>
+
+        <div class="info-box"><span>Type:</span> {{ animal.breed.pet_type.name }}</div>
+        <div class="info-box"><span>Breed:</span> {{ animal.breed.name }}</div>
+        <div class="info-box"><span>Age:</span> {{ animal.age }} Years</div>
+        <div class="info-box"><span>Gender:</span> {{ animal.gender }}</div>
+        <div class="info-box"><span>Color:</span> {{ animal.color }}</div>
+        <div class="info-box"><span>Weight:</span> {{ animal.weight }} kg</div>
+        <div class="info-box"><span>Adoption Fee:</span> ₹{{ animal.adoption_fee }}</div>
+
+        <div class="info-box">
+            <span>Status:</span>
+            {% if animal.status == "Available" %}
+                <span class="status available">Available</span>
+            {% else %}
+                <span class="status adopted">Adopted</span>
+            {% endif %}
+        </div>
+
+        <hr style="margin:20px 0; border:1px solid var(--border-soft);">
+
+        <div class="info-box"><span>Health:</span> {{ animal.health_status }}</div>
+        <div class="info-box"><span>Temperament:</span> {{ animal.temperament }}</div>
+        <div class="info-box"><span>Description:</span> {{ animal.description }}</div>
+
+        <div class="action-buttons">
+
+{% if animal.status == "Available" %}
+    <a href="/adoption/{{ animal.id }}/" class="btn adopt-btn">
+        Apply for Adoption
+    </a>
+{% else %}
+    <button class="btn adopt-btn disabled" disabled>
+        {% if animal.status == "Under Review" %}
+            Adoption In Progress
+        {% elif animal.status == "Adopted" %}
+            Already Adopted
+        {% elif animal.status == "Under Treatment" %}
+            Under Treatment
+        {% elif animal.status == "Quarantine" %}
+            In Quarantine
+        {% elif animal.status == "Not Adoptable" %}
+            Not Available
+        {% else %}
+            Not Available
+        {% endif %}
+    </button>
+{% endif %}
+
+<a href="/chat/admin/?animal={{ animal.id }}" class="btn chat-btn">
+    Chat with Admin
+</a>
+
+</div>
+        <a href="{% url 'animals' %}" class="back-btn">
+            ← Back to Animals
+        </a>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1596 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard | Animal Shelter</title>
+
+   
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+
+:root{
+--primary:#a11a3c;
+--primary-dark:#7f102f;
+--secondary:#111827;
+
+--bg-main:#f9ebed;
+--bg-card:#fbe7ec;
+
+--text-main:#520425;
+--text-muted:#2d2d2f;
+
+--border-soft:#e5e7eb;
+
+/* glass effects */
+--glass:rgba(255,255,255,0.75);
+--border:rgba(255,255,255,0.4);
+}
+/* ================= RESET ================= */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:var(--bg-main);
+color:var(--text-main);
+overflow-x:hidden;
+}
+
+/* ================= FLOATING PAW BACKGROUND ================= */
+
+body::before{
+content:"🐾 🐾 🐾 🐾 🐾 🐾 🐾";
+position:fixed;
+font-size:140px;
+opacity:0.04;
+top:30%;
+left:5%;
+transform:rotate(-20deg);
+z-index:-1;
+animation:pawFloat 18s infinite linear;
+}
+
+@keyframes pawFloat{
+0%{transform:translateY(0) rotate(-20deg);}
+50%{transform:translateY(-70px) rotate(-15deg);}
+100%{transform:translateY(0) rotate(-20deg);}
+}
+
+/* ================= TOP BAR ================= */
+
+.top-bar{
+background:linear-gradient(135deg,#7f102f,#a11a3c);
+color:white;
+padding:12px 25px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 6px 20px rgba(0,0,0,0.2);
+}
+
+.user-info{
+display:flex;
+gap:12px;
+align-items:center;
+}
+
+/* ================= NOTIFICATIONS ================= */
+
+.notification-wrapper{
+position:relative;
+cursor:pointer;
+}
+
+.notification-icon{
+font-size:20px;
+color:white;
+}
+
+.notification-badge{
+position:absolute;
+top:-6px;
+right:-6px;
+background:#900924;
+color:white;
+font-size:11px;
+font-weight:600;
+padding:3px 7px;
+border-radius:50%;
+animation:pulseNotif 1.5s infinite;
+}
+
+@keyframes pulseNotif{
+0%{box-shadow:0 0 0 0 rgba(186, 34, 34, 0.7);}
+70%{box-shadow:0 0 0 8px rgba(255,0,0,0);}
+100%{box-shadow:0 0 0 0 rgba(255,0,0,0);}
+}
+
+.notification-dropdown{
+position:absolute;
+top:35px;
+right:0;
+width:320px;
+background:white;
+border-radius:12px;
+box-shadow:0 15px 40px rgba(0,0,0,0.15);
+overflow:hidden;
+display:none;
+}
+
+.notification-item{
+padding:12px 15px;
+border-bottom:1px solid #eee;
+font-size:14px;
+transition:0.3s;
+}
+
+.notification-item:hover{
+background:#f9f9f9;
+}
+
+.notification-item.unread{
+background:#fff0f3;
+border-left:4px solid #e43956;
+}
+
+.view-all-btn{
+display:block;
+text-align:center;
+padding:12px;
+background:#c62d46;
+color:white;
+text-decoration:none;
+}
+
+/* ================= DASHBOARD ================= */
+
+.dashboard{
+padding:90px 7%;
+animation:fadeIn 0.6s ease;
+}
+
+/* ================= WELCOME CARD ================= */
+.welcome-card{
+background:rgba(255,255,255,0.4);
+backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,0.6);
+border-radius:30px;
+
+padding:40px;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+box-shadow:0 8px 32px rgba(31,38,135,0.15);
+
+margin-bottom:50px;
+
+transform-style:preserve-3d;
+transition:transform 0.3s ease, box-shadow 0.3s ease;
+overflow:hidden;
+}
+
+.welcome-card:hover{
+box-shadow:0 20px 50px rgba(217,4,41,0.2);
+}
+
+.welcome-content{
+flex:1;
+transform:translateZ(50px);
+}
+
+.welcome-content h1{
+font-size:2.5rem;
+color:var(--dark);
+margin-bottom:15px;
+}
+
+.welcome-image{
+width:250px;
+height:250px;
+object-fit:cover;
+border-radius:50%;
+border:8px solid white;
+box-shadow:0 15px 35px rgba(0,0,0,0.2);
+
+transform:translateZ(80px) rotateY(-10deg);
+transition:0.5s;
+}
+
+.welcome-card:hover .welcome-image{
+transform:translateZ(100px) rotateY(0deg) scale(1.05);
+}
+
+.btn-3d{
+display:inline-block;
+margin-top:20px;
+
+background:var(--primary);
+color:white;
+
+padding:12px 28px;
+border-radius:12px;
+
+text-decoration:none;
+font-weight:700;
+letter-spacing:1px;
+
+box-shadow:0 6px 0 #8d0801,0 15px 20px rgba(0,0,0,0.2);
+
+transform:translateZ(30px);
+transition:0.1s;
+}
+
+.btn-3d:active{
+box-shadow:0 2px 0 #8d0801,0 5px 10px rgba(0,0,0,0.2);
+transform:translateY(4px) translateZ(30px);
+}
+
+/* ================= STATS ================= */
+
+/* ================= STATS GRID ================= */
+
+.stats-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:25px;
+margin-bottom:25px;
+}
+
+/* ================= STAT CARD ================= */
+
+.stat-box{
+background:var(--bg-card);
+padding:24px 20px;
+
+border-radius:16px;
+
+text-align:center;
+
+border:1px solid var(--border-soft);
+
+box-shadow:0 8px 25px rgba(0,0,0,0.05);
+
+transition:all 0.35s ease;
+
+position:relative;
+overflow:hidden;
+}
+
+/* soft glow */
+
+.stat-box::before{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(120deg,transparent,rgba(161,26,60,0.08),transparent);
+opacity:0;
+transition:0.4s;
+}
+
+.stat-box:hover{
+transform:translateY(-8px) scale(1.03);
+box-shadow:0 18px 45px rgba(0,0,0,0.12);
+}
+
+.stat-box:hover::before{
+opacity:1;
+}
+
+/* ================= STAT NUMBER ================= */
+
+.stat-box h2{
+font-size:2rem;
+color:var(--primary);
+font-weight:700;
+}
+
+/* ================= STAT TEXT ================= */
+
+.stat-box p{
+margin-top:6px;
+font-size:0.9rem;
+color:var(--text-muted);
+}
+
+/* ================= SECTION TITLE ================= */
+
+.section-title{
+font-size:1.8rem;
+margin:40px 0 25px;
+color:var(--secondary);
+position:relative;
+}
+
+.section-title::after{
+content:"";
+width:60px;
+height:4px;
+background:var(--primary);
+position:absolute;
+bottom:-8px;
+left:0;
+border-radius:3px;
+}
+/* ================= SMALL VIEW ALL BUTTON ================= */
+
+.view-all-btn{
+display:inline-flex;
+align-items:center;
+gap:6px;
+
+font-size:0.85rem;
+
+padding:6px 12px;
+
+border-radius:8px;
+
+background:var(--primary);
+color:white;
+
+text-decoration:none;
+
+transition:0.3s;
+}
+
+.view-all-btn:hover{
+background:var(--primary-dark);
+transform:translateY(-2px);
+}
+/* ================= LOST & FOUND ================= */
+/* ================= LOST & FOUND GRID ================= */
+
+.lost-found-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:28px;
+margin-bottom:45px;
+}
+
+/* ================= LOST & FOUND CARD ================= */
+
+.lost-found-card{
+background:#ffffff;
+
+border-radius:18px;
+
+padding:28px 24px;
+
+text-align:center;
+text-decoration:none;
+
+color:var(--text-main);
+
+box-shadow:0 8px 25px rgba(0,0,0,0.06);
+
+position:relative;
+overflow:hidden;
+
+transition:all 0.35s ease;
+}
+
+/* colored top accent */
+
+.lost-found-card::after{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:4px;
+background:linear-gradient(90deg,var(--primary),var(--primary-dark));
+}
+
+/* hover effect */
+
+.lost-found-card:hover{
+transform:translateY(-8px);
+box-shadow:0 18px 45px rgba(0,0,0,0.12);
+}
+
+/* ================= ICON ================= */
+
+.lost-found-card i{
+font-size:34px;
+
+margin-bottom:14px;
+
+color:var(--primary);
+
+transition:0.3s ease;
+}
+
+/* icon bounce on hover */
+
+.lost-found-card:hover i{
+transform:translateY(-4px) scale(1.1);
+color:var(--primary-dark);
+}
+
+/* ================= TITLE ================= */
+
+.lost-found-card h3{
+font-size:1.15rem;
+margin-bottom:6px;
+}
+
+/* ================= TEXT ================= */
+
+.lost-found-card p{
+font-size:0.9rem;
+color:var(--text-muted);
+line-height:1.5;
+}
+.lost-found-card{
+position:relative;
+overflow:hidden;
+}
+
+/* paw container */
+
+.lost-found-card::before,
+.lost-found-card::after{
+content:"🐾";
+position:absolute;
+font-size:18px;
+opacity:0;
+pointer-events:none;
+}
+
+/* first paw */
+
+.lost-found-card::before{
+bottom:20px;
+left:10%;
+}
+
+/* second paw */
+
+.lost-found-card::after{
+bottom:40px;
+left:25%;
+}
+
+/* animation trigger */
+
+.lost-found-card:hover::before{
+animation:pawStep1 0.9s ease forwards;
+}
+
+.lost-found-card:hover::after{
+animation:pawStep2 0.9s ease forwards 0.2s;
+}
+
+/* animations */
+
+@keyframes pawStep1{
+0%{
+opacity:0;
+transform:translateY(10px) scale(0.8);
+}
+
+50%{
+opacity:0.2;
+}
+
+100%{
+opacity:0;
+transform:translateY(-20px) scale(1);
+}
+}
+
+@keyframes pawStep2{
+0%{
+opacity:0;
+transform:translateY(10px) scale(0.8);
+}
+
+50%{
+opacity:0.2;
+}
+
+100%{
+opacity:0;
+transform:translateY(-20px) scale(1);
+}
+}
+
+
+/* ================= ACTION CARDS ================= */
+/* ================= ACTION GRID ================= */
+
+.action-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+gap:28px;
+margin-top:10px;
+}
+
+/* ================= ACTION CARD ================= */
+
+.action-card{
+background:var(--bg-card);
+padding:32px 25px;
+
+border-radius:20px;
+text-align:center;
+text-decoration:none;
+
+color:var(--text-main);
+
+border:1px solid var(--border-soft);
+
+box-shadow:0 10px 30px rgba(0,0,0,0.06);
+
+position:relative;
+overflow:hidden;
+
+transition:all 0.35s ease;
+}
+
+/* subtle gradient glow */
+
+.action-card::before{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(120deg,transparent,rgba(161,26,60,0.08),transparent);
+opacity:0;
+transition:0.4s;
+}
+
+/* hover effect */
+
+.action-card:hover{
+transform:translateY(-10px) scale(1.04);
+box-shadow:0 20px 50px rgba(0,0,0,0.12);
+border-color:rgba(161,26,60,0.25);
+}
+
+.action-card:hover::before{
+opacity:1;
+}
+
+/* ================= ICON STYLE ================= */
+
+.action-card i{
+width:60px;
+height:60px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+margin:0 auto 15px;
+
+font-size:24px;
+
+border-radius:14px;
+
+background:rgba(161,26,60,0.08);
+color:var(--primary);
+
+transition:0.35s;
+}
+
+.action-card:hover i{
+background:var(--primary);
+color:white;
+transform:scale(1.1);
+}
+
+/* ================= TITLE ================= */
+
+.action-card h3{
+font-size:1.15rem;
+margin-bottom:8px;
+}
+
+/* ================= TEXT ================= */
+
+.action-card p{
+font-size:0.9rem;
+color:var(--text-muted);
+line-height:1.5;
+}
+
+/* ================= DONATE CARD ================= */
+
+/* .donate-card{
+background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+color:white;
+border:none;
+}
+
+.donate-card i{
+background:rgba(255,255,255,0.15);
+color:white;
+}
+
+.donate-card p{
+color:rgba(255,255,255,0.85);
+} */
+
+/* ================= GUIDELINES ================= */
+
+.guidelines{
+margin-top:40px;
+padding:30px;
+background:white;
+border-radius:20px;
+box-shadow:0 15px 35px rgba(0,0,0,0.08);
+}
+
+.guidelines ul li{
+margin:10px 0;
+}
+
+/* ================= SUPPORT ================= */
+
+.support-box{
+margin-top:30px;
+padding:30px;
+background:linear-gradient(135deg,#ffe5ec,#fff);
+border-radius:20px;
+text-align:center;
+box-shadow:0 15px 35px rgba(0,0,0,0.08);
+}
+
+.support-btn{
+display:inline-block;
+margin-top:15px;
+padding:10px 20px;
+background:var(--primary);
+color:white;
+border-radius:10px;
+text-decoration:none;
+}
+
+/* ================= FLOATING LOGOUT ================= */
+
+.floating-logout{
+position:fixed;
+bottom:25px;
+left:25px;
+background:#111;
+color:white;
+padding:12px 18px;
+border-radius:25px;
+text-decoration:none;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+transition:0.3s;
+}
+
+.floating-logout:hover{
+transform:scale(1.05);
+}
+
+/* ================= CHAT MENU ================= */
+/* ================= CHAT MENU ================= */
+
+.chat-menu{
+position:fixed;
+bottom:25px;
+right:25px;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:15px;
+z-index:9999;
+}
+
+.chat-main-btn{
+width:65px;
+height:65px;
+border-radius:50%;
+background:linear-gradient(135deg,#a11a3c,#7f102f);
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+cursor:pointer;
+box-shadow:0 10px 25px rgba(0,0,0,0.3);
+transition:0.3s ease;
+}
+
+.chat-main-btn:hover{
+transform:scale(1.1);
+}
+
+.chat-option{
+width:55px;
+height:55px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-size:20px;
+text-decoration:none;
+position:relative;
+opacity:0;
+transform:translateY(20px);
+pointer-events:none;
+transition:0.3s ease;
+}
+
+.admin-chat{
+background:#2563eb;
+}
+
+.ai-chat{
+background:#10b981;
+}
+
+.chat-menu.active .chat-option{
+opacity:1;
+transform:translateY(0);
+pointer-events:auto;
+}
+/* ================= FOOTER ================= */
+
+.footer{
+text-align:center;
+padding:30px;
+background:#111;
+color:white;
+margin-top:50px;
+}
+
+/* ================= FADE ANIMATION ================= */
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-bar">
+
+    <div class="user-info">
+        <i class="fa-solid fa-user"></i>
+        {{ user_profile.username }}
+
+        <i class="fa-solid fa-envelope"></i>
+        {{ user_profile.email }}
+    </div>
+
+    <div class="notification-wrapper">
+        <i class="fa-solid fa-bell notification-icon" onclick="toggleNotifications()"></i>
+        <span id="notification-count" class="notification-badge">0</span>
+
+        <div id="notification-dropdown" class="notification-dropdown">
+            <div id="notification-list"></div>
+
+            <a href="{% url 'user_notifications' %}" class="view-all-btn">
+                View All Notifications
+            </a>
+        </div>
+    </div>
+
+</div>
+  
+</div>
+    <!-- ================= DASHBOARD ================= -->
+    <section class="dashboard">
+<div class="welcome-card js-tilt">
+    <div class="welcome-content">
+        <h1>👋 Welcome back, {{ request.user.username }}!</h1>
+        <p>
+            Manage your adoptions, foster care, visits, and donations
+            from your personal 3D dashboard.
+        </p>
+
+        <a href="{% url 'donate' %}" class="btn-3d">
+            <i class="fa-solid fa-heart"></i> Donate Now
+        </a>
+    </div>
+
+    <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80"
+         alt="Cute Dog"
+         class="welcome-image">
+</div>
+        <!-- QUICK STATS -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <h2>{{ adoption_count }}</h2>
+                <p>Adoption Requests</p>
+            </div>
+            <div class="stat-box">
+                <h2>{{ approved_count }}</h2>
+                <p>Approved Adoptions</p>
+            </div>
+            <div class="stat-box">
+                <h2>₹{{ donation_total }}</h2>
+                <p>Total Donations</p>
+            </div>
+            <div class="stat-box">
+                <h2>{{ visit_count }}</h2>
+                <p>Visits Scheduled</p>
+            </div>
+           
+
+        </div>
+        <div style="text-align:right; margin-top:10px;">
+    <a href="{% url 'recent_activity' %}" class="view-all-btn">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        View All Activity
+    </a>
+</div>
+        <!-- ================= LOST & FOUND ================= -->
+        <h2 class="section-title">Lost & Found</h2>
+
+        <div class="lost-found-grid">
+
+            <a href="{% url 'found_pet' %}" class="lost-found-card found">
+                <i class="fa-solid fa-hand-holding-heart"></i>
+                <h3>Found a Pet</h3>
+                <p>
+                    Report a rescued or stray animal you found so the shelter can help.
+                </p>
+            </a>
+
+            <a href="{% url 'lost_pet' %}" class="lost-found-card lost">
+                <i class="fa-solid fa-magnifying-glass-location"></i>
+                <h3>Lost My Pet</h3>
+                <p>
+                    Report your missing pet and get help to reunite faster.
+                </p>
+            </a>
+            <a href="{% url 'my_lost_pets' %}" class="lost-found-card">
+                <i class="fa-solid fa-list"></i>
+                <h3>My Lost Pets</h3>
+                <p>
+                    View and manage the lost pets you have reported.
+                </p>
+            </a>
+            <a href="{% url 'my_found_pets' %}" class="lost-found-card">
+                <i class="fa-solid fa-paw"></i>
+                <h3>My Found Pets</h3>
+                <p>
+                    View and manage the pets you have reported as found.
+                </p>
+            </a>
+            <a href="{% url 'my_rehome_requests' %}" class="lost-found-card">
+                <i class="fa-solid fa-house-heart"></i>
+                <h3>My Rehome Requests</h3>
+                <p>
+                    View and track the status of pets you submitted for rehoming.
+                </p>
+            </a>
+
+
+        </div>
+
+        <!-- ACTION CARDS -->
+        <!-- ================= YOUR ACTIONS ================= -->
+        <h2 class="section-title">Your Actions</h2>
+
+        <div class="action-grid">
+            <a href="{% url 'donate' %}" class="action-card donate-card">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+                <h3>Donate Now</h3>
+                <p>Make an immediate contribution to support rescued animals.</p>
+            </a>
+
+            <a href="{% url 'animals' %}" class="action-card">
+                <i class="fa-solid fa-paw"></i>
+                <h3>Adopt an Animal</h3>
+                <p>Browse animals, apply for adoption, and track approval status.</p>
+            </a>
+
+
+
+
+            <a href="{% url 'profile' %}" class="action-card">
+                <i class="fa-solid fa-user-gear"></i>
+                <h3>Profile Management</h3>
+                <p>Update your personal and contact details.</p>
+            </a>
+            <a href="{% url 'my_visits' %}" class="action-card">
+                <i class="fa-solid fa-calendar-check"></i>
+                <h3>My Visits</h3>
+                <p>
+                    View and track your scheduled shelter visits
+                    and their approval status.
+                </p>
+            </a>
+
+            <a href="{% url 'my_adoptions' %}" class="action-card">
+                <i class="fa-solid fa-heart"></i>
+                <h3>My Adoptions</h3>
+                <p>View adopted pets and adoption request history.</p>
+            </a>
+            <a href="{% url 'rehome_pet' %}" class="action-card">
+                <i class="fa-solid fa-home"></i>
+
+                <h3>Rehome My Pet</h3>
+                <p>Request help to safely rehome your pet.</p>
+            </a>
+
+            <a href="{% url 'start_chat' %}" class="action-card">
+                <i class="fa-solid fa-comments"></i>
+                <h3>Message Shelter Admin</h3>
+                <p>Chat with shelter staff for support, adoption, or foster queries.</p>
+            </a>
+
+
+        </div>
+
+ <!-- RECENT ACTIVITY -->
+      
+        <!-- GUIDELINES -->
+        <div class="guidelines">
+            <h2>Important Guidelines</h2>
+            <ul>
+                <li>Ensure your profile information is up to date.</li>
+                <li>Adoption approvals are subject to verification.</li>
+                <li>Follow shelter visit schedules strictly.</li>
+                <li>Foster parents must submit regular updates.</li>
+                <li>All donations are non-refundable.</li>
+            </ul>
+        </div>
+
+        <!-- SUPPORT -->
+        <div class="support-box">
+            <h2>Need Help?</h2>
+            <p>
+                Facing issues with adoption, foster care, or visits?
+                Our shelter support team is always here for you.
+            </p>
+            <a href="#" class="support-btn">Contact Support</a>
+        </div>
+
+    </section>
+    <a href="{% url 'logout' %}" class="floating-logout">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        Logout
+    </a>
+    <!-- ================= FLOATING CHAT MENU ================= -->
+
+<div class="chat-menu">
+
+    <!-- Admin Chat -->
+    <a href="{% url 'start_chat' %}" class="chat-option admin-chat">
+        <i class="fa-solid fa-comments"></i>
+        <span class="tooltip">Chat with Admin</span>
+
+        {% if unread_count > 0 %}
+        <span class="admin-badge pulse">{{ unread_count }}</span>
+        {% endif %}
+    </a>
+
+    <!-- AI Chatbot -->
+    <div class="chat-option ai-chat" onclick="toggleChat()">
+        <i class="fa-solid fa-robot"></i>
+        <span class="tooltip">AI Assistant</span>
+    </div>
+
+    <!-- Main Toggle Button -->
+    <div class="chat-main-btn" onclick="toggleChatMenu()">
+        <i class="fa-solid fa-comment-dots"></i>
+    </div>
+
+</div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <p>© 2026 Animal Adoption & Shelter Management System</p>
+    </footer>
+
+    <script src="{% static 'js/user_home.js' %}"></script>
+
+    <!-- ===== Floating Chatbot ===== -->
+
+    <style>
+
+/* ================= FLOATING CHAT MENU ================= */
+
+.chat-menu{
+    position:fixed;
+    bottom:25px;
+    right:25px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    z-index:9999;
+}
+
+/* ================= MAIN BUTTON ================= */
+
+.chat-main-btn{
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#a11a3c,#7f102f);
+    color:white;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:24px;
+    cursor:pointer;
+
+    box-shadow:0 12px 30px rgba(0,0,0,0.3);
+    transition:all 0.3s ease;
+}
+
+.chat-main-btn:hover{
+    transform:scale(1.1) rotate(5deg);
+    box-shadow:0 18px 40px rgba(0,0,0,0.35);
+}
+
+/* ================= CHAT OPTIONS ================= */
+
+.chat-option{
+    width:55px;
+    height:55px;
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+    font-size:20px;
+    text-decoration:none;
+
+    position:relative;
+
+    opacity:0;
+    transform:translateY(20px) scale(0.9);
+    pointer-events:none;
+
+    transition:all 0.35s ease;
+}
+
+/* Colors */
+
+.admin-chat{
+    background:#2563eb;
+}
+
+.ai-chat{
+    background:#10b981;
+}
+
+/* Hover effect */
+
+.chat-option:hover{
+    transform:scale(1.15);
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* Show menu */
+
+.chat-menu.active .chat-option{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    pointer-events:auto;
+}
+
+/* Delay animation */
+
+.chat-menu.active .chat-option:nth-child(1){
+    transition-delay:0.05s;
+}
+
+.chat-menu.active .chat-option:nth-child(2){
+    transition-delay:0.1s;
+}
+
+/* ================= TOOLTIP ================= */
+
+.tooltip{
+    position:absolute;
+    right:70px;
+    background:#111827;
+    color:white;
+    padding:6px 12px;
+    font-size:13px;
+    border-radius:6px;
+
+    opacity:0;
+    white-space:nowrap;
+
+    transform:translateX(10px);
+    transition:all 0.25s ease;
+}
+
+.chat-option:hover .tooltip{
+    opacity:1;
+    transform:translateX(0);
+}
+
+/* ================= UNREAD BADGE ================= */
+
+.admin-badge{
+    position:absolute;
+    top:-5px;
+    right:-5px;
+
+    background:#ff0033;
+    color:white;
+
+    font-size:11px;
+    font-weight:600;
+
+    padding:3px 7px;
+    border-radius:50%;
+}
+
+/* Pulse animation */
+
+.pulse{
+    animation:pulseAnim 1.5s infinite;
+}
+
+@keyframes pulseAnim{
+    0%{
+        box-shadow:0 0 0 0 rgba(255,0,0,0.7);
+    }
+
+    70%{
+        box-shadow:0 0 0 10px rgba(255,0,0,0);
+    }
+
+    100%{
+        box-shadow:0 0 0 0 rgba(255,0,0,0);
+    }
+}
+
+/* ================= CHAT BOX ================= */
+
+#chat-box{
+    position:fixed;
+    bottom:95px;
+    right:25px;
+
+    width:320px;
+    background:white;
+
+    border-radius:15px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.25);
+
+    display:flex;
+    flex-direction:column;
+
+    overflow:hidden;
+    z-index:9999;
+
+    opacity:0;
+    transform:translateY(20px);
+    pointer-events:none;
+
+    transition:all 0.3s ease;
+}
+
+#chat-box.active{
+    opacity:1;
+    transform:translateY(0);
+    pointer-events:auto;
+}
+
+/* ================= CHAT HEADER ================= */
+
+#chat-header{
+    background:#a11a3c;
+    color:white;
+
+    padding:12px;
+    font-weight:600;
+
+    text-align:center;
+    position:relative;
+}
+
+/* Header buttons */
+
+.chat-clear-btn,
+.chat-close-btn{
+    position:absolute;
+    top:8px;
+
+    background:none;
+    border:none;
+
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.chat-clear-btn{
+    right:40px;
+}
+
+.chat-close-btn{
+    right:10px;
+}
+
+/* ================= CHAT BODY ================= */
+
+#chat-body{
+    height:300px;
+    overflow-y:auto;
+    padding:12px;
+
+    background:#f7f7f7;
+}
+
+/* Messages */
+
+.message{
+    padding:8px 12px;
+    margin:6px 0;
+    border-radius:12px;
+    max-width:80%;
+    font-size:14px;
+}
+
+/* User message */
+
+.user-message{
+    background:#a11a3c;
+    color:white;
+    margin-left:auto;
+}
+
+/* Bot message */
+
+.bot-message{
+    background:#e4e6eb;
+}
+
+/* ================= INPUT AREA ================= */
+
+#chat-input-area{
+    display:flex;
+    border-top:1px solid #ddd;
+}
+
+#chat-input-area input{
+    flex:1;
+    border:none;
+    padding:10px;
+    outline:none;
+}
+
+#chat-input-area button{
+    background:#c9627c;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    cursor:pointer;
+}
+
+/* ================= TYPING LOADER ================= */
+
+.typing-loader span{
+    display:inline-block;
+    width:6px;
+    height:6px;
+    background:#555;
+
+    border-radius:50%;
+    margin:0 2px;
+
+    animation:bounce 1.3s infinite;
+}
+
+.typing-loader span:nth-child(2){
+    animation-delay:0.2s;
+}
+
+.typing-loader span:nth-child(3){
+    animation-delay:0.4s;
+}
+
+@keyframes bounce{
+    0%,80%,100%{
+        transform:scale(0);
+    }
+    40%{
+        transform:scale(1);
+    }
+}
+  </style>
+
+    <!-- <div id="chat-icon" onclick="toggleChat()">💬</div> -->
+
+    <div id="chat-box">
+        <div id="chat-header">Shelter AI Assistant
+            <button onclick="clearChat()" class="chat-clear-btn">🗑</button>
+            <button onclick="closeChat()" class="chat-close-btn">✖</button>
+        </div>
+        <div id="chat-body"></div>
+
+        <div id="chat-input-area">
+            <input type="text" id="user-input" placeholder="Ask something..." />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* ================= ANIMATED COUNTERS ================= */
+
+    function animateValue(element, start, end, duration) {
+
+        let startTimestamp = null;
+
+        const step = (timestamp) => {
+
+            if (!startTimestamp) startTimestamp = timestamp;
+
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+
+            element.innerText = Math.floor(progress * (end - start) + start);
+
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+
+        };
+
+        window.requestAnimationFrame(step);
+    }
+
+    document.querySelectorAll(".stat-box h2").forEach(el => {
+
+        let value = parseInt(el.innerText.replace(/[^\d]/g, ""));
+
+        if (!isNaN(value)) {
+            animateValue(el, 0, value, 1200);
+        }
+
+    });
+
+
+    /* ================= CHAT MENU ================= */
+
+    window.toggleChatMenu = function () {
+        document.querySelector(".chat-menu").classList.toggle("active");
+    };
+
+
+    /* ================= CHAT BOX ================= */
+
+    window.toggleChat = function () {
+
+        const box = document.getElementById("chat-box");
+
+        box.classList.toggle("active");
+
+        if (box.classList.contains("active")) {
+            document.getElementById("user-input").focus();
+        }
+
+    };
+
+
+    /* ================= SEND MESSAGE ================= */
+
+    window.sendMessage = function () {
+
+        let input = document.getElementById("user-input");
+        let message = input.value.trim();
+
+        if (!message) return;
+
+        let chatBody = document.getElementById("chat-body");
+
+        /* USER MESSAGE */
+
+        let userDiv = document.createElement("div");
+        userDiv.className = "message user-message";
+        userDiv.innerText = message;
+
+        chatBody.appendChild(userDiv);
+
+        input.value = "";
+
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+        /* BOT TYPING LOADER */
+
+        let loaderDiv = document.createElement("div");
+        loaderDiv.className = "message bot-message";
+
+        loaderDiv.innerHTML = `
+        <div class="typing-loader">
+            <span></span><span></span><span></span>
+        </div>
+        `;
+
+        chatBody.appendChild(loaderDiv);
+
+        /* API CALL */
+
+        fetch("/ai-chat/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: message })
+        })
+            .then(response => response.json())
+            .then(data => {
+
+                loaderDiv.remove();
+
+                let botDiv = document.createElement("div");
+                botDiv.className = "message bot-message";
+
+                chatBody.appendChild(botDiv);
+
+                typeEffect(botDiv, data.response);
+
+            });
+
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+    };
+
+const tiltElements = document.querySelectorAll('.js-tilt');
+
+tiltElements.forEach(el => {
+
+    el.addEventListener('mousemove', (e) => {
+
+        const rect = el.getBoundingClientRect();
+
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * -15;
+        const rotateY = ((x - centerX) / centerX) * 15;
+
+        el.style.transform =
+        `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02,1.02,1.02)`;
+
+    });
+
+    el.addEventListener('mouseleave', () => {
+
+        el.style.transform =
+        `perspective(1000px) rotateX(0) rotateY(0) scale3d(1,1,1)`;
+
+    });
+
+});
+    /* ================= BOT TYPING EFFECT ================= */
+
+    function typeEffect(element, text, speed = 20) {
+
+        let i = 0;
+
+        function typing() {
+
+            if (i < text.length) {
+
+                element.innerHTML += text.charAt(i);
+
+                i++;
+
+                setTimeout(typing, speed);
+
+            }
+
+        }
+
+        typing();
+    }
+
+
+    /* ================= CLEAR CHAT ================= */
+
+    window.clearChat = function () {
+        document.getElementById("chat-body").innerHTML = "";
+    };
+
+
+    /* ================= CLOSE CHAT ================= */
+
+    window.closeChat = function () {
+        document.getElementById("chat-box").classList.remove("active");
+    };
+
+
+    /* ================= ENTER TO SEND ================= */
+
+    const chatInput = document.getElementById("user-input");
+
+    if (chatInput) {
+
+        chatInput.addEventListener("keypress", function (e) {
+
+            if (e.key === "Enter") {
+                sendMessage();
+            }
+
+        });
+
+    }
+
+
+    /* ================= NOTIFICATION TOGGLE ================= */
+
+    window.toggleNotifications = function () {
+
+        let dropdown = document.getElementById("notification-dropdown");
+
+        dropdown.style.display =
+            dropdown.style.display === "block" ? "none" : "block";
+
+    };
+
+
+    /* ================= LOAD NOTIFICATIONS ================= */
+
+    function loadNotifications() {
+
+        fetch("/fetch-notifications/")
+            .then(res => res.json())
+            .then(data => {
+
+                let container = document.getElementById("notification-list");
+                let count = document.getElementById("notification-count");
+
+                container.innerHTML = "";
+
+                let unread = 0;
+
+                data.notifications.slice(0, 5).forEach(n => {
+
+                    if (!n.is_read) unread++;
+
+                    container.innerHTML += `
+                    <div class="notification-item ${n.is_read ? "" : "unread"}">
+                        <strong>${n.title}</strong><br>
+                        ${n.message}
+                    </div>
+                    `;
+
+                });
+
+                count.innerText = unread;
+
+            });
+
+    }
+
+    setInterval(loadNotifications, 4000);
+
+    loadNotifications();
+
+
+});
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,301 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rehome <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">Review</title>
+
+    <style>
+        
+
+
+/* ================= ROOT ================= */
+:root{
+--primary:#a11a3c;
+--primary-dark:#7f102d;
+--secondary:#1f2937;
+--text-muted:#6b7280;
+--bg-main:#f4f6fa;
+--bg-card:#ffffff;
+--border-soft:#e5e7eb;
+}
+
+/* ================= GLOBAL ================= */
+
+body{
+margin:0;
+font-family:"Poppins",sans-serif;
+background:var(--bg-main);
+color:var(--secondary);
+}
+
+/* ================= CONTAINER ================= */
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:40px 8%;
+}
+
+/* ================= PAGE TITLE ================= */
+
+h2{
+text-align:center;
+font-size:28px;
+font-weight:800;
+margin-bottom:30px;
+}
+
+/* ================= CARD ================= */
+
+.card{
+background:var(--bg-card);
+border-radius:18px;
+padding:25px;
+margin-bottom:20px;
+border:1px solid var(--border-soft);
+box-shadow:0 10px 22px rgba(0,0,0,0.06);
+}
+
+.card h3{
+margin-bottom:12px;
+border-bottom:1px solid var(--border-soft);
+padding-bottom:8px;
+}
+
+/* ================= TEXT ================= */
+
+p{
+font-size:14px;
+margin:6px 0;
+}
+
+b{
+color:#111827;
+}
+
+/* ================= STATUS ================= */
+
+.status{
+padding:6px 14px;
+border-radius:20px;
+font-size:12px;
+font-weight:700;
+}
+
+.status.pending{
+background:#fff7ed;
+color:#9a3412;
+}
+
+.status.approved{
+background:#ecfdf5;
+color:#065f46;
+}
+
+.status.rejected{
+background:#fee2e2;
+color:#7f1d1d;
+}
+
+.status.rehomed{
+background:#e0f2fe;
+color:#075985;
+}
+
+/* ================= TEXTAREA ================= */
+
+textarea{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid var(--border-soft);
+margin-top:8px;
+font-size:14px;
+}
+
+/* ================= ACTION BUTTONS ================= */
+
+.actions{
+display:flex;
+gap:12px;
+margin-top:15px;
+}
+
+button{
+padding:12px 18px;
+border:none;
+border-radius:10px;
+font-weight:600;
+cursor:pointer;
+}
+
+.approve{
+background:#059669;
+color:white;
+}
+
+.reject{
+background:#dc2626;
+color:white;
+}
+
+.rehomed{
+background:#0284c7;
+color:white;
+}
+
+</style>
+
+    
+</head>
+
+<body>
+    <!-- ================= TOP BAR ================= -->
+<!-- ================= TOP BAR ================= -->
+<div class="top-bar">
+    <i class="fa-solid fa-paw"></i> Shelter Admin Panel
+</div>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+
+    <div class="logo">
+        🐾 Animal Shelter
+    </div>
+
+    <div class="nav-right">
+
+        <!-- Dashboard -->
+        <a href="{% url 'admin_dashboard' %}" class="nav-link">
+            <i class="fa-solid fa-chart-line"></i> Dashboard
+        </a>
+
+        <!-- Notification -->
+        <div class="notification">
+            <i class="fa-solid fa-bell"></i>
+            <span class="badge">
+                {{ notification_count|default:"0" }}
+            </span>
+        </div>
+
+        <!-- Logout -->
+        <a href="{% url 'panel_logout' %}" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+        </a>
+
+    </div>
+
+</header>
+
+<div class="container">
+
+<h2>Rehoming Request Review</h2>
+
+<!-- PET DETAILS -->
+<div class="card">
+    <h3>🐾 Pet Details</h3>
+    <p><b>Name:</b> {{ pet.pet_name }}</p>
+    <p><b>Type:</b> {{ pet.pet_type }}</p>
+    <p><b>Breed:</b> {{ pet.breed }}</p>
+    <p><b>Color:</b> {{ pet.color }}</p>
+    <p><b>Age:</b> {{ pet.age }}</p>
+    <p><b>Gender:</b> {{ pet.gender }}</p>
+</div>
+
+<!-- HEALTH -->
+<div class="card">
+    <h3>🏥 Health Information</h3>
+    <p><b>Vaccination Status:</b> {{ pet.vaccination_status }}</p>
+    <p><b>Last Vaccination:</b> {{ pet.last_vaccination_date }}</p>
+    <p><b>Neutered / Spayed:</b> {{ pet.neutered }}</p>
+    <p><b>Medical Conditions:</b> {{ pet.medical_conditions }}</p>
+    <p><b>Special Diet:</b> {{ pet.special_diet }}</p>
+</div>
+
+<!-- BEHAVIOR -->
+<div class="card">
+    <h3>🏡 Behavior & Training</h3>
+    <p><b>Living Environment:</b> {{ pet.living_environment }}</p>
+    <p><b>Child Friendly:</b> {{ pet.child_friendly }}</p>
+    <p><b>Good with Pets:</b> {{ pet.good_with_pets }}</p>
+    <p><b>House Trained:</b> {{ pet.house_trained }}</p>
+    <p><b>Leash Trained:</b> {{ pet.leash_trained }}</p>
+    <p><b>Aggressive Behaviour:</b> {{ pet.aggressive_behavior }}</p>
+</div>
+
+<!-- DESCRIPTION -->
+<div class="card">
+    <h3>💛 Pet Description</h3>
+    <p>{{ pet.pet_description }}</p>
+</div>
+
+<!-- REHOMING INFO -->
+<div class="card">
+    <h3>📍 Rehoming Details</h3>
+    <p><b>Urgency:</b> {{ pet.urgency }}</p>
+    <p><b>Meet & Greet:</b> {{ pet.meet_greet_availability }}</p>
+    <p><b>City:</b> {{ pet.city }}</p>
+    <p><b>State:</b> {{ pet.state }}</p>
+</div>
+
+<!-- OWNER -->
+<div class="card">
+    <h3>👤 Owner Information</h3>
+    <p><b>Name:</b> {{ pet.owner_name }}</p>
+    <p><b>Contact:</b> {{ pet.contact_info }}</p>
+</div>
+
+<!-- REASON -->
+<div class="card">
+    <h3>📝 Reason for Rehoming</h3>
+    {% if not pet.hide_reason %}
+        <p>{{ pet.rehoming_reason }}</p>
+    {% else %}
+        <p><i>Hidden by owner</i></p>
+    {% endif %}
+</div>
+
+<!-- ADMIN ACTION -->
+<div class="card">
+<form method="POST">
+    {% csrf_token %}
+
+    <p>
+        <b>Current Status:</b>
+        <span class="status {{ pet.status|lower }}">
+            {{ pet.status }}
+        </span>
+    </p>
+
+    <label><b>Admin Notes</b></label>
+    <textarea name="admin_notes" rows="4">{{ pet.admin_notes }}</textarea>
+
+    <div class="actions">
+
+        {% if pet.status == "Pending Review" %}
+        <button type="submit" name="action" value="approve" class="approve">
+            Approve
+        </button>
+
+        <button type="submit" name="action" value="reject" class="reject">
+            Reject
+        </button>
+        {% endif %}
+
+        {% if pet.status == "Approved" %}
+        <button type="submit" name="action" value="rehomed" class="rehomed">
+            Mark as Rehomed
+        </button>
+        {% endif %}
+
+    </div>
+
+</form>
+</div>
+
+</div>
+
+</body>
+</html>

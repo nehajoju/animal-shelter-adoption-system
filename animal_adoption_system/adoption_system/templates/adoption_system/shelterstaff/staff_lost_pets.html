@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Lost Pet Reports | Admin</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* ===== FILTER BUTTONS ===== */
+        .filter-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-buttons a {
+            text-decoration: none;
+            padding: 8px 16px;
+            margin: 0 5px;
+            border-radius: 20px;
+            background-color: #ddd;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .filter-buttons a:hover {
+            background-color: #bbb;
+        }
+
+        .filter-buttons a.active {
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        /* ===== PET CARD ===== */
+        .pet-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .pet-image img {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .pet-details {
+            flex: 1;
+        }
+
+        .pet-details h3 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .pet-details p {
+            margin: 4px 0;
+            color: #555;
+        }
+
+        /* ===== STATUS ===== */
+        .status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 6px;
+        }
+
+        .status.Missing {
+            background: #ffe6e6;
+            color: #c0392b;
+        }
+
+        .status.Found {
+            background: #e6ffe9;
+            color: #27ae60;
+        }
+
+        /* ===== BUTTON ===== */
+        .found-btn {
+            margin-top: 10px;
+            padding: 6px 12px;
+            border: none;
+            background-color: #27ae60;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .found-btn:hover {
+            background-color: #219150;
+        }
+
+        .empty-message {
+            text-align: center;
+            margin-top: 40px;
+            color: #777;
+        }
+
+        .search-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            padding: 8px 12px;
+            width: 280px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        .search-box button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            background-color: #2c3e50;
+            color: white;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .search-box button:hover {
+            background-color: #1a242f;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Lost Pet Reports</h2>
+
+    <!-- ===== FILTER BUTTONS ===== -->
+    <div class="filter-buttons">
+        <a href="{% url 'lost_pets' %}" class="{% if not status_filter %}active{% endif %}">
+            All
+        </a>
+
+        <a href="?status=Missing" class="{% if status_filter == 'Missing' %}active{% endif %}">
+            Missing
+        </a>
+
+        <a href="?status=Found" class="{% if status_filter == 'Found' %}active{% endif %}">
+            Found
+        </a>
+    </div>
+    <div class="search-box">
+        <form method="GET">
+            <input type="text" name="search" placeholder="Search by pet name, location, breed, or user..."
+                value="{{ search_query|default:'' }}">
+
+            {% if status_filter %}
+            <input type="hidden" name="status" value="{{ status_filter }}">
+            {% endif %}
+
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    {% if lost_pets %}
+
+    {% for pet in lost_pets %}
+    <div class="pet-card">
+
+        <div class="pet-image">
+            {% if pet.pet_photo %}
+            <img src="{{ pet.pet_photo.url }}">
+            {% endif %}
+        </div>
+
+        <div class="pet-details">
+
+            <h3>{{ pet.pet_name }}</h3>
+
+            <p><b>Reported By:</b> {{ pet.user.username }}</p>
+            <p><b>Contact Email:</b> {{ pet.user.email }}</p>
+            <p><b>Phone:</b> {{ pet.user.phone_number }}</p>
+
+            <p><b>Pet Type:</b> {{ pet.pet_type }}</p>
+            <p><b>Breed:</b> {{ pet.breed }}</p>
+            <p><b>Last Seen:</b> {{ pet.last_seen_location }}</p>
+            <p><b>Date Lost:</b> {{ pet.date_lost }}</p>
+            <p><b>Reported On:</b> {{ pet.reported_date }}</p>
+
+            <span class="status {{ pet.status }}">
+                {{ pet.status }}
+            </span>
+
+            {% if pet.status == "Missing" %}
+            <form method="POST" action="{% url 'mark_pet_found' pet.id %}">
+                {% csrf_token %}
+                <button class="found-btn">
+                    Mark as Found
+                </button>
+            </form>
+            {% endif %}
+
+        </div>
+
+    </div>
+    {% endfor %}
+
+    {% else %}
+    <p class="empty-message">
+        No lost pet reports available.
+    </p>
+    {% endif %}
+
+</body>
+
+</html>

@@ -1,0 +1,635 @@
+/* ================= ROOT ================= */
+
+:root{
+    --primary:#a11a3c;
+    --primary-dark:#7f102f;
+    --glass-bg: rgba(255,255,255,0.65);
+    --glass-dark: rgba(31,41,55,0.7);
+    --text-main:#1f2937;
+    --text-light:#f9fafb;
+    --radius:18px;
+    --transition:0.35s ease;
+}
+
+/* ================= ANIMATED BACKGROUND ================= */
+
+body{
+    margin:0;
+    font-family:"Poppins",sans-serif;
+    background: linear-gradient(-45deg, #fdf2f8, #eef2ff, #f0fdf4, #fff7ed);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG{
+    0%{ background-position:0% 50%; }
+    50%{ background-position:100% 50%; }
+    100%{ background-position:0% 50%; }
+}
+
+.top-bar{
+width:100%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px 30px;
+background:#f5f5f5;
+border-bottom:1px solid #ddd;
+box-sizing:border-box;
+}
+
+/* left section */
+.top-left{
+display:flex;
+align-items:center;
+gap:15px;
+font-size:14px;
+}
+
+/* right section */
+.top-right{
+display:flex;
+align-items:center;
+margin-left:auto;
+}
+
+/* notification */
+.notification-wrapper{
+position:relative;
+cursor:pointer;
+}
+
+/* bell icon */
+.notification-icon{
+font-size:20px;
+color:#333;
+}
+
+/* red badge */
+.notification-badge{
+position:absolute;
+top:-6px;
+right:-6px;
+background:red;
+color:white;
+font-size:11px;
+padding:3px 6px;
+border-radius:50%;
+}
+
+/* dropdown */
+.notification-dropdown{
+display:none;
+position:absolute;
+right:0;
+top:35px;
+width:320px;
+background:white;
+border-radius:8px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+border:1px solid #ddd;
+overflow:hidden;
+}
+
+/* notification item */
+.notification-item{
+padding:12px;
+border-bottom:1px solid #eee;
+font-size:14px;
+}
+
+.notification-item.unread{
+background:#eef6ff;
+}
+
+/* view all button */
+.view-all-btn{
+display:block;
+text-align:center;
+padding:10px;
+background:#f5f5f5;
+text-decoration:none;
+font-weight:500;
+color:#333;
+}
+
+.profile-wrapper{
+    position:absolute;
+    top:10px;
+    right:6%;
+}
+
+.profile-circle{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:var(--primary);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:600;
+    cursor:pointer;
+    overflow:hidden;
+    box-shadow:0 8px 20px rgba(161,26,60,0.3);
+}
+
+.profile-circle img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* ================= DASHBOARD ================= */
+
+.dashboard{
+    padding:40px 6%;
+}
+
+/* Glass Card Base */
+.welcome-card,
+.stat-box,
+.lost-found-card,
+.action-card,
+.activity-card,
+.guidelines,
+.support-box{
+    background:var(--glass-bg);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.4);
+    border-radius:var(--radius);
+    box-shadow:0 20px 40px rgba(0,0,0,0.08);
+    transition:var(--transition);
+}
+
+/* Hover Glow */
+.stat-box:hover,
+.lost-found-card:hover,
+.action-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 25px 50px rgba(161,26,60,0.25);
+}
+
+/* ================= WELCOME ================= */
+
+.welcome-card{
+    padding:35px;
+    margin-bottom:40px;
+    color:var(--text-main);
+}
+
+.quick-donate-btn{
+    display:inline-block;
+    margin-top:15px;
+    padding:10px 20px;
+    background:var(--primary);
+    color:white;
+    border-radius:30px;
+    text-decoration:none;
+    font-weight:600;
+    transition:var(--transition);
+}
+
+.quick-donate-btn:hover{
+    background:var(--primary-dark);
+}
+
+/* ================= STATS ================= */
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:25px;
+    margin-bottom:50px;
+}
+
+.stat-box{
+    padding:25px;
+    text-align:center;
+}
+
+.stat-box h2{
+    color:var(--primary);
+    margin-bottom:6px;
+}
+
+/* ================= SECTION TITLES ================= */
+
+.section-title{
+    margin:50px 0 25px;
+    color:var(--primary);
+}
+
+/* ================= LOST & FOUND ================= */
+
+.lost-found-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.lost-found-card{
+    padding:25px;
+    text-decoration:none;
+    color:var(--text-main);
+}
+
+.lost-found-card i{
+    font-size:28px;
+    color:var(--primary);
+    margin-bottom:10px;
+}
+
+/* ================= ACTION CARDS ================= */
+
+.action-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.action-card{
+    padding:25px;
+    text-decoration:none;
+    color:var(--text-main);
+}
+
+.action-card i{
+    font-size:26px;
+    color:var(--primary);
+    margin-bottom:10px;
+}
+
+/* ================= ACTIVITY ================= */
+
+.activity-list{
+    margin-top:20px;
+}
+
+.activity-card{
+    padding:15px 20px;
+    margin-bottom:12px;
+}
+
+.pending{color:orange;}
+.success{color:green;}
+.info{color:#2563eb;}
+
+/* ================= GUIDELINES ================= */
+
+.guidelines{
+    margin-top:50px;
+    padding:30px;
+}
+
+/* ================= SUPPORT ================= */
+
+.support-box{
+    margin-top:40px;
+    padding:30px;
+    text-align:center;
+}
+
+.support-btn{
+    display:inline-block;
+    margin-top:15px;
+    padding:10px 20px;
+    background:var(--primary);
+    color:white;
+    border-radius:25px;
+    text-decoration:none;
+}
+
+/* ================= FLOATING BUTTONS ================= */
+
+.floating-logout{
+    position:fixed;
+    bottom:20px;
+    left:20px;
+    background:#111827;
+    color:white;
+    padding:10px 15px;
+    border-radius:30px;
+    text-decoration:none;
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+.floating-chat-btn{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:var(--primary);
+    color:white;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* ================= DARK MODE ================= */
+
+.dark-mode{
+    background:#111827 !important;
+    color:#f9fafb;
+}
+
+.dark-mode .welcome-card,
+.dark-mode .stat-box,
+.dark-mode .lost-found-card,
+.dark-mode .action-card,
+.dark-mode .activity-card,
+.dark-mode .guidelines,
+.dark-mode .support-box{
+    background:var(--glass-dark);
+    color:white;
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+    .dashboard{
+        padding:20px;
+    }
+}
+
+
+/* ================= FLOATING ADMIN CHAT ================= */
+
+.floating-admin-chat{
+    position: fixed;
+    bottom: 95px;   /* ABOVE chatbot */
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg,#a11a3c,#7f102f);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    text-decoration: none;
+    transition: 0.3s ease;
+    z-index: 9999;
+}
+
+.floating-admin-chat:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(161,26,60,0.4);
+}
+
+/* Unread badge */
+.admin-badge{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #ff3b3b;
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+/* ================= PROFILE WRAPPER ================= */
+
+.profile-wrapper{
+    position: absolute;
+    top: 12px;
+    right: 6%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+/* ================= PROFILE CIRCLE ================= */
+
+.profile-circle{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#a11a3c,#7f102f);
+    color: white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:600;
+    font-size:16px;
+    overflow:hidden;
+    box-shadow:0 10px 25px rgba(161,26,60,0.35);
+    transition:0.3s ease;
+}
+
+.profile-circle:hover{
+    transform: scale(1.08);
+}
+
+/* Profile Image */
+.profile-circle img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* ================= PROFILE DROPDOWN ================= */
+
+.profile-dropdown{
+    position: absolute;
+    top: 65px;
+    right: 0;
+    width: 230px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 18px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.18);
+    padding: 18px;
+    opacity: 0;
+    transform: translateY(15px);
+    pointer-events: none;
+    transition: 0.35s ease;
+}
+
+/* Dropdown Arrow */
+.profile-dropdown::before{
+    content: "";
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 15px;
+    height: 15px;
+    background: rgba(255,255,255,0.85);
+    transform: rotate(45deg);
+}
+
+/* Show dropdown */
+.profile-wrapper.active .profile-dropdown{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Dropdown text */
+.profile-dropdown p{
+    margin: 4px 0;
+    font-size: 14px;
+    color: #1f2937;
+}
+
+.profile-dropdown strong{
+    font-size: 15px;
+}
+
+/* Divider */
+.profile-dropdown hr{
+    border: none;
+    height: 1px;
+    background: #e5e7eb;
+    margin: 12px 0;
+}
+
+/* Dropdown links */
+.profile-dropdown a{
+    display:block;
+    padding:10px 12px;
+    border-radius:10px;
+    text-decoration:none;
+    color:#374151;
+    font-size:14px;
+    font-weight:500;
+    transition:0.25s ease;
+}
+
+.profile-dropdown a:hover{
+    background: rgba(161,26,60,0.1);
+    color: var(--primary);
+}
+
+/* ================= DARK MODE SUPPORT ================= */
+
+.dark-mode .profile-dropdown{
+    background: rgba(31,41,55,0.9);
+    color: white;
+}
+
+.dark-mode .profile-dropdown::before{
+    background: rgba(31,41,55,0.9);
+}
+
+.dark-mode .profile-dropdown p{
+    color: #f3f4f6;
+}
+
+.dark-mode .profile-dropdown a{
+    color: #f3f4f6;
+}
+
+.dark-mode .profile-dropdown a:hover{
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+    .profile-wrapper{
+        right: 4%;
+    }
+
+    .profile-dropdown{
+        width: 200px;
+    }
+
+}
+
+
+.activity-timeline{
+    position:relative;
+    margin-top:20px;
+}
+
+.timeline-item{
+    display:flex;
+    align-items:flex-start;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.timeline-icon{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    margin-top:6px;
+}
+
+.adopt-icon{ background:#3b82f6; }
+.donate-icon{ background:#16a34a; }
+.visit-icon{ background:#f59e0b; }
+
+.timeline-content{
+    background:#fff;
+    padding:12px 15px;
+    border-radius:10px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.05);
+    width:100%;
+}
+
+.timeline-title{
+    font-weight:600;
+    margin-bottom:4px;
+}
+
+.timeline-meta{
+    font-size:13px;
+    color:#666;
+}
+
+.empty-state{
+    text-align:center;
+    color:#888;
+    padding:20px;
+}
+
+
+.view-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    background: linear-gradient(135deg, #a11a3c, #7f102f);
+    color: white;
+    padding: 10px 18px;
+
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.view-all-btn i {
+    font-size: 14px;
+}
+
+.view-all-btn:hover {
+    background: linear-gradient(135deg, #c0264a, #9f1239);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.view-all-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}

@@ -1,0 +1,357 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Adoptions</title>
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* ================= ROOT COLORS ================= */
+:root {
+    --primary: #a11a3c;
+    --primary-dark: #7f102f;
+    --secondary: #111827;
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #374151;
+    --text-muted: #6b7280;
+    --border-soft: #e5e7eb;
+}
+
+/* ================= GLOBAL ================= */
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* SUBTLE PAW BACKGROUND */
+body::before{
+    content:"🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾";
+    position:fixed;
+    font-size:120px;
+    opacity:0.08;
+    top:20%;
+    left:5%;
+    transform:rotate(-20deg);
+    z-index:-1;
+}
+
+/* ================= NAVBAR ================= */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    background:var(--bg-card);
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:20px;
+    font-weight:700;
+    color:var(--primary);
+}
+
+.nav-links{
+    display:flex;
+    gap:25px;
+    align-items:center;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:var(--secondary);
+    font-weight:600;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:var(--primary);
+}
+
+/* ================= HERO ================= */
+.page-header {
+    padding: 100px 20px 80px;
+    text-align: center;
+    background:
+        linear-gradient(rgba(161,26,60,.85), rgba(127,16,47,.85)),
+        url("https://images.unsplash.com/photo-1601758123927-196f9a0d93f0")
+        center/cover no-repeat;
+    color: white;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.page-header p {
+    opacity: 0.9;
+}
+
+/* ================= CONTAINER ================= */
+.container {
+    max-width: 1000px;
+    margin: 40px auto 80px;   /* ← Positive margin */
+    padding: 0 20px;
+}
+
+/* ================= ADOPTION CARD ================= */
+.adoption-card {
+    background: var(--bg-card);
+    padding: 25px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+    transition: 0.3s;
+    border: 1px solid var(--border-soft);
+}
+
+.adoption-card:hover {
+    transform: translateY(-5px);
+}
+
+.adoption-card h3 {
+    margin-bottom: 8px;
+}
+
+/* STATUS BADGES */
+.status {
+    display:inline-block;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.pending { background:#fef3c7; color:#92400e; }
+.approved { background:#dcfce7; color:#166534; }
+.date-requested { background:#e0f2fe; color:#075985; }
+.scheduled { background:#ede9fe; color:#5b21b6; }
+.completed { background:#d1fae5; color:#065f46; }
+.rejected { background:#fee2e2; color:#991b1b; }
+
+.info-box {
+    background: #f3f4f6;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.action-btn {
+    margin-top: 14px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition:0.3s;
+}
+
+.action-btn:hover {
+    background: var(--primary-dark);
+}
+
+.empty-box {
+    text-align: center;
+    padding: 60px;
+    color: var(--text-muted);
+}
+   
+</style>
+</head>
+
+<body>
+    <!-- ================= NAVBAR ================= -->
+<header class="navbar">
+    <div class="logo">🐾 Animal Shelter</div>
+
+    <div class="nav-links">
+        <a href="{% url 'userhome' %}">
+            <i class="fa fa-home"></i> Dashboard
+        </a>
+
+        <a href="" class="notification-icon">
+            <i class="fa fa-bell"></i>
+            {% if unread_count > 0 %}
+                <span class="notification-badge">
+                    {{ unread_count }}
+                </span>
+            {% endif %}
+        </a>
+
+        <a href="{% url 'logout' %}">
+            <i class="fa fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</header>
+
+<div class="container">
+
+<h2 class="page-title">
+    <i class="fa-solid fa-heart"></i> My Adoption Applications
+</h2>
+
+{% for adoption in adoptions %}
+
+<div class="adoption-card">
+
+    <h3>{{ adoption.pet_name }}</h3>
+
+    <p><strong>Pet Type:</strong> {{ adoption.pet_type }}</p>
+    <p><strong>Applied On:</strong> {{ adoption.submitted_at|date:"d M Y" }}</p>
+
+    <!-- STATUS BADGE -->
+    <p>
+        <strong>Status:</strong>
+        <span class="status
+            {% if adoption.status == 'Pending' %}pending
+            {% elif adoption.status == 'Approved' %}approved
+            {% elif adoption.status == 'Date Requested' %}date-requested
+            {% elif adoption.status == 'Scheduled' %}scheduled
+            {% elif adoption.status == 'Completed' %}completed
+            {% elif adoption.status == 'Rejected' %}rejected
+            {% endif %}
+        ">
+            {{ adoption.status }}
+        </span>
+    </p>
+
+    <!-- ================= STATUS LOGIC ================= -->
+
+{% if adoption.status == "Pending" %}
+    <div class="info-box">
+        ⏳ Waiting for admin approval.
+    </div>
+
+{% elif adoption.status == "Approved" %}
+    <div class="info-box">
+        ✅ Your adoption request is approved.<br>
+        Please request your preferred adoption date.
+    </div>
+
+    <form method="POST" action="{% url 'request_adoption_date' adoption.id %}">
+        {% csrf_token %}
+        <button class="action-btn">
+            Request Adoption Date
+        </button>
+    </form>
+
+{% elif adoption.status == "Date Requested" %}
+    <div class="info-box">
+        📅 <strong>Requested Date:</strong>
+        {{ adoption.requested_date|default:"Not selected" }}
+        at
+        {{ adoption.requested_time|default:"-" }} <br>
+        Waiting for admin confirmation.
+    </div>
+
+{% elif adoption.status == "Scheduled" %}
+
+    <div class="info-box">
+        🎉 Adoption Scheduled! <br>
+        <strong>Date:</strong> {{ adoption.scheduled_date }} <br>
+        <strong>Time:</strong> {{ adoption.scheduled_time }}
+    </div>
+
+    {% if adoption.payment_status == "Pending" %}
+        <div class="info-box">
+            💳 Payment Pending
+        </div>
+
+        <a href="{% url 'adoption_payment' adoption.id %}">
+            <button class="action-btn">
+                Pay Now
+            </button>
+        </a>
+
+        <form method="POST" action="{% url 'request_adoption_date' adoption.id %}">
+            {% csrf_token %}
+            <button class="action-btn">
+                Request Reschedule
+            </button>
+        </form>
+
+    {% elif adoption.payment_status == "Paid" %}
+        <div class="info-box" style="background:#ecfdf5;color:#065f46;">
+            ✅ Payment Completed
+        </div>
+    {% endif %}
+
+{% elif adoption.status == "Completed" %}
+
+    <div class="info-box">
+        ✅ Adoption completed successfully.
+    </div>
+
+    {% if adoption.payment_status == "Paid" %}
+
+        <div class="info-box" style="background:#ecfdf5;color:#065f46;">
+
+            <p><strong>Payment Method:</strong>
+                {{ adoption.payment_method }}</p>
+
+            <p><strong>Transaction ID:</strong>
+                {{ adoption.transaction_id }}</p>
+
+            <p><strong>Donation:</strong>
+                ₹ {{ adoption.donation_amount }}</p>
+
+            {% if adoption.animal %}
+                <p><strong>Adoption Fee:</strong>
+                    ₹ {{ adoption.animal.adoption_fee }}</p>
+            {% elif adoption.rehome_pet %}
+                <p><strong>Adoption Fee:</strong>
+                    ₹ {{ adoption.rehome_pet.adoption_fee }}</p>
+            {% endif %}
+
+            <hr>
+
+            <a href="{% url 'download_receipt' adoption.id %}">
+                <button class="action-btn">
+                    📄 Download Receipt
+                </button>
+            </a>
+
+        </div>
+
+    {% else %}
+        <div class="info-box" style="background:#fff7ed;color:#9a3412;">
+            ⚠ Payment Pending
+        </div>
+    {% endif %}
+
+{% elif adoption.status == "Rejected" %}
+    <div class="info-box">
+        ❌ Application rejected by admin.
+    </div>
+{% endif %}
+</div>
+
+{% empty %}
+
+<div class="empty-box">
+    <i class="fa-solid fa-paw" style="font-size:40px;"></i>
+    <p>No adoption applications found.</p>
+</div>
+
+{% endfor %}
+
+</div>
+
+</body>
+</html>

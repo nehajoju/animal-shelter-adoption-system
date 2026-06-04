@@ -1,0 +1,424 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>Rehome Intake | Shelter Staff</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--primary:#a11a3c;
+--secondary:#111827;
+--bg-main:#f4f6f9;
+--bg-card:#ffffff;
+--border:#e5e7eb;
+--text:#374151;
+}
+
+body{
+font-family:'Poppins',sans-serif;
+background:var(--bg-main);
+margin:0;
+}
+
+.container{
+max-width:1100px;
+margin:60px auto;
+background:white;
+padding:45px;
+border-radius:18px;
+box-shadow:0 15px 40px rgba(0,0,0,.08);
+}
+
+h1{
+margin-bottom:5px;
+color:var(--secondary);
+}
+
+.sub{
+color:#6b7280;
+margin-bottom:35px;
+}
+
+/* form sections */
+
+.section{
+margin-bottom:35px;
+padding:25px;
+background:#f8fafc;
+border-radius:14px;
+}
+
+.section h2{
+margin-bottom:20px;
+font-size:18px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:18px;
+}
+
+.field{
+display:flex;
+flex-direction:column;
+}
+
+label{
+font-size:13px;
+font-weight:600;
+margin-bottom:6px;
+}
+
+input,select,textarea{
+padding:12px;
+border-radius:10px;
+border:1px solid var(--border);
+font-size:14px;
+}
+
+textarea{
+min-height:100px;
+resize:vertical;
+}
+
+.preview img{
+width:200px;
+border-radius:12px;
+margin-top:10px;
+box-shadow:0 8px 20px rgba(0,0,0,.1);
+}
+
+.actions{
+margin-top:30px;
+display:flex;
+gap:15px;
+}
+
+.btn{
+padding:12px 22px;
+border-radius:10px;
+border:none;
+font-weight:600;
+cursor:pointer;
+}
+
+.btn-primary{
+background:var(--primary);
+color:white;
+}
+
+.btn-secondary{
+background:#e5e7eb;
+}
+
+.rehome-info{
+background:#fff7ed;
+padding:20px;
+border-radius:12px;
+margin-bottom:25px;
+}
+
+.image-upload-wrapper{
+position:relative;
+width:100%;
+height:220px;
+border:2px dashed #cbd5e1;
+border-radius:16px;
+background:#f8fafc;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+cursor:pointer;
+}
+
+.image-upload-wrapper input{
+position:absolute;
+width:100%;
+height:100%;
+opacity:0;
+cursor:pointer;
+z-index:2;
+}
+
+.image-preview{
+position:absolute;
+inset:0;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+color:#94a3b8;
+background-size:cover;
+background-position:center;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+<h1>🐾 Rehome Intake</h1>
+<p class="sub">Verify details from the rehome application and register the animal into the shelter.</p>
+
+
+<!-- Rehome Request Info -->
+<div class="rehome-info">
+
+<strong>Original Owner:</strong> {{ pet.user.username }} <br>
+<strong>City:</strong> {{ pet.city }} <br>
+<strong>Reason for Rehoming:</strong> {{ pet.rehoming_reason }}
+
+</div>
+
+
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+
+
+<!-- BASIC INFO -->
+
+<div class="section">
+
+<h2><i class="fa-solid fa-paw"></i> Basic Animal Information</h2>
+
+<div class="grid">
+
+<div class="field">
+<label>Animal Name</label>
+<input type="text" name="name" value="{{ pet.pet_name }}">
+</div>
+
+<div class="field">
+<label>Pet Type</label>
+
+<select name="pet_type">
+
+{% for type in pet_types %}
+
+<option value="{{ type.id }}"
+{% if pet.breed.pet_type.id == type.id %}selected{% endif %}>
+{{ type.name }}
+</option>
+
+{% endfor %}
+
+</select>
+
+</div>
+
+
+<div class="field">
+<label>Breed</label>
+
+<select name="breed">
+
+{% for breed in breeds %}
+
+<option value="{{ breed.id }}"
+{% if pet.breed.id == breed.id %}selected{% endif %}>
+{{ breed.name }}
+</option>
+
+{% endfor %}
+
+</select>
+
+</div>
+
+
+<div class="field">
+<label>Age</label>
+<input type="number" name="age" value="{{ pet.age }}">
+</div>
+
+<div class="field">
+<label>Gender</label>
+
+<select name="gender">
+<option {% if pet.gender == "Male" %}selected{% endif %}>Male</option>
+<option {% if pet.gender == "Female" %}selected{% endif %}>Female</option>
+<option {% if pet.gender == "Unknown" %}selected{% endif %}>Unknown</option>
+</select>
+
+</div>
+
+<div class="field">
+<label>Color</label>
+<input type="text" name="color" value="{{ pet.color }}">
+</div>
+
+</div>
+
+</div>
+
+
+<!-- BEHAVIOUR -->
+
+<div class="section">
+
+<h2><i class="fa-solid fa-bone"></i> Behaviour & Temperament</h2>
+
+<div class="grid">
+
+<div class="field">
+<label>Temperament</label>
+<textarea name="temperament">{{ pet.pet_description }}</textarea>
+</div>
+
+<div class="field">
+<label>Good with Kids</label>
+<select name="good_with_kids">
+
+<option value="True"
+{% if pet.child_friendly == "Yes" %}selected{% endif %}>Yes</option>
+
+<option value="False"
+{% if pet.child_friendly == "No" %}selected{% endif %}>No</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+<label>Good with Other Pets</label>
+
+<select name="good_with_pets">
+
+<option value="True"
+{% if pet.good_with_pets == "Yes" %}selected{% endif %}>Yes</option>
+
+<option value="False"
+{% if pet.good_with_pets == "No" %}selected{% endif %}>No</option>
+
+</select>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- SHELTER DETAILS -->
+
+<div class="section">
+
+<h2><i class="fa-solid fa-house"></i> Shelter Intake Details</h2>
+
+<div class="grid">
+
+<div class="field">
+<label>Status</label>
+
+<select name="status">
+<option value="Quarantine">Quarantine</option>
+<option value="Under Treatment">Under Treatment</option>
+<option value="Healthy">Healthy</option>
+</select>
+
+</div>
+
+<div class="field">
+<label>Intake Type</label>
+<input type="text" value="Rehome" readonly>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- IMAGE -->
+<div class="section">
+
+<h2><i class="fa-solid fa-camera"></i> Animal Photo</h2>
+
+<label>Upload / Replace Photo</label>
+
+<div class="image-upload-wrapper">
+
+<input type="file" name="image" id="imageInput" accept="image/*">
+
+<div class="image-preview" id="imagePreview">
+
+{% if pet.pet_image %}
+<img src="{{ pet.pet_image.url }}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
+{% else %}
+<i class="fa-solid fa-cloud-arrow-up"></i>
+<span>Click to Upload Photo</span>
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ACTIONS -->
+
+<div class="actions">
+
+<button type="submit" class="btn btn-primary">
+
+<i class="fa-solid fa-paw"></i>
+Add to Shelter
+
+</button>
+
+
+<a href="{% url 'staff_rehome_arrivals' %}">
+<button type="button" class="btn btn-secondary">
+Cancel
+</button>
+</a>
+
+</div>
+
+
+</form>
+
+</div>
+<script>
+
+const input = document.getElementById("imageInput");
+const preview = document.getElementById("imagePreview");
+
+input.addEventListener("change", function(){
+
+const file = this.files[0];
+
+if(file){
+
+const reader = new FileReader();
+
+reader.onload = function(e){
+
+preview.style.backgroundImage = `url(${e.target.result})`;
+preview.innerHTML = "";
+
+}
+
+reader.readAsDataURL(file);
+
+}
+
+});
+
+</script>
+</body>
+</html>

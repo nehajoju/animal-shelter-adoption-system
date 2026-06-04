@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Rehome Pet Arrivals</title>
+</head>
+
+<body>
+
+<h2>🐾 Rehome Pets Arriving to Shelter</h2>
+
+<table border="1" cellpadding="10">
+
+<tr>
+<th>Pet Name</th>
+<th>Breed</th>
+<th>Age</th>
+<th>Owner</th>
+<th>City</th>
+<th>Urgency</th>
+<th>Action</th>
+</tr>
+
+{% for pet in pets %}
+
+<tr>
+<td>{{ pet.pet_name }}</td>
+<td>{{ pet.breed }}</td>
+<td>{{ pet.age }}</td>
+<td>{{ pet.owner_name }}</td>
+<td>{{ pet.city }}</td>
+<td>{{ pet.urgency }}</td>
+
+<td>
+<a href="{% url 'receive_rehome_pet' pet.id %}">
+Receive Pet
+</a>
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="7">No incoming pets</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</body>
+</html>
